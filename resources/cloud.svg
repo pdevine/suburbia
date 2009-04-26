@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="cloud.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="461.49781"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="663"
+     inkscape:window-height="701"
+     inkscape:window-x="75"
+     inkscape:window-y="78" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:#000000;stroke-width:3.67193532;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 480 149.8125 C 427.58077 149.8125 383.38283 163.03117 370.09375 181.03125 C 277.70921 181.28899 202.9375 208.0248 202.9375 240.9375 C 202.9375 251.28211 210.31671 261.03658 223.3125 269.53125 C 138.4592 272.012 73.84375 284.48047 73.84375 299.5 C 73.84375 316.30178 154.67948 329.9375 254.28125 329.9375 C 304.85888 329.9375 350.57143 326.44267 383.34375 320.78125 C 409.54054 327.75177 443.23771 331.9375 480 331.9375 C 555.87042 331.9375 618.69768 314.06403 629.375 290.8125 C 671.06488 283.50987 699.9375 267.76094 699.9375 249.5 C 699.9375 225.85815 651.53847 206.41745 589.59375 204.09375 C 592.45484 200.36615 593.96875 196.44434 593.96875 192.375 C 593.96875 168.88477 542.91879 149.8125 480 149.8125 z "
+       id="path2383"
+       inkscape:export-filename="/Users/patrick/cloud.png"
+       inkscape:export-xdpi="18.142857"
+       inkscape:export-ydpi="18.142857" />
+  </g>
+</svg>

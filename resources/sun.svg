@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="sun.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="375"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="640"
+     inkscape:window-height="701"
+     inkscape:window-x="20"
+     inkscape:window-y="42" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:#ffff00;fill-opacity:1;stroke:none;stroke-width:3.50000000000000000;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path2383"
+       sodipodi:sides="15"
+       sodipodi:cx="228.57143"
+       sodipodi:cy="392.36218"
+       sodipodi:r1="241.10291"
+       sodipodi:r2="179.26773"
+       sodipodi:arg1="0.70991162"
+       sodipodi:arg2="0.91935113"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 411.42857,549.50504 L 337.26795,534.91738 L 331.70398,610.29402 L 269.88822,566.8037 L 234.14684,633.40061 L 195.36444,568.52749 L 135.62565,614.82947 L 126.58245,539.7907 L 53.17564,557.79171 L 75.435281,485.56218 L 1.0531511,472.14968 L 50.766741,415.21854 L -11.729361,372.71167 L 56.842246,340.92282 L 17.038316,276.67141 L 92.611287,275.52144 L 82.38199,200.63514 L 151.88907,230.32288 L 173.00315,157.75021 L 224.42593,213.14239 L 273.23256,155.43183 L 297.67958,226.95063 L 365.73966,194.08085 L 358.98381,269.36003 L 434.52913,267.01452 L 397.73855,333.03762 L 467.70664,361.62194 L 407.24276,406.97297 L 459.53549,461.54463 L 385.85307,478.38197 L 411.42857,549.50504 z"
+       inkscape:export-filename="/Users/patrick/sun.png"
+       inkscape:export-xdpi="18.142857"
+       inkscape:export-ydpi="18.142857" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:3.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path2385"
+       sodipodi:cx="277.14285"
+       sodipodi:cy="433.79074"
+       sodipodi:rx="65.714287"
+       sodipodi:ry="75.714287"
+       d="M 342.85714,433.79074 A 65.714287,75.714287 0 1 1 211.42857,433.79074 A 65.714287,75.714287 0 1 1 342.85714,433.79074 z"
+       transform="matrix(1.6304348,0,0,1.4528301,-219.00621,-236.43355)"
+       inkscape:export-filename="/Users/patrick/sun.png"
+       inkscape:export-xdpi="18.142857"
+       inkscape:export-ydpi="18.142857" />
+  </g>
+</svg>
