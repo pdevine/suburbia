@@ -26,10 +26,12 @@ class Leaf(pyglet.sprite.Sprite):
     def __init__(self):
         img = data.textures['grassblade.png']
         self.blowing = True
+        self.highlighted = False
         self.logicalX = 0
         self.logicalY = random.randint(1,200)
         self.logicalZ = random.randint(100,150)
         super(Leaf,self).__init__(img)
+        self.origColor = self.color
         self.xy = logicalToPerspective(self.logicalX, self.logicalY)
         self.velocityX = 0.1
         self.velocityY = 0
@@ -49,6 +51,7 @@ class Leaf(pyglet.sprite.Sprite):
         #print 'at', self.xy
         win.push_handlers(self.on_mouse_scroll)
         win.push_handlers(self.on_mouse_press)
+        win.push_handlers(self.on_mouse_motion)
         events.AddListener(self)
 
     def getxy(self):
@@ -76,7 +79,7 @@ class Leaf(pyglet.sprite.Sprite):
     def collides(self,x,y):
         distance = math.sqrt((x-self.x)**2 + (y-self.y)**2)
         #print 'collide distance', distance
-        if distance < 10:
+        if distance < self.width*self.scale:
             return True
         return False
 
@@ -137,10 +140,20 @@ class Leaf(pyglet.sprite.Sprite):
             delta = newX-self.logicalX
             for mate in self.clumpMates:
                 mate.pullX( delta/1.4 )
+        if newY != self.logicalY:
+            delta = newY-self.logicalY
+            for mate in self.clumpMates:
+                mate.pullX( delta )
 
         self.scale = (1.0 + (300.0-self.logicalY)/200.0)/2
         if self.clumpMates:
-            self.blue = 255
+            self.color = (255,0,0)
+        else:
+            self.color = self.origColor
+        if self.highlighted:
+            self.color = (25,200,25)
+            #self.color = (20,255,0)
+
         self.setLogicalXY(newX, newY)
         self.y += self.logicalZ*self.scale
 
@@ -185,13 +198,19 @@ class Leaf(pyglet.sprite.Sprite):
     def on_mouse_scroll(self, x, y, scrollx, scrolly):
         if self.collides(x,y):
             if scrolly > 0:
-                print 'self collides.  self.x, self.y', self.x, self.y
-                print 'info x, y, sx, sy', x, y, scrollx, scrolly
+                #print 'self collides.  self.x, self.y', self.x, self.y
+                #print 'info x, y, sx, sy', x, y, scrollx, scrolly
                 self.sweep()
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.collides(x,y):
             self.sweep()
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self.collides(x,y):
+            self.highlighted = True
+        else:
+            self.highlighted = False
         
 
 
