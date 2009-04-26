@@ -5,6 +5,7 @@ from pyglet.window import Window
 from pyglet import clock
 from pyglet import image
 
+import colorsys
 import random
 import euclid
 
@@ -31,6 +32,18 @@ class Background:
         for element in elements:
             if element:
                 element.update(tick)
+
+        if self.sun and self.sun.pos.x < 100:
+            self.hsv_color = \
+                [240/360.0, 60/100.0, min(self.sun.pos.x+50, 100)/100.0]
+        elif self.sun and self.sun.pos.x > SCREEN_WIDTH - 200:
+            self.hsv_color = \
+                [240/360.0, 60/100.0, min(SCREEN_WIDTH - self.sun.pos.x+20, 100)/100.0]
+        else:
+            self.hsv_color = \
+                [240/360.0, 60/100.0, 1]
+
+        self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
     def draw(self):
 #        elements = [self.earth, self.sun, self.rain]
