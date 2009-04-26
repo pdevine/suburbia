@@ -53,8 +53,8 @@ def Fire( evName, *args, **kwargs ):
 
 	# run-time check. looks in the module-level globals for the named event
 	global __eventQueue
-	if evName not in __validEvents + globals().keys():
-		raise Exception( "event not defined" )
+	#if evName not in __validEvents + globals().keys():
+		#raise Exception( "event not defined" )
 
 	__eventQueue.append( (evName, args, kwargs) )
 
@@ -111,11 +111,8 @@ AvatarEnergyAdd
 AvatarEnergyRemove
 PowerupConsume
 SpriteRemove
-TriggerZoneRemove
 StartSpeech
 SpeechPart
 StopSpeech
-WhiffSpecial
-ExplosionSpecial
 LowFPS30
 '''.strip().split()

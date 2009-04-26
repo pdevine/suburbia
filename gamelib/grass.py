@@ -9,6 +9,7 @@ from pyglet import image
 import random
 import euclid
 import data
+import events
 
 from pyglet.gl import *
 
@@ -18,106 +19,6 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 win = None
-
-class Rain:
-    def __init__(self):
-        self.quad = gluNewQuadric()
-        self.rain = []
-
-        self.delay_time = 0.1
-        self.counter = self.delay_time
-
-        self.addDrops()
-
-    def addDrops(self, amount=10):
-        for count in range(amount):
-            self.rain.append(RainDrop(self.quad))
-
-    def update(self, tick):
-        self.counter -= tick
-        if self.counter <= 0:
-            self.addDrops()
-            self.counter = self.delay_time
-
-        for drop in self.rain:
-            drop.update(tick)
-
-            if drop.dead:
-                self.rain.remove(drop)
-
-    def draw(self):
-        for drop in self.rain:
-            drop.draw()
-
-class RainDrop:
-    def __init__(self, quad):
-        self.quad = quad
-        self.color = (0, 0, 0.95, 1)
-        self.vector = euclid.Vector2(0, 0)
-        self.dead = False
-
-        self.vector.y = -SCREEN_HEIGHT
-
-        self.x = random.randint(0, SCREEN_WIDTH)
-        self.y = SCREEN_HEIGHT + 1
-
-    def update(self, tick):
-        self.x += self.vector.x * tick
-        self.y += self.vector.y * tick
-
-        if self.y < 0:
-            self.dead = True
-
-
-    def draw(self):
-        glColor4f(*self.color)
-        glPushMatrix()
-
-        glTranslatef(self.x, self.y, 0)
-
-        gluQuadricDrawStyle(self.quad, GLU_FILL)
-        gluDisk(self.quad, 0, 2, 50, 1)
-
-        glPopMatrix()
-
-
-class GrassBlade(rabbyt.sprites.Sprite):
-    def __init__(self, pos):
-        img = data.textures['grassblade.png']
-        rabbyt.sprites.Sprite.__init__(self, img)
-        self.xy = pos
-        self.scale = (1.0 + (300.0-pos[1])/200.0)/2
-        self.logicalX = pos[0]
-        self.logicalY = pos[1]
-        self.logicalZ = random.randint(-2,3)
-        self.blue = 25
-        self.alpha = 22
-
-        win.push_handlers(self.on_mouse_scroll)
-
-    def collides(self,x,y):
-        distance = math.sqrt((x-self.x)**2 + (y-self.y)**2)
-        if distance < self.bounding_radius:
-            return True
-        return False
-
-    def update(self, timeChange=None):
-        self.y = self.logicalY + (self.logicalZ*self.scale)
-        return
-        self.x = self.logicalX + window.bgOffset[0]
-        self.y = self.logicalY + window.bgOffset[1]
-        self.logicalX += randint(-2, 2)
-        self.logicalY += 1
-        self.opacity -= 2
-        self.scale += 0.01
-        if self.opacity < 80:
-            events.Fire('SpriteRemove', self)
-
-    def on_mouse_scroll(self, x, y, scrollx, scrolly):
-        if self.collides(x,y):
-            print 'self collides.  self.x, self.y', self.x, self.y
-            print 'info x, y, sx, sy', x, y, scrollx, scrolly
-            self.logicalZ += 5
 
 
 def logicalToPerspective(x,y):
@@ -139,23 +40,163 @@ def logicalToPerspective(x,y):
     newY = y
     return newX, newY
 
+class GrassBlade(rabbyt.sprites.Sprite):
+    def __init__(self, pos):
+        img = data.textures['grassblade.png']
+        rabbyt.sprites.Sprite.__init__(self, img)
+        self.logicalX = pos[0]
+        self.logicalY = pos[1]
+        self.xy = logicalToPerspective(*pos)
+        self.scale = (1.0 + (300.0-pos[1])/200.0)/2
+        self.logicalZ = random.randint(-2,3)
+
+        self.north, self.east, self.south, self.west = None,None,None,None
+
+        self.windEffects = {'duration': 0,
+                            'offset': 0,
+                            'flutter': 0,
+                            'countdown': 0,
+                           }
+
+        win.push_handlers(self.on_mouse_scroll)
+        events.AddListener(self)
+
+    def __str__(self):
+        return '<Blade %s %s %s>' % (self.logicalX, self.logicalY, id(self))
+
+    def setLogicalXY(self, x, y):
+        self.logicalX = x
+        self.logicalY = y
+        self.xy = logicalToPerspective(x,y)
+        self.scale = (1.0 + (300.0-y)/200.0)/2
+
+    def collides(self,x,y):
+        distance = math.sqrt((x-self.x)**2 + (y-self.y)**2)
+        if distance < (self.bounding_radius/2):
+            return True
+        return False
+
+    def update(self, timeChange):
+        newY = self.logicalY
+        newX = self.logicalX
+        if self.windEffects['countdown'] > 0:
+            # TODO: not quite perfect math here. but approximate
+            intensity = 1.0 - abs(self.windEffects['duration']/2 - (self.windEffects['duration']-self.windEffects['countdown']))
+            self.windEffects['countdown'] -= timeChange
+            if self.windEffects['countdown'] <= 0:
+                newX = self.logicalX
+            newX = self.logicalX + self.windEffects['offset']*intensity +\
+                     random.randint(*self.windEffects['flutter'])
+        if newX != self.logicalX:
+            delta = newX-self.logicalX
+            if self.north:
+                self.north.pullX( delta/4 )
+            if self.south:
+                self.south.pullX( delta/4 )
+            if newX > self.logicalX:
+                if self.west:
+                    self.west.pullX( delta/2 )
+            else:
+                if self.east:
+                    self.east.pullX( delta/2 )
+
+        self.xy = logicalToPerspective(newX, newY)
+        self.y += self.logicalZ*self.scale
+
+    def pullX(self, delta):
+        self.x += delta
+
+    def pullY(self, delta):
+        self.y += delta
+
+    def on_mouse_scroll(self, x, y, scrollx, scrolly):
+        if self.collides(x,y):
+            if scrolly > 0:
+                print 'self collides.  self.x, self.y', self.x, self.y
+                print 'info x, y, sx, sy', x, y, scrollx, scrolly
+                self.logicalZ += 5
+                def popNeighbor(n):
+                    if n and n.logicalZ < self.logicalZ:
+                        n.logicalZ += 5/2
+                    
+                popNeighbor(self.north)
+                popNeighbor(self.east)
+                popNeighbor(self.south)
+                popNeighbor(self.west)
+
+            elif scrolly < 0:
+                self.logicalZ -= 5
+                def pushNeighbor(n):
+                    if n and n.logicalZ > self.logicalZ:
+                        n.logicalZ -= 5/2
+                    
+                pushNeighbor(self.north)
+                pushNeighbor(self.east)
+                pushNeighbor(self.south)
+                pushNeighbor(self.west)
+                        
+
+    def On_Wind(self):
+        dur = random.random()*2 #between 0 and 2 seconds
+        self.windEffects = {'duration': dur,
+                            'offset': random.randint(0,5),
+                            'flutter': (0,1),
+                            'countdown': dur,
+                           }
+        
+
+
 class Lawn(object):
     def __init__(self):
         self.blades = []
-        for j in range(8,1,-1):
+        for j in range(7):
+            self.blades.append([])
             for i in range(20):
-                logicalPosition = i*40, j*30
-                pos = logicalToPerspective(*logicalPosition)
-                #pos = logicalPosition
-                self.blades.append( GrassBlade(pos) )
+                self.blades[j].append(GrassBlade((i*40, (2+j)*30)))
+        #import sys
+        #sys.exit()
+        for j, row in enumerate(self.blades):
+            for i, blade in enumerate(row):
+                try:
+                    blade.north = self.blades[j+1][i]
+                except IndexError: pass
+                try:
+                    blade.east = self.blades[j][i+1]
+                except IndexError: pass
+                if j-1 >= 0:
+                    blade.south = self.blades[j-1][i]
+                if i-1 >= 0:
+                    blade.west = self.blades[j][i-1]
+        #for j in range(8,1,-1):
+            #for i in range(20):
+                #pos = i*40, j*30
+                #self.blades.append( GrassBlade(pos) )
         #print [b.xy for b in self.blades]
 
+
     def update(self, timechange):
-        [b.update(timechange) for b in self.blades]
+        for row in self.blades:
+            for blade in row:
+                blade.update(timechange)
 
     def draw(self):
-        for b in self.blades:
-            b.render()
+        for row in reversed(self.blades): #draw further back sprites first
+            for blade in row:
+                blade.render()
+
+
+class Wind(object):
+    def __init__(self):
+        self.countdown = random.randint(1, 5)
+        
+    def update(self, timechange):
+        self.countdown -= timechange
+        #print self.countdown
+        if self.countdown > 0:
+            return
+
+        self.countdown = random.randint(5, 30)
+        events.Fire('Wind')
 
 def main():
     global win
@@ -164,19 +205,19 @@ def main():
     win = Window(width=800, height=600)
     rabbyt.set_default_attribs()
 
-    rain = Rain()
     lawn = Lawn()
+    wind = Wind()
 
     while not win.has_exit:
         tick = clock.tick()
         win.dispatch_events()
 
-        rain.update(tick)
         lawn.update(tick)
+        wind.update(tick)
+        events.ConsumeEventQueue()
 
         rabbyt.clear((1, 1, 1))
 
-        rain.draw()
         lawn.draw()
 
         win.flip()
