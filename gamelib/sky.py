@@ -144,7 +144,7 @@ class Clouds:
         self.clouds.append(Cloud(self.bg_color))
 
     def remove_cloud(self):
-        self.clouds.remove(self.clouds[randint(0, len(self.clouds)-1)])
+        self.clouds[randint(0, len(self.clouds)-1)].state = 'dying'
 
     def update(self, tick):
         self.counter -= tick
@@ -164,7 +164,7 @@ class Clouds:
         for cloud in self.clouds:
             cloud.update(tick)
 
-            if cloud.dead:
+            if cloud.state == 'dead':
                 self.clouds.remove(cloud)
 
     def draw(self):
@@ -179,20 +179,32 @@ class Cloud:
         self.color = color
         self.hsv_color = [0.666, 1, 1]
 
-        self.dead = False
+        self.alpha = 0
+
+        self.state = 'spawning'
 
     def update(self, tick):
         self.hsv_color[1] = 1 - self.color[2]
 
+        if self.state == 'spawning':
+            self.alpha += 0.8 * tick
+            if self.alpha >= 1.0:
+                self.alpha = 1
+                self.state = 'alive'
+        elif self.state == 'dying':
+            self.alpha -= 0.8 * tick
+            if self.alpha <= 0:
+                self.state = 'dead'
+
         self.pos.x += WIND_SPEED * tick
 
         if WIND_SPEED > 0 and self.pos.x > SCREEN_WIDTH:
-            self.dead = True
+            self.state = 'dying'
         elif WIND_SPEED < 0 and self.pos.x < 0 - self.image.width:
-            self.dead = True
+            self.state = 'dying'
 
     def draw(self):
-        glColor3f(*colorsys.hsv_to_rgb(*self.hsv_color))
+        glColor4f(*colorsys.hsv_to_rgb(*self.hsv_color) + (self.alpha,))
         self.image.blit(self.pos.x, self.pos.y)
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
