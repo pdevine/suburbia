@@ -48,6 +48,9 @@ class Background:
 
         self.weather = 'cloudy'
 
+        self.tree = Tree()
+        self.fence = Fence()
+
         self.sun = Sun()
         self.rain = Rain()
         self.clouds = Clouds(self.hsv_color)
@@ -81,7 +84,25 @@ class Background:
         self.clouds.draw()
 
         self.earth.draw()
+        self.tree.draw()
+        self.fence.draw()
         self.rain.draw()
+
+class Fence:
+    def __init__(self):
+        self.front = image.load(data_file('fence-front.png'))
+        self.side = image.load(data_file('fence-side.png'))
+
+    def draw(self):
+        self.front.blit(100, 150)
+        self.side.blit(self.front.width + 100, 150)
+
+class Tree:
+    def __init__(self):
+        self.image = image.load(data_file('bigtree.png'))
+
+    def draw(self):
+        self.image.blit(100, 200)
 
 class Earth:
     def __init__(self):
