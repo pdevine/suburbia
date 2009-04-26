@@ -21,27 +21,27 @@ SCREEN_HEIGHT = 600
 class Background:
     def __init__(self):
         self.color = (0.78, 0.78, 1.0)
+        self.hsv_color = [240/360.0, 60/100.0, 0]
 
         self.sun = Sun()
         self.rain = Rain()
+        self.cloud = Cloud(self.hsv_color)
         self.earth = image.load(data_file('small-earth.png'))
 
     def update(self, tick):
-        elements = [self.sun, self.rain]
+        elements = [self.sun, self.rain, self.cloud]
 
         for element in elements:
             if element:
                 element.update(tick)
 
         if self.sun and self.sun.pos.x < 100:
-            self.hsv_color = \
-                [240/360.0, 60/100.0, min(self.sun.pos.x+50, 100)/100.0]
+            self.hsv_color[2] = min(self.sun.pos.x+50, 100)/100.0
         elif self.sun and self.sun.pos.x > SCREEN_WIDTH - 200:
-            self.hsv_color = \
-                [240/360.0, 60/100.0, min(SCREEN_WIDTH - self.sun.pos.x+20, 100)/100.0]
+            self.hsv_color[2] = \
+                min(SCREEN_WIDTH - self.sun.pos.x+20, 100)/100.0
         else:
-            self.hsv_color = \
-                [240/360.0, 60/100.0, 1]
+            self.hsv_color[2] = 1
 
         self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
@@ -52,8 +52,25 @@ class Background:
 #                element.draw()
 
         self.sun.draw()
+        self.cloud.draw()
         self.earth.blit(0, 0)
         self.rain.draw()
+
+class Cloud:
+    def __init__(self, color):
+        self.image = image.load(data_file('cloud.png'))
+        self.pos = euclid.Vector2(100, SCREEN_HEIGHT - 100)
+        self.color = color
+        self.hsv_color = [0.666, 1, 1]
+
+    def update(self, tick):
+        self.hsv_color[1] = 1 - self.color[2]
+
+    def draw(self):
+        #glColor4f(0.4, 0.4, 1.0, 1.0)
+        glColor3f(*colorsys.hsv_to_rgb(*self.hsv_color))
+        self.image.blit(self.pos.x, self.pos.y)
+        glColor4f(1.0, 1.0, 1.0, 1.0)
 
 class Sun:
     def __init__(self):
