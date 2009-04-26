@@ -8,6 +8,7 @@ from pyglet import image
 import colorsys
 from random import randint
 import euclid
+import math
 
 from util import data_file
 
@@ -63,13 +64,23 @@ class Background:
             if element:
                 element.update(tick)
 
-        if self.sun and self.sun.pos.x < 100:
-            self.hsv_color[2] = min(self.sun.pos.x+50, 100)/100.0
-        elif self.sun and self.sun.pos.x > SCREEN_WIDTH - 200:
-            self.hsv_color[2] = \
-                min(SCREEN_WIDTH - self.sun.pos.x+20, 100)/100.0
-        else:
-            self.hsv_color[2] = 1
+        if self.sun.deg < 180 and self.sun.deg > 150:
+            self.hsv_color[2] = (180 - self.sun.deg) / 30
+        elif self.sun.deg < 30 and self.sun.deg > 0:
+            self.hsv_color[2] = self.sun.deg / 30
+
+        #if self.sun and self.sun.deg < 160 and self.sun.deg > 20:
+        #    self.hsv_color[2] = 1
+        #else:
+        #    self.hsv_color[2] = 50/100.0
+
+#        if self.sun and self.sun.pos.x < 100:
+#            self.hsv_color[2] = min(self.sun.pos.x+50, 100)/100.0
+#        elif self.sun and self.sun.pos.x > SCREEN_WIDTH - 200:
+#            self.hsv_color[2] = \
+#                min(SCREEN_WIDTH - self.sun.pos.x+20, 100)/100.0
+#        else:
+#            self.hsv_color[2] = 1
 
         self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
@@ -208,29 +219,45 @@ class Cloud:
         self.image.blit(self.pos.x, self.pos.y)
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
-class Sun:
+class OrbitingObject:
     def __init__(self):
-        #self.image = rabbyt.Sprite(data_file('sun.png'))
-        #self.image.xy = (-100, SCREEN_HEIGHT - 100)
-        self.image = image.load(data_file('sun.png'))
-        self.pos = euclid.Vector2(-100, SCREEN_HEIGHT - 100)
-        self.vector = euclid.Vector2(0, 0)
-        self.vector.x = 50
+        self.pos = euclid.Vector2(0, 0)
+        self.center_pos = euclid.Vector2(SCREEN_WIDTH/2 - 45,
+                                         SCREEN_HEIGHT/2-50)
+
+        self.deg = 180
 
     def update(self, tick):
-        if self.pos.x < SCREEN_WIDTH / 2:
-            self.vector.y = 5
-        else:
-            self.vector.y = -5
+        self.deg -= 10 * tick
+        if self.deg < 0:
+            self.deg = 360 + self.deg
 
-        self.pos.x += self.vector.x * tick
-        self.pos.y += self.vector.y * tick
+        self.rad = math.radians(self.deg)
+
+        self.pos.x = self.center_pos.x + math.cos(self.rad) * 480
+        self.pos.y = self.center_pos.y + math.sin(self.rad) * 250
+
+
+class Moon(OrbitingObject):
+    def __init__(self):
+        self.current_phase = 0
+        self.days_until_phasechange = 2
+        self.phases = [image.load(data_file('moon-full.png')),
+                      ]
+        OrbitingObject.__init__(self)
+
+    def draw(self):
+        self.phases[self.current_phase].blit(self.pos.x, self.pos.y)
+
+class Sun(OrbitingObject):
+    def __init__(self):
+        OrbitingObject.__init__(self)
+        self.image = image.load(data_file('sun.png'))
 
     def draw(self):
         glColor4f(1.0, 1.0, 1.0, 1.0)
-
-        #self.image.render()
         self.image.blit(self.pos.x, self.pos.y)
+        #self.image.blit(100, 700)
 
 
 class Rain:
