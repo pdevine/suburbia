@@ -26,7 +26,7 @@ class Background:
         self.sun = Sun()
         self.rain = Rain()
         self.cloud = Cloud(self.hsv_color)
-        self.earth = image.load(data_file('small-earth.png'))
+        self.earth = Earth()
 
     def update(self, tick):
         elements = [self.sun, self.rain, self.cloud]
@@ -53,8 +53,31 @@ class Background:
 
         self.sun.draw()
         self.cloud.draw()
-        self.earth.blit(0, 0)
+        self.earth.draw()
         self.rain.draw()
+
+class Earth:
+    def __init__(self):
+        self.image = image.load(data_file('underground-sm.png'))
+
+    def update(self, tick):
+        pass
+
+    def draw_field(self):
+        glColor4f(0.298, 0.27, 0.2, 1)
+
+        glBegin(GL_POLYGON)
+        glVertex2d(0, 0)
+        glVertex2d(0, SCREEN_HEIGHT/2)
+        glVertex2d(SCREEN_WIDTH, SCREEN_HEIGHT/2)
+        glVertex2d(SCREEN_WIDTH, 0)
+        glEnd()
+
+        glColor4f(1, 1, 1, 1)
+
+    def draw(self):
+        self.draw_field()
+        self.image.blit(0, 0)
 
 class Cloud:
     def __init__(self, color):
@@ -143,7 +166,7 @@ class RainDrop:
         self.x += self.vector.x * tick
         self.y += self.vector.y * tick
 
-        if self.y < 0:
+        if self.y < 180:
             self.dead = True
 
     def draw(self):
