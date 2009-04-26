@@ -12,6 +12,8 @@ import data
 import events
 
 from pyglet.gl import *
+from util import magicEventRegister
+from util import logicalToPerspective
 
 rabbyt.data_director = os.path.dirname(__file__)
 
@@ -21,24 +23,6 @@ SCREEN_HEIGHT = 600
 win = None
 
 
-def logicalToPerspective(x,y):
-    vanishingLineX = 400.0
-    vanishingLineY = 300.0
-
-    oldDeltaX = vanishingLineX-x
-    oldDeltaY = vanishingLineY-y
-
-    # 0 means its right on it, 1.0 means it's really far away
-    farnessFromLineY = (oldDeltaY/vanishingLineY)
-    farnessFromLineX = (oldDeltaX/vanishingLineX)
-
-    newDeltaX = (farnessFromLineY)*oldDeltaX
-    newDeltaY = (farnessFromLineY)*oldDeltaY
-
-    newX = x - (newDeltaX - oldDeltaX)
-    newY = y - (newDeltaY - oldDeltaY)
-    newY = y
-    return newX, newY
 
 class GrassBlade(rabbyt.sprites.Sprite):
     def __init__(self, pos):
@@ -57,9 +41,6 @@ class GrassBlade(rabbyt.sprites.Sprite):
                             'flutter': 0,
                             'countdown': 0,
                            }
-
-        win.push_handlers(self.on_mouse_scroll)
-        events.AddListener(self)
 
     def __str__(self):
         return '<Blade %s %s %s>' % (self.logicalX, self.logicalY, id(self))
@@ -153,8 +134,6 @@ class Lawn(object):
             self.blades.append([])
             for i in range(20):
                 self.blades[j].append(GrassBlade((i*40, (2+j)*30)))
-        #import sys
-        #sys.exit()
         for j, row in enumerate(self.blades):
             for i, blade in enumerate(row):
                 try:
@@ -167,23 +146,22 @@ class Lawn(object):
                     blade.south = self.blades[j-1][i]
                 if i-1 >= 0:
                     blade.west = self.blades[j][i-1]
-        #for j in range(8,1,-1):
-            #for i in range(20):
-                #pos = i*40, j*30
-                #self.blades.append( GrassBlade(pos) )
-        #print [b.xy for b in self.blades]
 
+    def __iter__(self):
+        def myIter():
+            for row in reversed(self.blades): #faraway rows first
+                for blade in row:
+                    yield blade
+        return myIter()
+        
 
     def update(self, timechange):
-        for row in self.blades:
-            for blade in row:
-                blade.update(timechange)
+        for blade in self:
+            blade.update(timechange)
 
     def draw(self):
-        for row in reversed(self.blades): #draw further back sprites first
-            for blade in row:
-                blade.render()
-
+        for blade in self:
+            blade.render()
 
 class Wind(object):
     def __init__(self):
@@ -207,6 +185,8 @@ def main():
 
     lawn = Lawn()
     wind = Wind()
+
+    magicEventRegister(win, events, list(lawn))
 
     while not win.has_exit:
         tick = clock.tick()
