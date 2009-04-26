@@ -1,6 +1,8 @@
 import os.path
+import math
 import rabbyt
 import pyglet
+import pyglet.window
 from pyglet.window import Window
 from pyglet import clock
 from pyglet import image
@@ -14,6 +16,8 @@ rabbyt.data_director = os.path.dirname(__file__)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
+win = None
 
 class Rain:
     def __init__(self):
@@ -77,14 +81,28 @@ class RainDrop:
         glPopMatrix()
 
 
-class GrassBlade(pyglet.sprite.Sprite):
+class GrassBlade(rabbyt.sprites.Sprite):
     def __init__(self, pos):
-        img = data.pngs['grassblade.png']
-        pyglet.sprite.Sprite.__init__(self, img, *pos)
+        img = data.textures['grassblade.png']
+        rabbyt.sprites.Sprite.__init__(self, img)
+        self.xy = pos
+        self.scale = (1.0 + (300.0-pos[1])/200.0)/2
         self.logicalX = pos[0]
         self.logicalY = pos[1]
+        self.logicalZ = random.randint(-2,3)
+        self.blue = 25
+        self.alpha = 22
+
+        win.push_handlers(self.on_mouse_scroll)
+
+    def collides(self,x,y):
+        distance = math.sqrt((x-self.x)**2 + (y-self.y)**2)
+        if distance < self.bounding_radius:
+            return True
+        return False
 
     def update(self, timeChange=None):
+        self.y = self.logicalY + (self.logicalZ*self.scale)
         return
         self.x = self.logicalX + window.bgOffset[0]
         self.y = self.logicalY + window.bgOffset[1]
@@ -94,6 +112,13 @@ class GrassBlade(pyglet.sprite.Sprite):
         self.scale += 0.01
         if self.opacity < 80:
             events.Fire('SpriteRemove', self)
+
+    def on_mouse_scroll(self, x, y, scrollx, scrolly):
+        if self.collides(x,y):
+            print 'self collides.  self.x, self.y', self.x, self.y
+            print 'info x, y, sx, sy', x, y, scrollx, scrolly
+            self.logicalZ += 5
+
 
 def logicalToPerspective(x,y):
     vanishingLineX = 400.0
@@ -111,25 +136,29 @@ def logicalToPerspective(x,y):
 
     newX = x - (newDeltaX - oldDeltaX)
     newY = y - (newDeltaY - oldDeltaY)
-    print x,y, 'translated to', newX, newY
+    newY = y
     return newX, newY
 
 class Lawn(object):
     def __init__(self):
         self.blades = []
-        for i in range(20):
-            for j in range(8):
+        for j in range(8,1,-1):
+            for i in range(20):
                 logicalPosition = i*40, j*30
                 pos = logicalToPerspective(*logicalPosition)
                 #pos = logicalPosition
                 self.blades.append( GrassBlade(pos) )
+        #print [b.xy for b in self.blades]
 
     def update(self, timechange):
         [b.update(timechange) for b in self.blades]
+
     def draw(self):
-        [b.draw() for b in self.blades]
+        for b in self.blades:
+            b.render()
 
 def main():
+    global win
     clock.schedule(rabbyt.add_time)
 
     win = Window(width=800, height=600)

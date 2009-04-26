@@ -1,137 +1,109 @@
-#! /usr/bin/python
-
-from pyglet.gl import *
-from pyglet import font
+import os.path
+import math
+import rabbyt
 import pyglet
+import pyglet.window
+from pyglet.window import Window
+from pyglet import clock
+from pyglet import image
 import random
-from random import randint
-import events
-import window
+import euclid
 import data
 
-import euclid
-import weakref
+from pyglet.gl import *
 
-def toScreenPos(pos):
-    return [pos[0] + window.bgOffset[0], pos[1] + window.bgOffset[1]]
+rabbyt.data_director = os.path.dirname(__file__)
 
-class EffectManager(object):
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+
+win = None
+
+class Rain:
     def __init__(self):
-        self.sprites = []
-        events.AddListener(self)
-        self.speechBubbles = weakref.WeakKeyDictionary()
+        self.quad = gluNewQuadric()
+        self.rain = []
 
-    def On_EnemyHurt(self, enemy):
-        pos = toScreenPos(enemy.feetPos)
-        pos[1] += 50
-        direction = {-1: Blood.left, 1:Blood.right}[enemy.facing]
-        for drop in range(0, randint(5, 20)):
-            bl = Blood(pos, direction + euclid.Vector2(randint(-2, 3),
-                                                       randint(-2, 3)))
-            self.sprites.append(bl)
+        self.delay_time = 0.1
+        self.counter = self.delay_time
 
-    def On_AutonomousAvatarReachedGoal(self, aAvatar):
-        pos = aAvatar.rect.center
-        iSprite = InstructionSprite(pos)
-        self.sprites.append(iSprite)
+        self.addDrops()
 
-    def On_ExplosionSpecial(self, pos):
-        #print 'splode'
-        pos = toScreenPos(pos)
-        for drop in range(0, randint(2, 4)):
-            vector = euclid.Vector2(randint(-2,3), randint(-2,3))
-            fb = Fireball(pos, vector)
-            self.sprites.append(fb)
+    def addDrops(self, amount=10):
+        for count in range(amount):
+            self.rain.append(RainDrop(self.quad))
 
-    def On_WhiffSpecial(self, pos):
-        #print 'whiff'
-        pos = toScreenPos(pos)
-        for drop in range(0, randint(5, 8)):
-            vector = euclid.Vector2(randint(-2,3), randint(-2,3))
-            puff = Puff(pos, vector)
-            self.sprites.append(puff)
+    def update(self, tick):
+        self.counter -= tick
+        if self.counter <= 0:
+            self.addDrops()
+            self.counter = self.delay_time
 
-    def On_SpriteRemove(self, sprite):
-        if sprite in self.sprites:
-            self.sprites.remove(sprite)
+        for drop in self.rain:
+            drop.update(tick)
 
-
-    def On_SpeechPart(self, speaker, part):
-        if speaker in self.speechBubbles:
-            self.sprites.remove(self.speechBubbles[speaker])
-        pos = list(speaker.center)
-        bubble = SpeechBubble(pos, part)
-        self.speechBubbles[speaker] = bubble
-        self.sprites.append(bubble)
-
-    def On_StopSpeech(self, speaker):
-        if speaker in self.speechBubbles:
-            self.sprites.remove(self.speechBubbles[speaker])
-            del self.speechBubbles[speaker]
-
-    def On_EnemyDeath(self, enemy):
-        cls = random.choice([EnemyDeath1, EnemyDeath2])
-        self.sprites.append(cls(enemy))
-
-
-class SpeechBubble(pyglet.sprite.Sprite):
-    xPadding = 10
-    yPadding = 10
-    def __init__(self, pos, part):
-        myFont = data.fonts['default']
-        self.text = font.Text(myFont, part, color=(0,255,0,1))
-        #self.text = font.Text(myFont, part)
-        pat = pyglet.image.SolidColorImagePattern((255,255,255,128))
-        img = pyglet.image.create(self.text.width + self.xPadding*2,
-                                  self.text.height + self.yPadding*2,
-                                  pat)
-        pyglet.sprite.Sprite.__init__(self, img, 0, 0)
-
-        self.logicalXCenter = pos[0]
-        self.logicalY = pos[1] + 40
+            if drop.dead:
+                self.rain.remove(drop)
 
     def draw(self):
-        pyglet.sprite.Sprite.draw(self)
-        self.text.draw()
+        for drop in self.rain:
+            drop.draw()
 
-    def update(self, timeChange=None):
-        wWidth = window.window.width
-        wHeight = window.window.height
-        self.x = self.logicalXCenter-(self.width/2) + window.bgOffset[0]
+class RainDrop:
+    def __init__(self, quad):
+        self.quad = quad
+        self.color = (0, 0, 0.95, 1)
+        self.vector = euclid.Vector2(0, 0)
+        self.dead = False
 
-        # keep it on the screen...
-        if self.x < 0:
-            self.x = 0
-        if self.x + self.width > wWidth:
-            self.x = wWidth-self.width
+        self.vector.y = -SCREEN_HEIGHT
 
-        self.y = self.logicalY + window.bgOffset[1]
-        self.text.x = self.x + self.xPadding
-        self.text.y = self.y + self.yPadding
+        self.x = random.randint(0, SCREEN_WIDTH)
+        self.y = SCREEN_HEIGHT + 1
 
-class InstructionSprite(pyglet.sprite.Sprite):
+    def update(self, tick):
+        self.x += self.vector.x * tick
+        self.y += self.vector.y * tick
+
+        if self.y < 0:
+            self.dead = True
+
+
+    def draw(self):
+        glColor4f(*self.color)
+        glPushMatrix()
+
+        glTranslatef(self.x, self.y, 0)
+
+        gluQuadricDrawStyle(self.quad, GLU_FILL)
+        gluDisk(self.quad, 0, 2, 50, 1)
+
+        glPopMatrix()
+
+
+class GrassBlade(rabbyt.sprites.Sprite):
     def __init__(self, pos):
-        img = data.pngs['move_instructions.png']
-        pyglet.sprite.Sprite.__init__(self, img, 0, 0)
-        self.logicalX = pos[0] - img.width/2
-        self.logicalY = pos[1] - img.height/2
-        self.countdown = 2.0
-
-    def update(self, timeChange=None):
-        self.countdown -= timeChange
-        self.x = self.logicalX + window.bgOffset[0]
-        self.y = self.logicalY + window.bgOffset[1]
-        if self.countdown < 0:
-            events.Fire('SpriteRemove', self)
-
-class HeartFloaty(pyglet.sprite.Sprite):
-    def __init__(self, pos):
-        img = data.pngs['heartfloaty.png']
-        pyglet.sprite.Sprite.__init__(self, img, 0, 0)
+        img = data.textures['grassblade.png']
+        rabbyt.sprites.Sprite.__init__(self, img)
+        self.xy = pos
+        self.scale = (1.0 + (300.0-pos[1])/200.0)/2
         self.logicalX = pos[0]
         self.logicalY = pos[1]
+        self.logicalZ = random.randint(-2,3)
+        self.blue = 25
+        self.alpha = 22
+
+        win.push_handlers(self.on_mouse_scroll)
+
+    def collides(self,x,y):
+        distance = math.sqrt((x-self.x)**2 + (y-self.y)**2)
+        if distance < self.bounding_radius:
+            return True
+        return False
 
     def update(self, timeChange=None):
+        self.y = self.logicalY + (self.logicalZ*self.scale)
+        return
         self.x = self.logicalX + window.bgOffset[0]
         self.y = self.logicalY + window.bgOffset[1]
         self.logicalX += randint(-2, 2)
@@ -141,132 +113,74 @@ class HeartFloaty(pyglet.sprite.Sprite):
         if self.opacity < 80:
             events.Fire('SpriteRemove', self)
 
-class Blood(object):
-    pink = (220, 0, 0)
-    red = (255, 0, 0)
-    lightred = (240, 0, 0)
-    colors = [pink, red, lightred]
-    lifetimeRange = (1, 5)
-
-    left = euclid.Vector2(-2, 0)
-    right = euclid.Vector2(2, 0)
-
-    def __init__(self, position, velocity):
-        self.color = random.choice(self.colors)
-        self.lifetime = random.randint(*self.lifetimeRange) / 10.0
-        self.quad = gluNewQuadric()
-
-        self.position = position
-        self.velocity = velocity
-
-    def die(self):
-        events.Fire('SpriteRemove', self)
-
-    def update(self, tick):
-        self.lifetime -= tick
-        self.position += self.velocity
-        if self.lifetime <= 0:
-            self.die()
-
-    def draw(self):
-        glPushAttrib(GL_ENABLE_BIT)
-
-        glColor3ub(*self.color)
-        gluQuadricDrawStyle(self.quad, GLU_FILL)
-
-        glLoadIdentity()
-        glTranslatef(self.position.x, self.position.y, 0)
-
-        gluDisk(self.quad, 0, 2, 50, 1)
-        glLoadIdentity()
-
-        glColor3ub(255,255,255)
-        glPopAttrib()
-
-class Puff(Blood):
-    pink = (250, 200, 200)
-    red = (255, 250, 200)
-    lightred = (240, 255, 255)
-    colors = [pink, red, lightred]
-    lifetimeRange = (1, 2)
-    left = euclid.Vector2(-2, 0)
+    def on_mouse_scroll(self, x, y, scrollx, scrolly):
+        if self.collides(x,y):
+            print 'self collides.  self.x, self.y', self.x, self.y
+            print 'info x, y, sx, sy', x, y, scrollx, scrolly
+            self.logicalZ += 5
 
 
-class Fireball(Blood):
-    pink = (250, 200, 200, 10)
-    red = (255, 25, 20, 128)
-    lightred = (240, 255, 25, 10)
-    colors = [pink, red, lightred]
-    lifetimeRange = (3, 3)
+def logicalToPerspective(x,y):
+    vanishingLineX = 400.0
+    vanishingLineY = 300.0
 
-    def __init__(self, position, velocity):
-        self.color = random.choice(self.colors)
-        self.lifetime = 0.5
-        self.quad = gluNewQuadric()
+    oldDeltaX = vanishingLineX-x
+    oldDeltaY = vanishingLineY-y
 
-        varianceX = random.randint(-3,3)
-        varianceY = random.randint(-3,3)
-        self.position = [position[0]+varianceX, position[1]+varianceY]
-        self.velocity = velocity
-        self.outTick = 22
-        self.innerTick = 0
+    # 0 means its right on it, 1.0 means it's really far away
+    farnessFromLineY = (oldDeltaY/vanishingLineY)
+    farnessFromLineX = (oldDeltaX/vanishingLineX)
+
+    newDeltaX = (farnessFromLineY)*oldDeltaX
+    newDeltaY = (farnessFromLineY)*oldDeltaY
+
+    newX = x - (newDeltaX - oldDeltaX)
+    newY = y - (newDeltaY - oldDeltaY)
+    newY = y
+    return newX, newY
+
+class Lawn(object):
+    def __init__(self):
+        self.blades = []
+        for j in range(8,1,-1):
+            for i in range(20):
+                logicalPosition = i*40, j*30
+                pos = logicalToPerspective(*logicalPosition)
+                #pos = logicalPosition
+                self.blades.append( GrassBlade(pos) )
+        #print [b.xy for b in self.blades]
+
+    def update(self, timechange):
+        [b.update(timechange) for b in self.blades]
 
     def draw(self):
-        self.outTick += 1
-        self.innerTick += 30
-        inner = self.outTick * (float(self.innerTick)/(self.outTick+self.innerTick))
-        glPushAttrib(GL_ENABLE_BIT)
+        for b in self.blades:
+            b.render()
 
-        glColor4ub(*self.color)
-        gluQuadricDrawStyle(self.quad, GLU_FILL)
+def main():
+    global win
+    clock.schedule(rabbyt.add_time)
 
-        glLoadIdentity()
-        glTranslatef(self.position[0], self.position[1], 0)
+    win = Window(width=800, height=600)
+    rabbyt.set_default_attribs()
 
-        gluDisk(self.quad, inner, self.outTick, 50, 1)
-        glLoadIdentity()
-
-        glColor4ub(255,255,255,255)
-        glPopAttrib()
-
-    def update(self, tick):
-        self.lifetime -= tick
-        if self.lifetime <= 0:
-            self.die()
-
-if __name__ == '__main__':
-    from pyglet import window
-    from pyglet import clock
-    from random import randint
-
-    win = window.Window(width=800, height=600)
-
-    blood = []
-
-    def splatter(direction):
-        for drop in range(0, randint(15, 20)):
-            blood.append(Blood(euclid.Vector2(200, 200), direction +
-                               euclid.Vector2(randint(-2, 2), randint(-2, 2))))
-
-    @win.event
-    def on_key_press(symbol, modifiers):
-        if symbol == window.key.RIGHT:
-            splatter(Blood.right)
-        elif symbol == window.key.LEFT:
-            splatter(Blood.left)
+    rain = Rain()
+    lawn = Lawn()
 
     while not win.has_exit:
-        win.dispatch_events()
         tick = clock.tick()
+        win.dispatch_events()
 
-        for drop in blood:
-            drop.update(tick)
-            if drop.lifetime < 0:
-                blood.remove(drop)
+        rain.update(tick)
+        lawn.update(tick)
 
-        win.clear()
+        rabbyt.clear((1, 1, 1))
 
-        [drop.draw() for drop in blood]
+        rain.draw()
+        lawn.draw()
 
         win.flip()
+
+if __name__ == '__main__':
+    main()
 

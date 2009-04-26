@@ -69,6 +69,23 @@ class PngLoader(DynamicCachingLoader):
 
                 self._d[resourceName] = image
 
+class TextureLoader(DynamicCachingLoader):
+        def LoadResource(self, resourceName):
+                #print pyglet.resource.path
+                name = os.path.join( data_dir, resourceName )
+                if not name.endswith('.png'):
+                        name += '.png'
+                try:
+                        image = pyglet.image.load(name)
+                except Exception, ex:
+                        log_debug( ' Cannot load image: '+ name )
+                        log_debug( 'Raising: '+ str(ex) )
+                        raise
+
+                self._d[resourceName] = image.texture
+
+
+
 
 soundPlayer = None
 class OggLoader(DynamicCachingLoader):
@@ -118,6 +135,7 @@ class Mp3Loader(DynamicCachingLoader):
 oggs = OggLoader()
 mp3s = Mp3Loader()
 pngs = PngLoader()
+textures = TextureLoader()
 
 class FontLoader(DynamicCachingLoader):
     def __init__(self):
