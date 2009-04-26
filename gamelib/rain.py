@@ -1,12 +1,12 @@
 import os.path
 import rabbyt
-
+import pyglet
 from pyglet.window import Window
 from pyglet import clock
 from pyglet import image
-
 import random
 import euclid
+import data
 
 from pyglet.gl import *
 
@@ -77,6 +77,58 @@ class RainDrop:
         glPopMatrix()
 
 
+class GrassBlade(pyglet.sprite.Sprite):
+    def __init__(self, pos):
+        img = data.pngs['grassblade.png']
+        pyglet.sprite.Sprite.__init__(self, img, *pos)
+        self.logicalX = pos[0]
+        self.logicalY = pos[1]
+
+    def update(self, timeChange=None):
+        return
+        self.x = self.logicalX + window.bgOffset[0]
+        self.y = self.logicalY + window.bgOffset[1]
+        self.logicalX += randint(-2, 2)
+        self.logicalY += 1
+        self.opacity -= 2
+        self.scale += 0.01
+        if self.opacity < 80:
+            events.Fire('SpriteRemove', self)
+
+def logicalToPerspective(x,y):
+    vanishingLineX = 400.0
+    vanishingLineY = 300.0
+
+    oldDeltaX = vanishingLineX-x
+    oldDeltaY = vanishingLineY-y
+
+    # 0 means its right on it, 1.0 means it's really far away
+    farnessFromLineY = (oldDeltaY/vanishingLineY)
+    farnessFromLineX = (oldDeltaX/vanishingLineX)
+
+    newDeltaX = (farnessFromLineY)*oldDeltaX
+    newDeltaY = (farnessFromLineY)*oldDeltaY
+
+    newX = x - (newDeltaX - oldDeltaX)
+    newY = y - (newDeltaY - oldDeltaY)
+    print x,y, 'translated to', newX, newY
+    return newX, newY
+
+class Lawn(object):
+    def __init__(self):
+        self.blades = []
+        for i in range(20):
+            for j in range(8):
+                logicalPosition = i*40, j*30
+                pos = logicalToPerspective(*logicalPosition)
+                #pos = logicalPosition
+                self.blades.append( GrassBlade(pos) )
+
+    def update(self, timechange):
+        [b.update(timechange) for b in self.blades]
+    def draw(self):
+        [b.draw() for b in self.blades]
+
 def main():
     clock.schedule(rabbyt.add_time)
 
@@ -84,16 +136,19 @@ def main():
     rabbyt.set_default_attribs()
 
     rain = Rain()
+    lawn = Lawn()
 
     while not win.has_exit:
         tick = clock.tick()
         win.dispatch_events()
 
         rain.update(tick)
+        lawn.update(tick)
 
         rabbyt.clear((1, 1, 1))
 
         rain.draw()
+        lawn.draw()
 
         win.flip()
 
