@@ -12,6 +12,7 @@ import data
 import events
 
 from pyglet.gl import *
+from util import magicEventRegister
 
 rabbyt.data_director = os.path.dirname(__file__)
 
@@ -80,7 +81,6 @@ class ThoughtBubble(object):
         
             
 
-
 def main():
     global win
     clock.schedule(rabbyt.add_time)
@@ -93,6 +93,8 @@ def main():
 
     lawn = Lawn()
     bub = ThoughtBubble('Click to make this disappear. asdf asdf .qwer p30n fpin pp) ) *HNPO *H#NN ! #RFL')
+
+    magicEventRegister(win, events, [bub])
 
     while not win.has_exit:
         tick = clock.tick()
