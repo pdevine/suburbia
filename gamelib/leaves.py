@@ -25,13 +25,14 @@ win = None
 class Leaf(pyglet.sprite.Sprite):
     def __init__(self):
         img = data.textures['grassblade.png']
-        super(Leaf,self).__init__(img)
         self.blowing = True
         self.logicalX = 0
         self.logicalY = random.randint(1,200)
         self.logicalZ = random.randint(100,150)
+        super(Leaf,self).__init__(img)
         self.xy = logicalToPerspective(self.logicalX, self.logicalY)
         self.velocityX = 0.1
+        self.velocityY = 0
         self.velocityZ = 0
 
         self.image.anchor_x = self.image.width/2
@@ -46,7 +47,8 @@ class Leaf(pyglet.sprite.Sprite):
 
         #print 'created leaf at', self.logicalX, self.logicalY
         #print 'at', self.xy
-        #win.push_handlers(self.on_
+        win.push_handlers(self.on_mouse_scroll)
+        win.push_handlers(self.on_mouse_press)
         events.AddListener(self)
 
     def getxy(self):
@@ -73,7 +75,7 @@ class Leaf(pyglet.sprite.Sprite):
 
     def collides(self,x,y):
         distance = math.sqrt((x-self.x)**2 + (y-self.y)**2)
-        print 'collide distance', distance
+        #print 'collide distance', distance
         if distance < 10:
             return True
         return False
@@ -126,8 +128,10 @@ class Leaf(pyglet.sprite.Sprite):
         else:
             self.velocityX *= 0.4
             self.velocityX /= 1+ len(self.clumpMates)
+            self.velocityY *= 0.8
 
         newX = self.logicalX + self.velocityX
+        newY = self.logicalY + self.velocityY
 
         if newX != self.logicalX:
             delta = newX-self.logicalX
@@ -158,6 +162,13 @@ class Leaf(pyglet.sprite.Sprite):
     def pullY(self, delta):
         self.y += delta
 
+    def sweep(self):
+        if self.logicalZ > 0:
+            # can only sweep ones on the ground
+            return
+        self.velocityY += 3
+        self.velocityZ = random.randint(0,4)
+
     def On_Wind(self):
         #print 'blowing', self
         dur = random.random()*2 #between 0 and 2 seconds
@@ -169,6 +180,22 @@ class Leaf(pyglet.sprite.Sprite):
                             'countdown': dur,
                            }
         self.velocityZ += self.windEffects['offsetZ']
+
+
+    def on_mouse_scroll(self, x, y, scrollx, scrolly):
+        if self.collides(x,y):
+            if scrolly > 0:
+                print 'self collides.  self.x, self.y', self.x, self.y
+                print 'info x, y, sx, sy', x, y, scrollx, scrolly
+                self.sweep()
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if self.collides(x,y):
+            self.sweep()
+        
+
+
+
         
 class LeafGroup(list):
     def update(self, timechange):
