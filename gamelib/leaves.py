@@ -22,17 +22,19 @@ SCREEN_HEIGHT = 600
 
 win = None
 
-
 class Leaf(pyglet.sprite.Sprite):
     def __init__(self):
         img = data.textures['grassblade.png']
-        super(Leaf,self).__init__(img)
         self.blowing = True
+        self.highlighted = False
         self.logicalX = 0
         self.logicalY = random.randint(1,200)
-        self.xy = logicalToPerspective(self.logicalX, self.logicalY)
         self.logicalZ = random.randint(100,150)
+        super(Leaf,self).__init__(img)
+        self.origColor = self.color
+        self.xy = logicalToPerspective(self.logicalX, self.logicalY)
         self.velocityX = 0.1
+        self.velocityY = 0
         self.velocityZ = 0
 
         self.image.anchor_x = self.image.width/2
@@ -45,9 +47,11 @@ class Leaf(pyglet.sprite.Sprite):
                             'countdown': 0,
                            }
 
-        print 'created leaf at', self.logicalX, self.logicalY
-        print 'at', self.xy
-        #win.push_handlers(self.on_
+        #print 'created leaf at', self.logicalX, self.logicalY
+        #print 'at', self.xy
+        win.push_handlers(self.on_mouse_scroll)
+        win.push_handlers(self.on_mouse_press)
+        win.push_handlers(self.on_mouse_motion)
         events.AddListener(self)
 
     def getxy(self):
@@ -74,9 +78,16 @@ class Leaf(pyglet.sprite.Sprite):
 
     def collides(self,x,y):
         distance = math.sqrt((x-self.x)**2 + (y-self.y)**2)
-        if distance < 10:
+        #print 'collide distance', distance
+        if distance < self.width*self.scale:
             return True
         return False
+
+    def logicalCollides(self, x, y, z):
+        distanceX = abs(x-self.logicalX)
+        distanceY = abs(y-self.logicalY)
+        distanceZ = abs(z-self.logicalZ)
+        return all((distanceX < 50, distanceY < 50, distanceZ < 1))
 
     def update(self, timeChange):
         newY = self.logicalY
@@ -97,6 +108,7 @@ class Leaf(pyglet.sprite.Sprite):
                 # on ground - rotate more
                 self.logicalZ = 0
                 self.velocityZ = 0
+                rotateAmount /= 1+ len(self.clumpMates)
             else:
                 # in the air - rotate, but not so much
                 rotateAmount *= 0.5
@@ -108,33 +120,50 @@ class Leaf(pyglet.sprite.Sprite):
         # fall due to gravity
         if self.logicalZ > 0:
             self.velocityZ -= 0.01
+            self.velocityZ -= len(self.clumpMates)
             self.logicalZ += self.velocityZ
 
             # minimal friction in the air
-            self.velocityX *= 0.6
+            self.velocityX *= 0.7
             self.velocityX = max(0.1, self.velocityX)
 
         # apply friction
         else:
             self.velocityX *= 0.4
+            self.velocityX /= 1+ len(self.clumpMates)
+            self.velocityY *= 0.8
 
         newX = self.logicalX + self.velocityX
+        newY = self.logicalY + self.velocityY
 
         if newX != self.logicalX:
             delta = newX-self.logicalX
             for mate in self.clumpMates:
-                mate.pullX( delta/2 )
+                mate.pullX( delta/1.4 )
+        if newY != self.logicalY:
+            delta = newY-self.logicalY
+            for mate in self.clumpMates:
+                mate.pullX( delta )
 
         self.scale = (1.0 + (300.0-self.logicalY)/200.0)/2
+        if self.clumpMates:
+            self.color = (255,0,0)
+        else:
+            self.color = self.origColor
+        if self.highlighted:
+            self.color = (25,200,25)
+            #self.color = (20,255,0)
+
         self.setLogicalXY(newX, newY)
-        self.clumpMates = [] #clear out the clumpmates in case we've moved away
         self.y += self.logicalZ*self.scale
 
         if (self.x > SCREEN_WIDTH + 40
            or self.x < -40
-           or self.y > SCREEN_HEIGHT
+           or self.y > SCREEN_HEIGHT + 40
            or self.y < -40):
             self.die()
+
+        self.clumpMates = [] #clear out the clumpmates in case we've moved away
 
         #print 'updated leaf to', self
         #print 'at', self.xy
@@ -146,8 +175,15 @@ class Leaf(pyglet.sprite.Sprite):
     def pullY(self, delta):
         self.y += delta
 
+    def sweep(self):
+        if self.logicalZ > 0:
+            # can only sweep ones on the ground
+            return
+        self.velocityY += 3
+        self.velocityZ = random.randint(0,4)
+
     def On_Wind(self):
-        print 'blowing', self
+        #print 'blowing', self
         dur = random.random()*2 #between 0 and 2 seconds
         self.blowing = True
         self.windEffects = {'duration': dur,
@@ -157,13 +193,35 @@ class Leaf(pyglet.sprite.Sprite):
                             'countdown': dur,
                            }
         self.velocityZ += self.windEffects['offsetZ']
+
+
+    def on_mouse_scroll(self, x, y, scrollx, scrolly):
+        if self.collides(x,y):
+            if scrolly > 0:
+                #print 'self collides.  self.x, self.y', self.x, self.y
+                #print 'info x, y, sx, sy', x, y, scrollx, scrolly
+                self.sweep()
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if self.collides(x,y):
+            self.sweep()
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self.collides(x,y):
+            self.highlighted = True
+        else:
+            self.highlighted = False
+        
+
+
+
         
 class LeafGroup(list):
     def update(self, timechange):
         lastLeaf = None
         for leaf in sorted(self): #go through them in sorted order
             leaf.update(timechange)
-            if lastLeaf and leaf.collides(*lastLeaf.xy):
+            if lastLeaf and leaf.logicalCollides(lastLeaf.logicalX, lastLeaf.logicalY, lastLeaf.logicalZ):
                 leaf.clumpMates.append(lastLeaf)
                 lastLeaf.clumpMates.append(leaf)
 
@@ -193,8 +251,8 @@ class LeafGenerator(object):
         if self.countdown > 0:
             return
 
-        print 'birthing leaf'
-        self.countdown = random.randint(4, 6)
+        #print 'birthing leaf'
+        self.countdown = random.randint(1, 6)
         leaf = Leaf()
         events.Fire('LeafBirth', leaf)
 
