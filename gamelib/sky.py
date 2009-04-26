@@ -6,7 +6,7 @@ from pyglet import clock
 from pyglet import image
 
 import colorsys
-import random
+from random import randint
 import euclid
 
 from util import data_file
@@ -18,18 +18,43 @@ rabbyt.data_director = os.path.dirname(__file__)
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+# WEATHER STATES
+#  few clouds
+#  partially cloudy
+#  cloudy
+#  overcast
+#
+#  raining
+#  hailing
+#  windy
+
+CURRENT_CLOUD_COVERAGE = 'few'
+
+CLOUD_COVERAGE = {
+    'clear': (0, 0),
+    'few': (1, 3),
+    'partial': (4, 7),
+    'cloudy': (8, 12),
+    'overcast': (20, 30)
+}
+
+# Wind speed is pixels per second
+WIND_SPEED = -10
+
 class Background:
     def __init__(self):
         self.color = (0.78, 0.78, 1.0)
         self.hsv_color = [240/360.0, 60/100.0, 0]
 
+        self.weather = 'cloudy'
+
         self.sun = Sun()
         self.rain = Rain()
-        self.cloud = Cloud(self.hsv_color)
+        self.clouds = Clouds(self.hsv_color)
         self.earth = Earth()
 
     def update(self, tick):
-        elements = [self.sun, self.rain, self.cloud]
+        elements = [self.sun, self.rain, self.clouds]
 
         for element in elements:
             if element:
@@ -52,7 +77,9 @@ class Background:
 #                element.draw()
 
         self.sun.draw()
-        self.cloud.draw()
+
+        self.clouds.draw()
+
         self.earth.draw()
         self.rain.draw()
 
@@ -79,18 +106,71 @@ class Earth:
         self.draw_field()
         self.image.blit(0, 0)
 
+class Clouds:
+    def __init__(self, bg_color):
+        self.current_weather = 'overcast'
+        self.total_clouds = randint(*CLOUD_COVERAGE[self.current_weather])
+        self.bg_color = bg_color
+
+        self.clouds = []
+        for count in range(self.total_clouds):
+            self.add_cloud()
+
+        self.delay_time = 0.5
+        self.counter = self.delay_time
+
+    def add_cloud(self):
+        self.clouds.append(Cloud(self.bg_color))
+
+    def remove_cloud(self):
+        self.clouds.remove(self.clouds[randint(0, len(self.clouds)-1)])
+
+    def update(self, tick):
+        self.counter -= tick
+
+        if self.current_weather != CURRENT_CLOUD_COVERAGE:
+            self.current_weather = CURRENT_CLOUD_COVERAGE
+            self.total_clouds = randint(*CLOUD_COVERAGE[self.current_weather])
+
+        if self.counter <= 0:
+            if len(self.clouds) < self.total_clouds:
+                self.add_cloud()
+            elif len(self.clouds) > self.total_clouds:
+                self.remove_cloud()
+
+            self.counter = self.delay_time
+
+        for cloud in self.clouds:
+            cloud.update(tick)
+
+            if cloud.dead:
+                self.clouds.remove(cloud)
+
+    def draw(self):
+        for cloud in self.clouds:
+            cloud.draw()
+
 class Cloud:
     def __init__(self, color):
         self.image = image.load(data_file('cloud.png'))
-        self.pos = euclid.Vector2(100, SCREEN_HEIGHT - 100)
+        self.pos = euclid.Vector2(randint(0, SCREEN_WIDTH),
+                                  SCREEN_HEIGHT - randint(40, 100))
         self.color = color
         self.hsv_color = [0.666, 1, 1]
+
+        self.dead = False
 
     def update(self, tick):
         self.hsv_color[1] = 1 - self.color[2]
 
+        self.pos.x += WIND_SPEED * tick
+
+        if WIND_SPEED > 0 and self.pos.x > SCREEN_WIDTH:
+            self.dead = True
+        elif WIND_SPEED < 0 and self.pos.x < 0 - self.image.width:
+            self.dead = True
+
     def draw(self):
-        #glColor4f(0.4, 0.4, 1.0, 1.0)
         glColor3f(*colorsys.hsv_to_rgb(*self.hsv_color))
         self.image.blit(self.pos.x, self.pos.y)
         glColor4f(1.0, 1.0, 1.0, 1.0)
@@ -159,7 +239,7 @@ class RainDrop:
 
         self.vector.y = -SCREEN_HEIGHT
 
-        self.x = random.randint(0, SCREEN_WIDTH)
+        self.x = randint(0, SCREEN_WIDTH)
         self.y = SCREEN_HEIGHT + 1
 
     def update(self, tick):
@@ -174,7 +254,7 @@ class RainDrop:
 
         glColor4f(*self.color)
 
-        glLineWidth(3)
+        glLineWidth(4)
 
         glBegin(GL_LINES)
         glVertex2i(int(self.x), int(self.y))
