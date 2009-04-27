@@ -23,6 +23,7 @@ SCREEN_HEIGHT = 600
 class Lawn:
     def __init__(self):
         self.underground = image.load(data_file('underground-sm.png'))
+        self.street = image.load(data_file('street.png'))
         self.lawn_segments = 200
         self.lawn = []
         self.lawn_cache = []
@@ -71,7 +72,7 @@ class Lawn:
             self.green_counter = self.green_time
 
     def draw_field(self):
-        glColor4f(0.4, self.green_value, 0.2, 1)
+        glColor4f(0.2, self.green_value, 0.2, 1)
 
         glBegin(GL_POLYGON)
         glVertex2d(0, 0)
@@ -93,6 +94,7 @@ class Lawn:
 
         glPopMatrix()
         glColor4f(1.0, 1.0, 1.0, 1.0)
+        self.street.blit(0, 0)
 
     def build_lawn(self, grow_turn, fresh_grass=False):
         self.lawn_cache[grow_turn] = glGenLists(1)
