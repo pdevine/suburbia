@@ -7,6 +7,7 @@ from pyglet import image
 
 import colorsys
 from random import randint
+import random
 import euclid
 import math
 
@@ -29,14 +30,14 @@ SCREEN_HEIGHT = 600
 #  hailing
 #  windy
 
-CURRENT_CLOUD_COVERAGE = 'few'
+CURRENT_CLOUD_COVERAGE = 'overcast'
 
 CLOUD_COVERAGE = {
     'clear': (0, 0),
     'few': (1, 3),
     'partial': (4, 7),
-    'cloudy': (8, 12),
-    'overcast': (20, 30)
+    'cloudy': (20, 30),
+    'overcast': (30, 40)
 }
 
 # Wind speed is pixels per second
@@ -57,7 +58,30 @@ class Background:
         self.clouds = Clouds(self.hsv_color)
         self.earth = Earth()
 
+        self.weather_time = 20
+        self.counter = self.weather_time
+
     def update(self, tick):
+        global CURRENT_CLOUD_COVERAGE
+
+        self.counter -= tick
+
+        if self.counter <= 0:
+            CURRENT_CLOUD_COVERAGE = random.choice(CLOUD_COVERAGE.keys())
+            if 'cloudy' in CURRENT_CLOUD_COVERAGE or \
+               'overcast' in CURRENT_CLOUD_COVERAGE:
+                self.rain.active = random.choice([True, False])
+            else:
+                self.rain.active = False
+
+            print "It's now %s" % CURRENT_CLOUD_COVERAGE
+            if self.rain.active:
+                print "It's raining"
+            else:
+                print "It's not raining"
+
+            self.counter = self.weather_time
+
         elements = [self.sun, self.rain, self.clouds]
 
         for element in elements:
@@ -68,19 +92,6 @@ class Background:
             self.hsv_color[2] = (180 - self.sun.deg) / 30
         elif self.sun.deg < 30 and self.sun.deg > 0:
             self.hsv_color[2] = self.sun.deg / 30
-
-        #if self.sun and self.sun.deg < 160 and self.sun.deg > 20:
-        #    self.hsv_color[2] = 1
-        #else:
-        #    self.hsv_color[2] = 50/100.0
-
-#        if self.sun and self.sun.pos.x < 100:
-#            self.hsv_color[2] = min(self.sun.pos.x+50, 100)/100.0
-#        elif self.sun and self.sun.pos.x > SCREEN_WIDTH - 200:
-#            self.hsv_color[2] = \
-#                min(SCREEN_WIDTH - self.sun.pos.x+20, 100)/100.0
-#        else:
-#            self.hsv_color[2] = 1
 
         self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
@@ -210,9 +221,9 @@ class Cloud:
         self.pos.x += WIND_SPEED * tick
 
         if WIND_SPEED > 0 and self.pos.x > SCREEN_WIDTH:
-            self.state = 'dying'
+            self.state = 'dead'
         elif WIND_SPEED < 0 and self.pos.x < 0 - self.image.width:
-            self.state = 'dying'
+            self.state = 'dead'
 
     def draw(self):
         glColor4f(*colorsys.hsv_to_rgb(*self.hsv_color) + (self.alpha,))
@@ -263,6 +274,7 @@ class Sun(OrbitingObject):
 class Rain:
     def __init__(self):
         self.quad = gluNewQuadric()
+        self.active = True
         self.rain = []
 
         self.delay_time = 0.1
@@ -271,10 +283,15 @@ class Rain:
         self.add_drops()
 
     def add_drops(self, amount=10):
+        if not self.active:
+            return
         for count in range(amount):
             self.rain.append(RainDrop(self.quad))
 
     def update(self, tick):
+        if not self.active and not self.rain:
+            return
+
         self.counter -= tick
         if self.counter <= 0:
             self.add_drops()
@@ -287,26 +304,27 @@ class Rain:
                 self.rain.remove(drop)
 
     def draw(self):
+        if not self.active and not self.rain:
+            return
+
         for drop in self.rain:
             drop.draw()
 
 class RainDrop:
     def __init__(self, quad):
         self.quad = quad
-        self.color = (0, 0, 0.95, 0.5)
+        self.color = (0, 0, 0.95, 0.7)
         self.vector = euclid.Vector2(0, 0)
         self.dead = False
 
+        self.pos = euclid.Vector2(randint(0, SCREEN_WIDTH), SCREEN_HEIGHT-90)
         self.vector.y = -SCREEN_HEIGHT
 
-        self.x = randint(0, SCREEN_WIDTH)
-        self.y = SCREEN_HEIGHT + 1
-
     def update(self, tick):
-        self.x += self.vector.x * tick
-        self.y += self.vector.y * tick
+        self.pos.x += self.vector.x * tick
+        self.pos.y += self.vector.y * tick
 
-        if self.y < 180:
+        if self.pos.y < 180:
             self.dead = True
 
     def draw(self):
@@ -317,8 +335,8 @@ class RainDrop:
         glLineWidth(4)
 
         glBegin(GL_LINES)
-        glVertex2i(int(self.x), int(self.y))
-        glVertex2i(int(self.x), int(self.y-3))
+        glVertex2i(int(self.pos.x), int(self.pos.y))
+        glVertex2i(int(self.pos.x), int(self.pos.y-4))
         glEnd()
 
         glColor4f(1.0, 1.0, 1.0, 1.0)
