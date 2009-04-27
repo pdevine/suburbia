@@ -11,11 +11,16 @@ import random
 import euclid
 import math
 
+from grass import Lawn
+
 from util import data_file
 
 from pyglet.gl import *
 
 rabbyt.data_director = os.path.dirname(__file__)
+
+win = Window(width=800, height=600)
+fps_display = None
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -56,6 +61,7 @@ class Background:
         self.sun = Sun()
         self.moon = Moon()
         self.rain = Rain()
+        self.lawn = Lawn()
         self.clouds = Clouds(self.hsv_color)
         self.earth = Earth()
 
@@ -97,8 +103,9 @@ class Background:
         self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
     def draw(self):
-        elements = [self.sun, self.moon, self.clouds, self.earth, self.tree,
-                    self.fence, self.rain]
+        elements = [self.sun, self.moon, self.clouds, self.earth, self.lawn,
+                    self.tree, self.fence, self.rain]
+
         for element in elements:
             if element:
                 element.draw()
@@ -109,8 +116,9 @@ class Fence:
         self.side = image.load(data_file('fence-side.png'))
 
     def draw(self):
-        self.front.blit(100, 150)
-        self.side.blit(self.front.width + 100, 150)
+        self.front.blit(0, 120)
+        self.front.blit(self.front.width, 120)
+        self.side.blit(self.front.width * 2, 120)
 
 class Tree:
     def __init__(self):
@@ -327,6 +335,9 @@ class RainDrop:
             self.dead = True
 
     def draw(self):
+        # XXX - this could be changed into a display list for speed
+        #       however we'd need to change the offsets of the drops
+        #       and then translate on every draw
         glPushMatrix()
 
         glColor4f(*self.color)
@@ -342,14 +353,21 @@ class RainDrop:
 
         glPopMatrix()
 
+@win.event
+def on_draw():
+    window.clear()
+    fps_display.draw()
 
 def main():
+    global fps_display
+
     clock.schedule(rabbyt.add_time)
 
-    win = Window(width=800, height=600)
     rabbyt.set_default_attribs()
 
     bg = Background()
+
+    fps_display = clock.ClockDisplay()
 
     while not win.has_exit:
         tick = clock.tick()
