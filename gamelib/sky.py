@@ -41,7 +41,7 @@ CLOUD_COVERAGE = {
 }
 
 # Wind speed is pixels per second
-WIND_SPEED = -10
+WIND_SPEED = -30
 
 class Background:
     def __init__(self):
@@ -54,6 +54,7 @@ class Background:
         self.fence = Fence()
 
         self.sun = Sun()
+        self.moon = Moon()
         self.rain = Rain()
         self.clouds = Clouds(self.hsv_color)
         self.earth = Earth()
@@ -82,7 +83,7 @@ class Background:
 
             self.counter = self.weather_time
 
-        elements = [self.sun, self.rain, self.clouds]
+        elements = [self.sun, self.moon, self.rain, self.clouds]
 
         for element in elements:
             if element:
@@ -96,19 +97,11 @@ class Background:
         self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
     def draw(self):
-#        elements = [self.earth, self.sun, self.rain]
-#        for element in elements:
-#            if element:
-#                element.draw()
-
-        self.sun.draw()
-
-        self.clouds.draw()
-
-        self.earth.draw()
-        self.tree.draw()
-        self.fence.draw()
-        self.rain.draw()
+        elements = [self.sun, self.moon, self.clouds, self.earth, self.tree,
+                    self.fence, self.rain]
+        for element in elements:
+            if element:
+                element.draw()
 
 class Fence:
     def __init__(self):
@@ -236,7 +229,6 @@ class OrbitingObject:
         self.center_pos = euclid.Vector2(SCREEN_WIDTH/2 - 45,
                                          SCREEN_HEIGHT/2-50)
 
-        self.deg = 180
 
     def update(self, tick):
         self.deg -= 10 * tick
@@ -248,6 +240,11 @@ class OrbitingObject:
         self.pos.x = self.center_pos.x + math.cos(self.rad) * 480
         self.pos.y = self.center_pos.y + math.sin(self.rad) * 250
 
+    def draw(self):
+        glColor4f(1.0, 1.0, 1.0, 1.0)
+        if self.deg < 180 and self.deg > 0:
+            self.image.blit(self.pos.x, self.pos.y)
+
 
 class Moon(OrbitingObject):
     def __init__(self):
@@ -255,20 +252,20 @@ class Moon(OrbitingObject):
         self.days_until_phasechange = 2
         self.phases = [image.load(data_file('moon-full.png')),
                       ]
+        self.deg = 0
+
         OrbitingObject.__init__(self)
 
-    def draw(self):
-        self.phases[self.current_phase].blit(self.pos.x, self.pos.y)
+    def update(self, tick):
+        OrbitingObject.update(self, tick)
+        self.image = self.phases[self.current_phase]
 
 class Sun(OrbitingObject):
     def __init__(self):
         OrbitingObject.__init__(self)
         self.image = image.load(data_file('sun.png'))
 
-    def draw(self):
-        glColor4f(1.0, 1.0, 1.0, 1.0)
-        self.image.blit(self.pos.x, self.pos.y)
-        #self.image.blit(100, 700)
+        self.deg = 180
 
 
 class Rain:
@@ -321,6 +318,8 @@ class RainDrop:
         self.vector.y = -SCREEN_HEIGHT
 
     def update(self, tick):
+        self.vector.x = WIND_SPEED
+
         self.pos.x += self.vector.x * tick
         self.pos.y += self.vector.y * tick
 
