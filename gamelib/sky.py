@@ -89,7 +89,7 @@ class Background:
 
             self.counter = self.weather_time
 
-        elements = [self.sun, self.moon, self.rain, self.clouds]
+        elements = [self.sun, self.moon, self.rain, self.clouds, self.lawn]
 
         for element in elements:
             if element:
