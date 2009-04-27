@@ -20,18 +20,21 @@ rabbyt.data_director = os.path.dirname(__file__)
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+EDGE = 300
+
 win = None
 
 class Leaf(pyglet.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, color=(255,255,255)):
         img = data.textures['grassblade.png']
         self.blowing = True
         self.highlighted = False
+        self.sweptOffEdge = False
         self.logicalX = 0
         self.logicalY = random.randint(1,200)
         self.logicalZ = random.randint(100,150)
         super(Leaf,self).__init__(img)
-        self.origColor = self.color
+        self.origColor = color
         self.xy = logicalToPerspective(self.logicalX, self.logicalY)
         self.velocityX = 0.1
         self.velocityY = 0
@@ -90,6 +93,9 @@ class Leaf(pyglet.sprite.Sprite):
         return all((distanceX < 50, distanceY < 50, distanceZ < 1))
 
     def update(self, timeChange):
+        if self.sweptOffEdge:
+            return self.offEdgeUpdate(timeChange)
+
         newY = self.logicalY
         newX = self.logicalX
         if self.windEffects['countdown'] > 0:
@@ -143,7 +149,7 @@ class Leaf(pyglet.sprite.Sprite):
         if newY != self.logicalY:
             delta = newY-self.logicalY
             for mate in self.clumpMates:
-                mate.pullX( delta )
+                mate.pullY( delta )
 
         self.scale = (1.0 + (300.0-self.logicalY)/200.0)/2
         if self.clumpMates:
@@ -163,17 +169,27 @@ class Leaf(pyglet.sprite.Sprite):
            or self.y < -40):
             self.die()
 
+        #print self.logicalY
+        if self.logicalY > EDGE:
+            print "SWEPT OFF"
+            self.sweptOffEdge = True
+
         self.clumpMates = [] #clear out the clumpmates in case we've moved away
 
         #print 'updated leaf to', self
         #print 'at', self.xy
 
+    def offEdgeUpdate(self, timechange):
+        self.opacity -= timechange*4
+        if self.opacity < 0:
+            self.die()
 
     def pullX(self, delta):
         self.x += delta
 
     def pullY(self, delta):
-        self.y += delta
+        if self.velocityY < 1:
+            self.velocityY = delta/2
 
     def sweep(self):
         if self.logicalZ > 0:
@@ -183,7 +199,6 @@ class Leaf(pyglet.sprite.Sprite):
         self.velocityZ = random.randint(0,4)
 
     def On_Wind(self):
-        #print 'blowing', self
         dur = random.random()*2 #between 0 and 2 seconds
         self.blowing = True
         self.windEffects = {'duration': dur,
@@ -244,16 +259,23 @@ class LeafGroup(list):
 class LeafGenerator(object):
     def __init__(self):
         self.countdown = random.randint(0, 1)
+        self.brownness = 0
 
     def update(self, timechange):
         self.countdown -= timechange
-        #print self.countdown
+        self.brownness += 0.1*timechange
+        #red = 255
+        #green = 255
+        ##green = 128+(math.sin(self.brownness)+1)*128
+        #blue = 128*(math.cos(self.brownness)+1)
+        #color = (red, green, blue)
+        color = (255,255,255)
         if self.countdown > 0:
             return
 
         #print 'birthing leaf'
         self.countdown = random.randint(1, 6)
-        leaf = Leaf()
+        leaf = Leaf(color)
         events.Fire('LeafBirth', leaf)
 
 class Wind(object):
