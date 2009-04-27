@@ -11,7 +11,7 @@ import random
 import euclid
 import math
 
-from grass import Lawn
+from grass import NewLawn
 
 from util import data_file
 
@@ -61,7 +61,7 @@ class Background:
         self.sun = Sun()
         self.moon = Moon()
         self.rain = Rain()
-        self.lawn = Lawn()
+        self.lawn = NewLawn()
         self.clouds = Clouds(self.hsv_color)
 
         self.weather_time = 20
@@ -329,11 +329,6 @@ class RainDrop:
 
         glPopMatrix()
 
-@win.event
-def on_draw():
-    window.clear()
-    fps_display.draw()
-
 def main():
     global fps_display
 
@@ -354,6 +349,7 @@ def main():
         rabbyt.clear((bg.color))
 
         bg.draw()
+        fps_display.draw()
 
         win.flip()
 

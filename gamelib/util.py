@@ -36,3 +36,101 @@ def logicalToPerspective(x,y):
     newY = y - (newDeltaY - oldDeltaY)
     newY = y
     return newX, newY
+
+class Rect(object):
+    def __init__(self, *args):
+        if len(args) == 1:
+            (self.x, self.y, self.width, self.height) = args[0]
+        elif len(args) == 4:
+            (self.x, self.y, self.width, self.height) = args
+
+    def __str__(self):
+        return str((self.x, self.y, self.width, self.height))
+
+    def _getCenter(self):
+        return (self.x + int(self.width / 2), self.y + int(self.height / 2))
+
+    def _setCenter(self, *args):
+        if len(args) == 1:
+            x, y = args[0]
+        else:
+            x, y = args
+        self.x, self.y = x - self.width/2, y - self.height/2
+
+    center = property(_getCenter, _setCenter)
+
+    def _getLeft(self, *args):
+        return self.x - int(self.width / 2)
+
+    left = property(_getLeft, None)
+
+    def _getRight(self, *args):
+        return self.x + int(self.width / 2)
+
+    right = property(_getRight, None)
+
+    def _getMidtop(self):
+        return (self.x + int(self.width / 2), self.y)
+
+    def _setMidtop(self, *args):
+        if len(args) == 1:
+            x, y = args[0]
+        else:
+            x, y = args
+        self.x = x - self.width/2
+        self.y = y
+
+    midtop = property(_getMidtop, _setMidtop)
+
+    def _getTop(self):
+        return self.y + int(self.height / 2)
+
+    def _setTop(self, *args):
+        if len(args) == 1:
+            y = args
+            self.y = y - self.height/2
+        else:
+            raise ValueError
+
+    top = property(_getTop, _setTop)
+
+    def _getBottom(self):
+        return self.y - int(self.height / 2)
+
+    bottom = property(_getBottom, None)
+
+    def _getBottomLeft(self):
+        return (self.x - self.width/2, self.y - self.height/2)
+
+    bottomleft = property(_getBottomLeft, None)
+
+    def _getTopLeft(self):
+        return (self.x - self.width/2, self.y + self.height/2)
+
+    topleft = property(_getTopLeft, None)
+
+    def _getBottomRight(self):
+        return (self.x + self.width/2, self.y - self.height/2)
+
+    bottomright = property(_getBottomRight, None)
+
+    def _getTopRight(self):
+        return (self.x + self.width/2, self.y + self.height/2)
+
+    topright = property(_getTopRight, None)
+
+    def move(self, x, y):
+        return Rect(x+self.x, y+self.y, self.width, self.height)
+
+    def collidepoint(self, *args):
+        if len(args) == 1:
+            (x, y) = args[0]
+        else:
+            (x, y) = args
+
+        if x > self.x and x < self.x + self.width and \
+           y > self.y and y < self.y + self.height:
+            return True
+        else:
+            return False
+
