@@ -63,7 +63,6 @@ class Background:
         self.rain = Rain()
         self.lawn = Lawn()
         self.clouds = Clouds(self.hsv_color)
-        self.earth = Earth()
 
         self.weather_time = 20
         self.counter = self.weather_time
@@ -103,7 +102,7 @@ class Background:
         self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
     def draw(self):
-        elements = [self.sun, self.moon, self.clouds, self.earth, self.lawn,
+        elements = [self.sun, self.moon, self.clouds, self.lawn,
                     self.tree, self.fence, self.rain]
 
         for element in elements:
@@ -126,29 +125,6 @@ class Tree:
 
     def draw(self):
         self.image.blit(100, 200)
-
-class Earth:
-    def __init__(self):
-        self.image = image.load(data_file('underground-sm.png'))
-
-    def update(self, tick):
-        pass
-
-    def draw_field(self):
-        glColor4f(0.298, 0.27, 0.2, 1)
-
-        glBegin(GL_POLYGON)
-        glVertex2d(0, 0)
-        glVertex2d(0, SCREEN_HEIGHT/2)
-        glVertex2d(SCREEN_WIDTH, SCREEN_HEIGHT/2)
-        glVertex2d(SCREEN_WIDTH, 0)
-        glEnd()
-
-        glColor4f(1, 1, 1, 1)
-
-    def draw(self):
-        self.draw_field()
-        self.image.blit(0, 0)
 
 class Clouds:
     def __init__(self, bg_color):

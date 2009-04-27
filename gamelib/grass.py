@@ -22,10 +22,15 @@ SCREEN_HEIGHT = 600
 
 class Lawn:
     def __init__(self):
+        self.underground = image.load(data_file('underground-sm.png'))
         self.lawn_segments = 200
         self.lawn = []
         self.lawn_cache = []
         self.lawn_positions = {}
+
+        self.green_value = 0.3
+        self.green_time = 1
+        self.green_counter = self.green_time
 
         self.grow_turn = 0
 
@@ -59,7 +64,28 @@ class Lawn:
 
             self.build_lawn(self.grow_turn)
 
+        self.green_counter -= tick
+        if self.green_value <= 0.7 and self.green_counter <= 0:
+            print "green"
+            self.green_value += 0.01
+            self.green_counter = self.green_time
+
+    def draw_field(self):
+        glColor4f(0.4, self.green_value, 0.2, 1)
+
+        glBegin(GL_POLYGON)
+        glVertex2d(0, 0)
+        glVertex2d(0, SCREEN_HEIGHT/2)
+        glVertex2d(SCREEN_WIDTH, SCREEN_HEIGHT/2)
+        glVertex2d(SCREEN_WIDTH, 0)
+        glEnd()
+
+        glColor4f(1, 1, 1, 1)
+
     def draw(self):
+        self.draw_field()
+        self.underground.blit(0, 0)
+
         glPushMatrix()
 
         for lawn in self.lawn_cache:
