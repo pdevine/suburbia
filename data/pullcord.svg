@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="pullcord.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3155">
+      <stop
+         style="stop-color:#9bd2b4;stop-opacity:1;"
+         offset="0"
+         id="stop3157" />
+      <stop
+         style="stop-color:#9bd2b4;stop-opacity:0;"
+         offset="1"
+         id="stop3159" />
+    </linearGradient>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3155"
+       id="linearGradient3171"
+       gradientUnits="userSpaceOnUse"
+       x1="169.74285"
+       y1="439.50504"
+       x2="230.25713"
+       y2="410.93359" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3155"
+       id="linearGradient3173"
+       gradientUnits="userSpaceOnUse"
+       x1="169.74285"
+       y1="439.50504"
+       x2="324.54285"
+       y2="439.50504" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.175"
+     inkscape:cx="-189.08593"
+     inkscape:cy="-10.446774"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1237"
+     inkscape:window-height="763"
+     inkscape:window-x="0"
+     inkscape:window-y="6" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3167"
+       transform="translate(-5.7142876,-248.57143)">
+      <path
+         inkscape:export-ydpi="14.656147"
+         inkscape:export-xdpi="14.656147"
+         inkscape:export-filename="/b/data/pullcord_seg.png"
+         transform="matrix(-1.229687,0,0,1.173604,783.99573,-73.291367)"
+         d="M 437.14285,439.50504 A 130,118.57143 0 1 1 177.14285,439.50504 A 130,118.57143 0 1 1 437.14285,439.50504 z"
+         sodipodi:ry="118.57143"
+         sodipodi:rx="130"
+         sodipodi:cy="439.50504"
+         sodipodi:cx="307.14285"
+         id="path3163"
+         style="opacity:1;fill:#f9ffff;fill-opacity:0.95880151;fill-rule:nonzero;stroke:url(#linearGradient3171);stroke-width:9.80000019;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         sodipodi:type="arc" />
+      <path
+         inkscape:export-ydpi="14.656147"
+         inkscape:export-xdpi="14.656147"
+         inkscape:export-filename="/b/data/pullcord_seg.png"
+         transform="matrix(1.1720381,0.3720978,-0.3551273,1.1185844,134.31623,-139.61759)"
+         d="M 437.14285,439.50504 A 130,118.57143 0 1 1 177.14285,439.50504 A 130,118.57143 0 1 1 437.14285,439.50504 z"
+         sodipodi:ry="118.57143"
+         sodipodi:rx="130"
+         sodipodi:cy="439.50504"
+         sodipodi:cx="307.14285"
+         id="path2383"
+         style="opacity:1;fill:#fbfffe;fill-opacity:1;fill-rule:nonzero;stroke:url(#linearGradient3173);stroke-width:12;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         sodipodi:type="arc" />
+    </g>
+    <path
+       style="opacity:1;fill:#fbfffe;fill-opacity:1;stroke:#9bd2b4;stroke-width:12;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M -512.86161,340.07589 C -512.86161,340.07589 -521.36067,438.58675 -522.86161,480.91964 C -524.95739,540.02937 -524.87206,618.96319 -522.86161,678.07589 C -521.36074,722.20553 -512.86161,824.91964 -512.86161,824.91964 L -335.70536,824.91964 C -335.70536,824.91964 -361.88709,704.25762 -335.70536,678.07589 C -309.52362,651.89416 -235.70536,678.07589 -235.70536,678.07589 L -235.70536,480.91964 C -235.70536,480.91964 -310.16002,506.46498 -335.70536,480.91964 C -361.25069,455.3743 -335.70536,340.07589 -335.70536,340.07589 L -512.86161,340.07589 z"
+       id="rect3175"
+       sodipodi:nodetypes="csscczcczcc" />
+    <g
+       id="g3220"
+       transform="translate(242.85714,-737.14285)">
+      <path
+         sodipodi:nodetypes="cssssss"
+         id="path3208"
+         d="M 260.51395,1314.9865 C 256.47333,1306.9053 237.19495,1310.0818 222.88809,1321.2225 C 211.18541,1330.3353 204.54653,1370.9162 204.54654,1417.2305 C 204.54654,1470.1913 214.46912,1510.1608 224.89876,1517.5766 C 239.35325,1527.8542 261.5241,1522.7336 261.5241,1522.7336 C 268.59514,1513.6423 244.54158,1490.0704 244.54158,1419.348 C 244.54157,1348.5558 260.51395,1314.9865 260.51395,1314.9865 z"
+         style="fill:#fefffe;fill-opacity:1;stroke:none;stroke-width:11;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         sodipodi:nodetypes="csscczczczcc"
+         id="path3180"
+         d="M -47.09384,1178.5117 C -47.09384,1178.5117 -55.5929,1277.0226 -57.09384,1319.3555 C -59.18962,1378.4652 -59.10429,1457.399 -57.09384,1516.5117 C -55.59297,1560.6414 -47.09384,1663.3555 -47.09384,1663.3555 L 130.06241,1663.3555 C 130.06241,1663.3555 103.88068,1542.6935 130.06241,1516.5117 C 156.24414,1490.33 230.06241,1516.5117 230.06241,1516.5117 C 230.06241,1516.5117 212.91955,1482.2365 212.91955,1417.9336 C 212.91955,1353.5672 230.06241,1319.3555 230.06241,1319.3555 C 230.06241,1319.3555 155.60775,1344.9008 130.06241,1319.3555 C 104.51707,1293.8101 130.06241,1178.5117 130.06241,1178.5117 L -47.09384,1178.5117 z"
+         style="fill:#000001;fill-opacity:1;stroke:#020025;stroke-width:12;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         sodipodi:nodetypes="cssssss"
+         id="path3189"
+         d="M 256.3532,1315.7503 C 252.31258,1307.669 233.0342,1310.8456 218.72734,1321.9862 C 207.02466,1331.099 200.38578,1371.6799 200.38579,1417.9942 C 200.38579,1470.955 210.30837,1510.9245 220.73801,1518.3403 C 235.1925,1528.6179 257.36335,1523.4973 257.36335,1523.4973 C 264.43439,1514.406 240.38083,1490.8341 240.38083,1420.1117 C 240.38082,1349.3195 256.3532,1315.7503 256.3532,1315.7503 z"
+         style="fill:#fbfffe;fill-opacity:0.42168675;stroke:#000000;stroke-width:11;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         id="path3193"
+         d="M -41.39286,1181.3839 C -41.39286,1181.3839 -49.89192,1279.8948 -51.39286,1322.2276 C -53.48864,1381.3373 -53.40331,1460.2712 -51.39286,1519.3839 C -49.89199,1563.5136 -41.39286,1666.2276 -41.39286,1666.2276 L 92.91964,1666.2276 C 65.20362,1606.8572 48.04464,1524.6213 48.04464,1433.7902 C 48.04464,1332.2703 69.48863,1241.5047 103.13839,1181.3839 L -41.39286,1181.3839 z"
+         style="fill:#62fffe;fill-opacity:0.10843374;stroke:none;stroke-width:12;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>
