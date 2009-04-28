@@ -11,7 +11,7 @@ import random
 import euclid
 import math
 
-from grass import NewLawn
+from grass import Lawn
 
 from util import data_file
 
@@ -61,7 +61,7 @@ class Background:
         self.sun = Sun()
         self.moon = Moon()
         self.rain = Rain()
-        self.lawn = NewLawn()
+        self.lawn = Lawn()
         self.clouds = Clouds(self.hsv_color)
 
         self.weather_time = 20

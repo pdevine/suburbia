@@ -52,10 +52,10 @@ class LawnSegment:
 
     def grow(self):
         for blade in self.grass:
-            blade.height += 2
-            blade.width += 1
+            blade.height += 3
+            blade.width += 2
 
-class NewLawn:
+class Lawn:
     def __init__(self):
         self.street = image.load(data_file('street.png'))
 
@@ -83,6 +83,8 @@ class NewLawn:
         self.green_time = 1
         self.green_counter = self.green_time
 
+        self.mow_rect = Rect(300, 260, 50, 10)
+
     def update(self, tick):
         self.rebuild_counter -= tick
         if self.rebuild_counter <= 0:
@@ -108,6 +110,7 @@ class NewLawn:
 
         glPopMatrix()
         glColor4f(1.0, 1.0, 1.0, 1.0)
+        self.draw_mow_rect()
 
         self.street.blit(0, 0)
 
@@ -123,62 +126,14 @@ class NewLawn:
 
         glColor4f(1, 1, 1, 1)
 
-class Lawn:
-    def __init__(self):
-        self.underground = image.load(data_file('underground-sm.png'))
-        self.street = image.load(data_file('street.png'))
-        self.lawn_segments = 200
-
-        # list of clumps of grass
-        self.lawn = []
-
-        # list of lawn segment display lists
-        self.lawn_cache = []
-
-        # dictionary of positions to individual clumps of grass
-        self.lawn_positions = {}
-
-        self.green_value = 0.3
-        self.green_time = 1
-        self.green_counter = self.green_time
-
-        self.grow_turn = 0
-
-        for lawn_count in range(0, self.lawn_segments):
-            self.lawn.append([])
-            self.lawn_cache.append([])
-            for count in range(0, 20):
-                while True:
-                    blade = Grass(randint(5, SCREEN_WIDTH-5),
-                                  randint(130, SCREEN_HEIGHT/2))
-                    pos = (blade.pos.x, blade.pos.y)
-                    if not self.lawn_positions.get(pos):
-                        self.lawn[lawn_count].append(blade)
-                        self.lawn_positions[pos] = {
-                           'object': blade,
-                           'segment': lawn_count
-                        }
-                        break
-
-            self.build_lawn(lawn_count, fresh_grass=True)
-
-        self.rebuild_time = 0.75
-        self.counter = 0
-
-        self.mow_rect = Rect(300, 260, 50, 10)
-
     def mow(self):
         dirty_segments = {}
         count = 0
         for x in range(self.mow_rect.topleft[0], self.mow_rect.topright[0]):
             for y in range(self.mow_rect.bottomleft[1],
                            self.mow_rect.topleft[1]):
-                grass = self.lawn_positions.get((x, y))
-                if grass:
-                    count += 1
-                    grass['object'].height = 0
-                    grass['object'].width = 0
-                    dirty_segments[grass['segment']] = True
+
+                pass
 
         #print "blades = %d" % count
         #print len(dirty_segments.keys())
@@ -194,66 +149,6 @@ class Lawn:
         glEnd()
 
         glColor4f(1, 1, 1, 1)
-
-    def update(self, tick):
-        self.counter -= tick
-        if self.counter <= 0:
-            self.counter = self.rebuild_time
-
-            #print "grow"
-
-            self.grow_turn += 1
-            if self.grow_turn >= self.lawn_segments:
-                self.grow_turn = 0
-
-            self.build_lawn(self.grow_turn)
-
-        self.green_counter -= tick
-        if self.green_value <= 0.7 and self.green_counter <= 0:
-            #print "green"
-            self.green_value += 0.005
-            self.green_counter = self.green_time
-
-        self.mow()
-
-    def draw_field(self):
-        glColor4f(0.2, self.green_value, 0.2, 1)
-
-        glBegin(GL_POLYGON)
-        glVertex2d(0, 0)
-        glVertex2d(0, SCREEN_HEIGHT/2)
-        glVertex2d(SCREEN_WIDTH, SCREEN_HEIGHT/2)
-        glVertex2d(SCREEN_WIDTH, 0)
-        glEnd()
-
-        glColor4f(1, 1, 1, 1)
-
-    def draw(self):
-        self.draw_field()
-        self.underground.blit(0, 0)
-
-        glPushMatrix()
-
-        for lawn in self.lawn_cache:
-            glCallList(lawn)
-
-        glPopMatrix()
-        glColor4f(1.0, 1.0, 1.0, 1.0)
-        self.street.blit(0, 0)
-
-        self.draw_mow_rect()
-
-    def build_lawn(self, grow_turn, fresh_grass=False):
-        self.lawn_cache[grow_turn] = glGenLists(1)
-        glNewList(self.lawn_cache[grow_turn], GL_COMPILE)
-
-        for grass in self.lawn[grow_turn]:
-            if not fresh_grass:
-                grass.height += 4
-                grass.width += 2
-            grass.draw()
-
-        glEndList()
 
 class Grass:
     def __init__(self, x, y):
