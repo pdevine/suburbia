@@ -261,13 +261,15 @@ class Rain:
         self.delay_time = 0.1
         self.counter = self.delay_time
 
+        self.build()
+
         self.add_drops()
 
     def add_drops(self, amount=10):
         if not self.active:
             return
         for count in range(amount):
-            self.rain.append(RainDrop(self.quad))
+            self.rain.append(RainDrop(self.quad, self.display_id))
 
     def update(self, tick):
         if not self.active and not self.rain:
@@ -291,9 +293,28 @@ class Rain:
         for drop in self.rain:
             drop.draw()
 
+    def build(self):
+        self.display_id = glGenLists(1)
+        print self.display_id
+        glNewList(self.display_id, GL_COMPILE)
+
+        glColor4f(0, 0, 0.95, 0.7)
+
+        glLineWidth(4)
+
+        glBegin(GL_LINES)
+        glVertex2i(0, 0)
+        glVertex2i(0, 4)
+        glEnd()
+
+        glColor4f(1, 1, 1, 1)
+
+        glEndList()
+
 class RainDrop:
-    def __init__(self, quad):
+    def __init__(self, quad, display_id):
         self.quad = quad
+        self.display_id = display_id
         self.color = (0, 0, 0.95, 0.7)
         self.vector = euclid.Vector2(0, 0)
         self.dead = False
@@ -311,23 +332,15 @@ class RainDrop:
             self.dead = True
 
     def draw(self):
-        # XXX - this could be changed into a display list for speed
-        #       however we'd need to change the offsets of the drops
-        #       and then translate on every draw
         glPushMatrix()
+        glTranslatef(self.pos.x, self.pos.y, 0)
 
-        glColor4f(*self.color)
-
-        glLineWidth(4)
-
-        glBegin(GL_LINES)
-        glVertex2i(int(self.pos.x), int(self.pos.y))
-        glVertex2i(int(self.pos.x), int(self.pos.y-4))
-        glEnd()
-
-        glColor4f(1.0, 1.0, 1.0, 1.0)
+        glCallList(self.display_id)
 
         glPopMatrix()
+
+
+
 
 def main():
     global fps_display
