@@ -97,7 +97,6 @@ class Lawn:
 
         self.green_counter -= tick
         if self.green_value <= 0.7 and self.green_counter <= 0:
-            print self.green_value
             self.green_value += 0.005
             self.green_counter = self.green_time
 

@@ -39,10 +39,10 @@ CURRENT_CLOUD_COVERAGE = 'overcast'
 
 CLOUD_COVERAGE = {
     'clear': (0, 0),
-    'few': (1, 3),
-    'partial': (4, 7),
-    'cloudy': (20, 30),
-    'overcast': (30, 40)
+    'few': (1, 2),
+    'partial': (3, 4),
+    'cloudy': (5, 9),
+    'overcast': (10, 12)
 }
 
 # Wind speed is pixels per second
@@ -140,7 +140,7 @@ class Clouds:
         self.counter = self.delay_time
 
     def add_cloud(self):
-        self.clouds.append(Cloud(self.bg_color))
+        self.clouds.append(Cloud(self.bg_color, len(self.clouds)))
 
     def remove_cloud(self):
         self.clouds[randint(0, len(self.clouds)-1)].state = 'dying'
@@ -171,9 +171,15 @@ class Clouds:
             cloud.draw()
 
 class Cloud:
-    def __init__(self, color):
+    def __init__(self, color, cloud_position):
         self.image = image.load(data_file('cloud.png'))
-        self.pos = euclid.Vector2(randint(0, SCREEN_WIDTH),
+
+        cloud_min, cloud_max = CLOUD_COVERAGE[CURRENT_CLOUD_COVERAGE]
+
+        pos_min = int((cloud_position - 1) / float(cloud_max) * SCREEN_WIDTH)
+        pos_max = int(cloud_position / float(cloud_max) * SCREEN_WIDTH)
+
+        self.pos = euclid.Vector2(randint(pos_min, pos_max), 
                                   SCREEN_HEIGHT - randint(40, 100))
         self.color = color
         self.hsv_color = [0.666, 1, 1]
@@ -213,8 +219,15 @@ class OrbitingObject:
         self.center_pos = euclid.Vector2(SCREEN_WIDTH/2 - 45,
                                          SCREEN_HEIGHT/2-50)
 
+        self.current_weather = None
+        self.alpha = 1.0
 
     def update(self, tick):
+        if CURRENT_CLOUD_COVERAGE == 'overcast' and self.alpha > 0:
+            self.alpha = min(self.alpha - 0.3 * tick , 0.0)
+        elif CURRENT_CLOUD_COVERAGE != 'overcast' and self.alpha < 1:
+            self.alpha = min(self.alpha + 0.3 * tick, 1.0)
+                
         self.deg -= 10 * tick
         if self.deg < 0:
             self.deg = 360 + self.deg
@@ -225,7 +238,7 @@ class OrbitingObject:
         self.pos.y = self.center_pos.y + math.sin(self.rad) * 250
 
     def draw(self):
-        glColor4f(1.0, 1.0, 1.0, 1.0)
+        glColor4f(1.0, 1.0, 1.0, self.alpha)
         if self.deg < 180 and self.deg > 0:
             self.image.blit(self.pos.x, self.pos.y)
 
@@ -295,7 +308,6 @@ class Rain:
 
     def build(self):
         self.display_id = glGenLists(1)
-        print self.display_id
         glNewList(self.display_id, GL_COMPILE)
 
         glColor4f(0, 0, 0.95, 0.7)
