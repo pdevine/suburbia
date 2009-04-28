@@ -55,22 +55,54 @@ class LawnSegment:
             blade.height += 3
             blade.width += 2
 
+    def mow(self):
+        for blade in self.grass:
+            blade.height = 1
+            blade.width = 1
+
+class Mower:
+    def __init__(self):
+        self.rect = Rect(300, 260, 50, 10)
+        self.image = image.load(data_file('mower.png'))
+
+    def update(self, tick):
+        pass
+
+    def draw(self):
+        self.image.blit(self.rect.x, self.rect.y)
+        #self.draw_mow_rect()
+
+    def draw_mow_rect(self):
+        glColor4f(0, 0, 1, .5)
+
+        glBegin(GL_POLYGON)
+        glVertex2d(*self.rect.bottomleft)
+        glVertex2d(*self.rect.topleft)
+        glVertex2d(*self.rect.topright)
+        glVertex2d(*self.rect.bottomright)
+        glEnd()
+
+        glColor4f(1, 1, 1, 1)
+
+
 class Lawn:
     def __init__(self):
         self.street = image.load(data_file('street.png'))
 
+        self.mower = Mower()
+
         self.lawn = []
         self.current_segment = 0
 
-        for x in range(20, SCREEN_WIDTH, 20):
-            for y in range(130, 300, 10):
+        for y in range(130, 300, 10):
+            for x in range(40, SCREEN_WIDTH, 40):
 
                 # only build up to the edge of the lawn
                 if x > 440 + (y - 130) / 10 * 20:
                     continue
 
                 self.lawn.append(
-                    LawnSegment(len(self.lawn), rect=Rect(x, y, 20, 10)))
+                    LawnSegment(len(self.lawn), rect=Rect(x, y, 40, 10)))
 
         self.rebuild_time = 0.5
         self.rebuild_counter = self.rebuild_time
@@ -83,9 +115,19 @@ class Lawn:
         self.green_time = 1
         self.green_counter = self.green_time
 
-        self.mow_rect = Rect(300, 260, 50, 10)
+        self.segment = len(self.lawn) - 1
+
+        self.mow_time = 0.2
+        self.mow_counter = self.mow_time
+        
+        self.mowing = True
 
     def update(self, tick):
+        if self.mowing:
+            self.mow_counter -= tick
+            if self.mow_counter <= 0:
+                self.mow()
+
         self.rebuild_counter -= tick
         if self.rebuild_counter <= 0:
             self.current_segment += 1
@@ -109,7 +151,8 @@ class Lawn:
 
         glPopMatrix()
         glColor4f(1.0, 1.0, 1.0, 1.0)
-        self.draw_mow_rect()
+
+        self.mower.draw()
 
         self.street.blit(0, 0)
 
@@ -126,34 +169,21 @@ class Lawn:
         glColor4f(1, 1, 1, 1)
 
     def mow(self):
-        dirty_segments = {}
-        count = 0
-        for x in range(self.mow_rect.topleft[0], self.mow_rect.topright[0]):
-            for y in range(self.mow_rect.bottomleft[1],
-                           self.mow_rect.topleft[1]):
+        #if self.mower.rect.x != self.lawn[self.segment].rect.x:
+        self.mower.rect.center = self.lawn[self.segment].rect.center
+        self.lawn[self.segment].mow()
+        self.lawn[self.segment].rebuild()
+        self.segment -= 1
+        if self.segment < 0:
+            self.segment = len(self.lawn) - 1
+            self.mowing = False
 
-                pass
-
-        #print "blades = %d" % count
-        #print len(dirty_segments.keys())
-
-    def draw_mow_rect(self):
-        glColor4f(0, 0, 1, .5)
-
-        glBegin(GL_POLYGON)
-        glVertex2d(*self.mow_rect.bottomleft)
-        glVertex2d(*self.mow_rect.topleft)
-        glVertex2d(*self.mow_rect.topright)
-        glVertex2d(*self.mow_rect.bottomright)
-        glEnd()
-
-        glColor4f(1, 1, 1, 1)
 
 class Grass:
     def __init__(self, x, y):
         self.pos = euclid.Vector2(x, y)
-        self.height = 1
-        self.width = 1
+        self.height = 8
+        self.width = 4
         self.colors = ((0, 1.0, 0, 1), (0, 0.9, 0, 1), (0, 0.8, 0, 1))
 
     def update(self, tick):

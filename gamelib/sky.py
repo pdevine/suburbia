@@ -56,7 +56,6 @@ class Background:
         self.weather = 'cloudy'
 
         self.tree = Tree()
-        self.fence = Fence()
 
         self.sun = Sun()
         self.moon = Moon()
@@ -103,21 +102,11 @@ class Background:
 
     def draw(self):
         elements = [self.sun, self.moon, self.clouds, self.lawn,
-                    self.tree, self.fence, self.rain]
+                    self.tree, self.rain]
 
         for element in elements:
             if element:
                 element.draw()
-
-class Fence:
-    def __init__(self):
-        self.front = image.load(data_file('fence-front.png'))
-        self.side = image.load(data_file('fence-side.png'))
-
-    def draw(self):
-        self.front.blit(0, 120)
-        self.front.blit(self.front.width, 120)
-        self.side.blit(self.front.width * 2, 120)
 
 class Tree:
     def __init__(self):

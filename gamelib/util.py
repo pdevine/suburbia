@@ -44,18 +44,22 @@ class Rect(object):
         elif len(args) == 4:
             (self.x, self.y, self.width, self.height) = args
 
+        # x and y args are the bottom left
+
+        self.x += self.width/2
+        self.y += self.height/2
+
     def __str__(self):
         return str((self.x, self.y, self.width, self.height))
 
     def _getCenter(self):
-        return (self.x + int(self.width / 2), self.y + int(self.height / 2))
+        return (self.x, self.y)
 
     def _setCenter(self, *args):
         if len(args) == 1:
-            x, y = args[0]
+            self.x, self.y = args[0]
         else:
-            x, y = args
-        self.x, self.y = x - self.width/2, y - self.height/2
+            self.x, self.y = args
 
     center = property(_getCenter, _setCenter)
 
@@ -102,7 +106,16 @@ class Rect(object):
     def _getBottomLeft(self):
         return (self.x - self.width/2, self.y - self.height/2)
 
-    bottomleft = property(_getBottomLeft, None)
+    def _setBottomLeft(self, *args):
+        if len(args) == 1:
+            x, y = args[0]
+        else:
+            x, y = args
+
+        self.x = x + self.width/2
+        self.y = y + self.width/2
+
+    bottomleft = property(_getBottomLeft, _setBottomLeft)
 
     def _getTopLeft(self):
         return (self.x - self.width/2, self.y + self.height/2)
