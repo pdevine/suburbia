@@ -12,6 +12,7 @@ import euclid
 import math
 
 from grass import Lawn
+from garbage import GarbageCan
 
 from util import data_file
 
@@ -19,7 +20,6 @@ from pyglet.gl import *
 
 rabbyt.data_director = os.path.dirname(__file__)
 
-win = Window(width=800, height=600)
 fps_display = None
 
 SCREEN_WIDTH = 800
@@ -62,6 +62,7 @@ class Background:
         self.rain = Rain()
         self.lawn = Lawn()
         self.clouds = Clouds(self.hsv_color)
+        self.garbage_can = GarbageCan()
 
         self.weather_time = 20
         self.counter = self.weather_time
@@ -102,7 +103,7 @@ class Background:
 
     def draw(self):
         elements = [self.sun, self.moon, self.clouds, self.lawn,
-                    self.tree, self.rain]
+                    self.tree, self.rain, self.garbage_can]
 
         for element in elements:
             if element:
@@ -345,6 +346,8 @@ class RainDrop:
 
 def main():
     global fps_display
+
+    win = Window(width=800, height=600)
 
     clock.schedule(rabbyt.add_time)
 

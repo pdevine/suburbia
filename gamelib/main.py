@@ -30,10 +30,15 @@ def main(sound_on=True):
     if show_fps:
         fps_display = pyglet.clock.ClockDisplay()
 
-
     if sound_on:
         soundtrack = sound.queue_soundtrack()
         soundtrack.play()
+
+    can_lid = scene.garbage_can.image_lid
+    cursor = pyglet.window.ImageMouseCursor(can_lid,
+                                            can_lid.width / 2,
+                                            can_lid.height / 2)
+    game_window.set_mouse_cursor(cursor)
 
     while not game_window.has_exit:
         tick = pyglet.clock.tick()
