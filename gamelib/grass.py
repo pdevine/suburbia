@@ -87,13 +87,14 @@ class Lawn:
         self.street = image.load(data_file('street.png'))
         self.house = image.load(data_file('house.png'))
         self.truck = image.load(data_file('truck.png'))
+        self.garbagecan = image.load(data_file('garbagecan-closed.png'))
 
         self.mower = Mower()
 
         self.lawn = []
         self.current_segment = 0
 
-        for y in range(130, 300, 10):
+        for y in range(130, 260, 10):
             for x in range(0, SCREEN_WIDTH, 40):
 
                 # only build up to the edge of the lawn
@@ -157,6 +158,7 @@ class Lawn:
 
         self.street.blit(0, 0)
         self.truck.blit(700, 150)
+        self.garbagecan.blit(100, 100)
 
     def draw_field(self):
         glColor4f(0.2, self.green_value, 0.2, 1)
