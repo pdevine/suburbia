@@ -65,9 +65,6 @@ class Mower:
         self.rect = Rect(300, 260, 50, 10)
         self.image = image.load(data_file('mower.png'))
 
-    def update(self, tick):
-        pass
-
     def draw(self):
         self.image.blit(self.rect.x, self.rect.y)
         #self.draw_mow_rect()
@@ -88,6 +85,8 @@ class Mower:
 class Lawn:
     def __init__(self):
         self.street = image.load(data_file('street.png'))
+        self.house = image.load(data_file('house.png'))
+        self.truck = image.load(data_file('truck.png'))
 
         self.mower = Mower()
 
@@ -95,7 +94,7 @@ class Lawn:
         self.current_segment = 0
 
         for y in range(130, 300, 10):
-            for x in range(40, SCREEN_WIDTH, 40):
+            for x in range(0, SCREEN_WIDTH, 40):
 
                 # only build up to the edge of the lawn
                 if x > 440 + (y - 130) / 10 * 20:
@@ -152,9 +151,12 @@ class Lawn:
         glPopMatrix()
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
+        self.house.blit(170, 260)
+
         self.mower.draw()
 
         self.street.blit(0, 0)
+        self.truck.blit(700, 150)
 
     def draw_field(self):
         glColor4f(0.2, self.green_value, 0.2, 1)
