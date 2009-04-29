@@ -20,6 +20,29 @@
      id="defs4">
     <linearGradient
        inkscape:collect="always"
+       id="linearGradient3280">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop3282" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop3284" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3264">
+      <stop
+         id="stop3266"
+         offset="0"
+         style="stop-color:#00ff00;stop-opacity:1;" />
+      <stop
+         id="stop3268"
+         offset="1"
+         style="stop-color:#fe0000;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
        id="linearGradient3155">
       <stop
          style="stop-color:#9bd2b4;stop-opacity:1;"
@@ -55,6 +78,36 @@
        y1="439.50504"
        x2="324.54285"
        y2="439.50504" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3264"
+       id="linearGradient3262"
+       x1="-1662.8572"
+       y1="521.14789"
+       x2="-1662.8572"
+       y2="1135.2194"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1,0,0,0.8425197,480,214.36525)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3280"
+       id="linearGradient3297"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9421488,0,0,0.6333333,-54.946872,99.677328)"
+       x1="-1740"
+       y1="380.9336"
+       x2="-1048.5714"
+       y2="380.9336" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3280"
+       id="linearGradient3306"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9421488,0,0,0.6333333,-54.946872,99.677328)"
+       x1="-1740"
+       y1="380.9336"
+       x2="-1048.5714"
+       y2="380.9336" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -130,7 +183,10 @@
        sodipodi:nodetypes="csscczcczcc" />
     <g
        id="g3220"
-       transform="translate(242.85714,-737.14285)">
+       transform="translate(242.85714,-737.14285)"
+       inkscape:export-filename="/home/sjbrown/work/247donkeys/data/pullcord_handle.png"
+       inkscape:export-xdpi="27.3724"
+       inkscape:export-ydpi="27.3724">
       <path
          sodipodi:nodetypes="cssssss"
          id="path3208"
@@ -150,6 +206,46 @@
          id="path3193"
          d="M -41.39286,1181.3839 C -41.39286,1181.3839 -49.89192,1279.8948 -51.39286,1322.2276 C -53.48864,1381.3373 -53.40331,1460.2712 -51.39286,1519.3839 C -49.89199,1563.5136 -41.39286,1666.2276 -41.39286,1666.2276 L 92.91964,1666.2276 C 65.20362,1606.8572 48.04464,1524.6213 48.04464,1433.7902 C 48.04464,1332.2703 69.48863,1241.5047 103.13839,1181.3839 L -41.39286,1181.3839 z"
          style="fill:#62fffe;fill-opacity:0.10843374;stroke:none;stroke-width:12;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3308"
+       inkscape:export-filename="/home/sjbrown/work/247donkeys/data/guage.png"
+       inkscape:export-xdpi="8.9328289"
+       inkscape:export-ydpi="8.9328289">
+      <rect
+         y="658.07648"
+         x="-1308.5714"
+         height="611.42859"
+         width="251.42857"
+         id="rect3254"
+         style="opacity:1;fill:url(#linearGradient3262);fill-opacity:1;stroke:none;stroke-width:11;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         id="rect3246"
+         d="M -1342.8438 652.375 L -1342.8438 1286.6562 L -1334.3438 1286.6562 L -1334.3438 1289.5625 L -1042.8125 1289.5625 L -1042.8125 1286.6562 L -1031.4375 1286.6562 L -1031.4375 652.375 L -1105.7188 652.375 L -1105.7188 1260.875 L -1268.5625 1260.875 L -1268.5625 652.375 L -1342.8438 652.375 z "
+         style="opacity:1;fill:#000000;fill-opacity:1;stroke:#020025;stroke-width:11;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3301"
+       transform="matrix(0.4920079,0,0,0.31745,-79.597611,1124.1339)"
+       inkscape:export-filename="/home/sjbrown/work/247donkeys/data/guage_needle.png"
+       inkscape:export-xdpi="8.9328289"
+       inkscape:export-ydpi="8.9328289">
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="rect3276"
+         d="M -1619.1428,395.22099 L -1068.5714,395.22099 L -1068.5714,286.64957 L -1737.1428,286.64957 L -1619.1428,395.22099 z"
+         style="fill:#171610;fill-opacity:1;stroke:none;stroke-width:11;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1" />
+      <rect
+         y="317.41147"
+         x="-1694.2858"
+         height="47.047623"
+         width="651.42859"
+         id="rect3278"
+         style="fill:url(#linearGradient3306);fill-opacity:1;stroke:none;stroke-width:11;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         id="rect3271"
+         d="M -1005.7276,179.10715 L -1167.5402,340.91965 L -1005.7276,502.7634 L -1005.7276,179.10715 z"
+         style="fill:#000000;fill-opacity:1;stroke:#ececfd;stroke-width:11;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
   </g>
 </svg>

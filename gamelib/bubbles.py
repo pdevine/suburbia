@@ -22,7 +22,6 @@ SCREEN_HEIGHT = 600
 win = None
 
 import grass
-from grass import GrassBlade, Lawn
 
 class ThoughtBubble(object):
     bubble_width = 640
@@ -91,7 +90,6 @@ def main():
     bgPat = pyglet.image.SolidColorImagePattern((0,0,0,255))
     bg = pyglet.image.create(win.width, win.height, bgPat)
 
-    lawn = Lawn()
     bub = ThoughtBubble('Click to make this disappear. asdf asdf .qwer p30n fpin pp) ) *HNPO *H#NN ! #RFL')
 
     magicEventRegister(win, events, [bub])
@@ -100,14 +98,12 @@ def main():
         tick = clock.tick()
         win.dispatch_events()
 
-        lawn.update(tick)
         bub.update(tick)
         events.ConsumeEventQueue()
 
         rabbyt.clear((1, 1, 1))
         bg.blit(0,0)
 
-        lawn.draw()
         bub.draw()
 
         win.flip()

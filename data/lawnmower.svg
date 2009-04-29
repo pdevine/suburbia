@@ -65,22 +65,31 @@
        id="rect2383"
        width="301.78586"
        height="135.93315"
-       x="300.69794"
-       y="286.40887"
-       transform="matrix(1,0,-0.755026,0.6556949,0,0)" />
+       x="591.60614"
+       y="338.698"
+       transform="matrix(1,0,-0.755026,0.6556949,0,0)"
+       inkscape:export-filename="/b/data/lawnmower.png"
+       inkscape:export-xdpi="9.8155432"
+       inkscape:export-ydpi="9.8155432" />
     <rect
        style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:6.64848757;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect3155"
        width="128.98912"
-       height="63.180195"
-       x="387.09628"
-       y="322.78537"
-       transform="matrix(1,0,-0.755026,0.6556949,0,0)" />
+       height="63.180199"
+       x="678.00452"
+       y="375.07452"
+       transform="matrix(1,0,-0.755026,0.6556949,0,0)"
+       inkscape:export-filename="/b/data/lawnmower.png"
+       inkscape:export-xdpi="9.8155432"
+       inkscape:export-ydpi="9.8155432" />
     <path
        style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:6.64848757;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M -54.995622,23.380697 L -57.52024,25.573177 L -158.69372,113.4363 L -161.21834,115.62878 L -157.90584,115.62878 L -21.204949,278.48592 L -17.861199,278.48592 L -15.336581,276.29344 L 85.836903,188.43032 L 88.361521,186.23784 L 85.017771,186.23784 L -51.683122,23.380697 L -54.995622,23.380697 z M -53.396263,27.745167 L 76.67963,190.60231 L -19.491807,274.12145 L -149.5677,111.26431 L -53.396263,27.745167 z"
+       d="M 196.43295,57.666411 L 193.90833,59.858891 L 92.734851,147.72201 L 90.210231,149.91449 L 93.522731,149.91449 L 230.22362,312.77163 L 233.56737,312.77163 L 236.09199,310.57915 L 337.26547,222.71603 L 339.79009,220.52355 L 336.44634,220.52355 L 199.74545,57.666411 L 196.43295,57.666411 z M 198.03231,62.030881 L 328.1082,224.88802 L 231.93676,308.40716 L 101.86087,145.55002 L 198.03231,62.030881 z"
        id="rect3157"
-       sodipodi:nodetypes="cccccccccccccccccc" />
+       sodipodi:nodetypes="cccccccccccccccccc"
+       inkscape:export-filename="/b/data/lawnmower.png"
+       inkscape:export-xdpi="9.8155432"
+       inkscape:export-ydpi="9.8155432" />
     <path
        sodipodi:type="arc"
        style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#bcc1bc;stroke-width:6.0999999;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
@@ -90,7 +99,10 @@
        sodipodi:rx="42.857143"
        sodipodi:ry="42.857143"
        d="M 334.2857,512.36218 A 42.857143,42.857143 0 1 1 248.57141,512.36218 A 42.857143,42.857143 0 1 1 334.2857,512.36218 z"
-       transform="matrix(0.8049203,0,0,0.8049203,2.9501921,-115.37875)" />
+       transform="matrix(0.8049203,0,0,0.8049203,254.37876,-81.093036)"
+       inkscape:export-filename="/b/data/lawnmower.png"
+       inkscape:export-xdpi="9.8155432"
+       inkscape:export-ydpi="9.8155432" />
     <path
        sodipodi:type="arc"
        style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#bcc1bc;stroke-width:6.0999999;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
@@ -100,14 +112,27 @@
        sodipodi:rx="42.857143"
        sodipodi:ry="42.857143"
        d="M 334.2857,512.36218 A 42.857143,42.857143 0 1 1 248.57141,512.36218 A 42.857143,42.857143 0 1 1 334.2857,512.36218 z"
-       transform="matrix(1.1555935,0,0,1.1555935,-306.22552,-311.14884)" />
+       transform="matrix(1.1555935,0,0,1.1555935,-54.796949,-276.86313)"
+       inkscape:export-filename="/b/data/lawnmower.png"
+       inkscape:export-xdpi="9.8155432"
+       inkscape:export-ydpi="9.8155432" />
     <rect
        style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:6.64848757;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect3163"
        width="128.98912"
-       height="63.180267"
-       x="343.33969"
-       y="264.83154"
-       transform="matrix(1,0,-0.755026,0.6556949,0,0)" />
+       height="63.180271"
+       x="634.24792"
+       y="317.12067"
+       transform="matrix(1,0,-0.755026,0.6556949,0,0)"
+       inkscape:export-filename="/b/data/lawnmower.png"
+       inkscape:export-xdpi="9.8155432"
+       inkscape:export-ydpi="9.8155432" />
+    <path
+       style="opacity:1;fill:#000000;fill-opacity:1;stroke:#bcc1bc;stroke-width:6.0999999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 157.15625,423.79018 L 157.15625,672.35268 L 225.71875,672.35268 L 225.71875,578.07143 L 305.71875,578.07143 L 305.71875,509.50893 L 225.71875,509.50893 L 225.71875,423.79018 L 157.15625,423.79018 z"
+       id="rect3189"
+       inkscape:export-filename="/b/data/pullcord_handle.png"
+       inkscape:export-xdpi="58.191231"
+       inkscape:export-ydpi="58.191231" />
   </g>
 </svg>

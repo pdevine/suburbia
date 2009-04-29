@@ -79,7 +79,7 @@ class Mower(pyglet.sprite.Sprite):
 
         if self.rpms:
             # internal friction
-            self.rpms -= self.difficulty + 10*(1/math.log(2+self.rpms))
+            self.rpms -= self.difficulty + 50.0/math.log(20+self.rpms)
             self.rpms = max(0, self.rpms)
             events.Fire('MowerRPM', self.rpms)
             if self.rpms >= self.RPMGOAL:
@@ -95,7 +95,7 @@ class Mower(pyglet.sprite.Sprite):
 
     def startPullCord(self, x, y, button):
         # give a little initial rpms so the visual cues come up
-        self.rpms = 50
+        self.rpms = 150
         self.pullcord = PullCord(x,y)
 
     def stopPullCord(self):
