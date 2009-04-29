@@ -88,6 +88,7 @@ class Lawn:
         self.house = image.load(data_file('house.png'))
         self.truck = image.load(data_file('truck.png'))
         self.garbagecan = image.load(data_file('garbagecan-closed.png'))
+        self.dogpiss = image.load(data_file('dogpiss.png'))
 
         self.mower = Mower()
 
@@ -121,6 +122,10 @@ class Lawn:
         self.mow_counter = self.mow_time
         
         self.mowing = True
+
+        for blade in self.lawn[31].grass:
+            blade.brown()
+        self.lawn[31].rebuild()
 
     def update(self, tick):
         if self.mowing:
@@ -160,6 +165,11 @@ class Lawn:
         self.truck.blit(700, 150)
         self.garbagecan.blit(100, 100)
 
+        glColor4f(1.0, 1.0, 1.0, 0.3)
+        self.dogpiss.blit(300, 150)
+
+        glColor4f(1.0, 1.0, 1.0, 1.0)
+
     def draw_field(self):
         glColor4f(0.2, self.green_value, 0.2, 1)
 
@@ -188,7 +198,14 @@ class Grass:
         self.pos = euclid.Vector2(x, y)
         self.height = 8
         self.width = 4
+
+        self.green()
+
+    def green(self):
         self.colors = ((0, 1.0, 0, 1), (0, 0.9, 0, 1), (0, 0.8, 0, 1))
+
+    def brown(self):
+        self.colors = ((0.6, 0.33, 0, 1),)
 
     def update(self, tick):
         pass
