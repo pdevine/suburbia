@@ -65,9 +65,6 @@ class Mower:
         self.rect = Rect(300, 260, 50, 10)
         self.image = image.load(data_file('mower.png'))
 
-    def update(self, tick):
-        pass
-
     def draw(self):
         self.image.blit(self.rect.x, self.rect.y)
         #self.draw_mow_rect()
@@ -88,14 +85,17 @@ class Mower:
 class Lawn:
     def __init__(self):
         self.street = image.load(data_file('street.png'))
+        self.house = image.load(data_file('house.png'))
+        self.truck = image.load(data_file('truck.png'))
+        self.dogpiss = image.load(data_file('dogpiss.png'))
 
         self.mower = Mower()
 
         self.lawn = []
         self.current_segment = 0
 
-        for y in range(130, 300, 10):
-            for x in range(40, SCREEN_WIDTH, 40):
+        for y in range(130, 260, 10):
+            for x in range(0, SCREEN_WIDTH, 40):
 
                 # only build up to the edge of the lawn
                 if x > 440 + (y - 130) / 10 * 20:
@@ -121,6 +121,10 @@ class Lawn:
         self.mow_counter = self.mow_time
         
         self.mowing = True
+
+        for blade in self.lawn[31].grass:
+            blade.brown()
+        self.lawn[31].rebuild()
 
     def update(self, tick):
         if self.mowing:
@@ -152,9 +156,17 @@ class Lawn:
         glPopMatrix()
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
+        self.house.blit(170, 260)
+
         self.mower.draw()
 
         self.street.blit(0, 0)
+        self.truck.blit(700, 150)
+
+        glColor4f(1.0, 1.0, 1.0, 0.3)
+        self.dogpiss.blit(300, 150)
+
+        glColor4f(1.0, 1.0, 1.0, 1.0)
 
     def draw_field(self):
         glColor4f(0.2, self.green_value, 0.2, 1)
@@ -184,7 +196,14 @@ class Grass:
         self.pos = euclid.Vector2(x, y)
         self.height = 8
         self.width = 4
+
+        self.green()
+
+    def green(self):
         self.colors = ((0, 1.0, 0, 1), (0, 0.9, 0, 1), (0, 0.8, 0, 1))
+
+    def brown(self):
+        self.colors = ((0.6, 0.33, 0, 1),)
 
     def update(self, tick):
         pass

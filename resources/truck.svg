@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="truck.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="375"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="640"
+     inkscape:window-height="701"
+     inkscape:window-x="167"
+     inkscape:window-y="26" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1;fill:#ffcc00;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2387"
+       width="355.57367"
+       height="323.24884"
+       x="54.548229"
+       y="215.95587"
+       rx="0"
+       ry="0"
+       inkscape:export-filename="/Users/patrick/truck.png"
+       inkscape:export-xdpi="40.686596"
+       inkscape:export-ydpi="40.686596" />
+    <rect
+       style="opacity:1;fill:#5599ff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2383"
+       width="301.02545"
+       height="173.74623"
+       x="80.812195"
+       y="254.34167"
+       ry="20.20306"
+       rx="26.263952"
+       inkscape:export-filename="/Users/patrick/truck.png"
+       inkscape:export-xdpi="40.686596"
+       inkscape:export-ydpi="40.686596" />
+    <rect
+       style="opacity:1;fill:#808080;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2385"
+       width="299.00516"
+       height="60.609154"
+       x="82.83252"
+       y="456.37219"
+       rx="26.263952"
+       ry="20.20306"
+       inkscape:export-filename="/Users/patrick/truck.png"
+       inkscape:export-xdpi="40.686596"
+       inkscape:export-ydpi="40.686596" />
+    <rect
+       style="opacity:1;fill:#806600;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2389"
+       width="355.5737"
+       height="46.46701"
+       x="54.548244"
+       y="545.26556"
+       inkscape:export-filename="/Users/patrick/truck.png"
+       inkscape:export-xdpi="40.686596"
+       inkscape:export-ydpi="40.686596" />
+    <path
+       style="fill:#806600;fill-opacity:1;stroke:#000000;stroke-width:3.96682096;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 202.01392,153.30982 L 555.6005,153.30982 L 408.11823,211.93185 L 54.531647,211.93185 L 202.01392,153.30982 z"
+       id="rect2391"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-xdpi="40.686596"
+       inkscape:export-ydpi="40.686596"
+       inkscape:export-filename="/Users/patrick/truck.png" />
+  </g>
+</svg>
