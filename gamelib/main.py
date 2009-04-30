@@ -42,12 +42,6 @@ def main(sound_on=True):
         soundtrack = sound.queue_soundtrack()
         soundtrack.play()
 
-    #can_lid = scene.garbage_can.image_lid
-    #cursor = pyglet.window.ImageMouseCursor(can_lid,
-    #                                        can_lid.width / 2,
-    #                                        can_lid.height / 2)
-    #game_window.set_mouse_cursor(cursor)
-
     while not game_window.has_exit:
         tick = pyglet.clock.tick()
         game_window.dispatch_events()
