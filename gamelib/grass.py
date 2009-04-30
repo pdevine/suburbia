@@ -149,6 +149,8 @@ class Lawn:
     def draw(self):
         self.draw_field()
 
+        self.house.blit(170, 260)
+
         glPushMatrix()
         for grass in self.lawn:
             grass.draw()
@@ -156,7 +158,6 @@ class Lawn:
         glPopMatrix()
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
-        self.house.blit(170, 260)
 
         self.mower.draw()
 

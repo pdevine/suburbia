@@ -43,6 +43,9 @@ class Rect(object):
             (self.x, self.y, self.width, self.height) = args[0]
         elif len(args) == 4:
             (self.x, self.y, self.width, self.height) = args
+        elif len(args) == 3:
+            (self.x, self.y, image_data) = args
+            self.set_rect_from_image(image_data)
 
         # x and y args are the bottom left
 
@@ -132,17 +135,25 @@ class Rect(object):
 
     topright = property(_getTopRight, None)
 
+    def set_rect_from_image(self, image):
+        self.width = image.width
+        self.height = image.height
+
+        # reset center of image
+        self.x += self.width/2
+        self.y += self.height/2
+
     def move(self, x, y):
         return Rect(x+self.x, y+self.y, self.width, self.height)
 
-    def collidepoint(self, *args):
+    def collide_point(self, *args):
         if len(args) == 1:
             (x, y) = args[0]
         else:
             (x, y) = args
 
-        if x > self.x and x < self.x + self.width and \
-           y > self.y and y < self.y + self.height:
+        if x > self.x - self.width/2 and x < self.x + self.width/2 and \
+           y > self.y - self.height/2and y < self.y + self.height/2:
             return True
         else:
             return False

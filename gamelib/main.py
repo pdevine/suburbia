@@ -10,17 +10,18 @@ import pyglet
 import sky
 import sound
 import rabbyt
+import window
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-game_window = None
-
 def main(sound_on=True):
     global game_window
 
-    game_window = pyglet.window.Window(width=800, height=600)
     show_fps = True
+
+    game_window = pyglet.window.Window(width=800, height=600)
+    window.set_window(game_window)
 
     pyglet.clock.schedule(rabbyt.add_time)
     rabbyt.set_default_attribs()
@@ -34,11 +35,11 @@ def main(sound_on=True):
         soundtrack = sound.queue_soundtrack()
         soundtrack.play()
 
-    can_lid = scene.garbage_can.image_lid
-    cursor = pyglet.window.ImageMouseCursor(can_lid,
-                                            can_lid.width / 2,
-                                            can_lid.height / 2)
-    game_window.set_mouse_cursor(cursor)
+    #can_lid = scene.garbage_can.image_lid
+    #cursor = pyglet.window.ImageMouseCursor(can_lid,
+    #                                        can_lid.width / 2,
+    #                                        can_lid.height / 2)
+    #game_window.set_mouse_cursor(cursor)
 
     while not game_window.has_exit:
         tick = pyglet.clock.tick()

@@ -36,8 +36,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="294.43009"
-     inkscape:cy="509.70542"
+     inkscape:cx="424.06914"
+     inkscape:cy="495.14728"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -156,6 +156,89 @@
        y="534.659"
        ry="13.637059"
        inkscape:export-filename="/Users/patrick/garbagecan-open.png"
+       inkscape:export-xdpi="18.136667"
+       inkscape:export-ydpi="18.136667" />
+    <path
+       style="fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:4.25278854;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 567.77693,506.64958 L 680.79555,508.9357 C 708.18844,508.9357 745.37763,473.33393 745.37763,504.36347 L 725.1989,707.29672 C 725.1989,738.32626 700.11568,748.97855 672.72279,748.97855 L 572.82241,750.12161 C 545.42952,750.12161 524.38691,735.64141 524.38691,704.61187 L 504.20395,510.07877 C 504.20395,479.04923 540.38404,506.64958 567.77693,506.64958 z"
+       id="path2521"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/Users/patrick/garbagecan-full.png"
+       inkscape:export-xdpi="18.136667"
+       inkscape:export-ydpi="18.136667" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:1;fill:#808080;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path2523"
+       sodipodi:cx="329.30972"
+       sodipodi:cy="494.2529"
+       sodipodi:rx="121.2183"
+       sodipodi:ry="22.728432"
+       d="M 450.52802,494.2529 A 121.2183,22.728432 0 1 1 208.09142,494.2529 A 121.2183,22.728432 0 1 1 450.52802,494.2529 z"
+       transform="translate(294.97598,2.9518914)"
+       inkscape:export-filename="/Users/patrick/garbagecan-full.png"
+       inkscape:export-xdpi="18.136667"
+       inkscape:export-ydpi="18.136667" />
+    <rect
+       style="opacity:1;fill:#999999;fill-opacity:1;stroke:#000000;stroke-width:3.29814792;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2525"
+       width="27.441532"
+       height="199.21033"
+       x="841.21881"
+       y="912.25568"
+       ry="20.2244"
+       transform="matrix(0.8937575,-0.4485504,-6.081487e-2,0.9981491,0,0)"
+       inkscape:export-filename="/Users/patrick/garbagecan-full.png"
+       inkscape:export-xdpi="18.136667"
+       inkscape:export-ydpi="18.136667" />
+    <rect
+       style="opacity:1;fill:#999999;fill-opacity:1;stroke:#000000;stroke-width:3.29814792;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2527"
+       width="27.441526"
+       height="199.21033"
+       x="-606.14233"
+       y="263.35541"
+       ry="20.2244"
+       transform="matrix(-0.8937575,-0.4485504,6.0814864e-2,0.9981491,0,0)"
+       inkscape:export-filename="/Users/patrick/garbagecan-full.png"
+       inkscape:export-xdpi="18.136667"
+       inkscape:export-ydpi="18.136667" />
+    <rect
+       style="opacity:1;fill:#999999;fill-opacity:1;stroke:#000000;stroke-width:3.0999999;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2529"
+       width="26.263956"
+       height="196.97974"
+       x="590.95068"
+       y="534.07538"
+       ry="13.637059"
+       inkscape:export-filename="/Users/patrick/garbagecan-full.png"
+       inkscape:export-xdpi="18.136667"
+       inkscape:export-ydpi="18.136667" />
+    <rect
+       style="opacity:1;fill:#999999;fill-opacity:1;stroke:#000000;stroke-width:3.0999999;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2531"
+       width="26.263956"
+       height="196.97974"
+       x="640.44818"
+       y="534.58044"
+       ry="13.637059"
+       inkscape:export-filename="/Users/patrick/garbagecan-full.png"
+       inkscape:export-xdpi="18.136667"
+       inkscape:export-ydpi="18.136667" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.6298213;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 658.80654,502.87888 C 658.80654,521.22383 639.18122,519.75133 615.00002,519.75133 C 590.81882,519.75133 571.1935,521.22383 571.1935,502.87888 C 571.1935,484.53392 590.81882,484.98385 615.00002,484.98385 C 639.18122,484.98385 658.80654,484.53392 658.80654,502.87888 z"
+       id="path2533"
+       sodipodi:nodetypes="csssc"
+       inkscape:export-filename="/Users/patrick/garbagecan-full.png"
+       inkscape:export-xdpi="18.136667"
+       inkscape:export-ydpi="18.136667" />
+    <path
+       style="fill:#ff00ff;fill-opacity:1;stroke:#000000;stroke-width:1.82412624;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 682.98236,484.58138 L 701.30337,484.58138 C 705.68329,484.58138 709.20938,485.71271 709.20938,487.11799 L 709.20938,514.42295 C 709.20938,515.82823 705.68329,516.95956 701.30337,516.95956 L 682.98236,516.95956 C 678.60244,516.95956 676.5604,519.16128 676.5604,517.756 L 675.07635,487.11799 C 675.07635,485.71271 678.60244,484.58138 682.98236,484.58138 z"
+       id="rect2536"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/Users/patrick/garbagecan-full.png"
        inkscape:export-xdpi="18.136667"
        inkscape:export-ydpi="18.136667" />
   </g>
