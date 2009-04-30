@@ -156,6 +156,9 @@ class FontLoader(DynamicCachingLoader):
             name = 'CatholicSchoolGirls BB'
         elif resourceName == 'default':
             name = 'SmackAttack BB'
+        elif resourceName == 'hint':
+            name = 'SmackAttack BB'
+            size = 11
         else:
             name = resourceName
         try:

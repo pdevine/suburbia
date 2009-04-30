@@ -5,6 +5,7 @@ from pyglet.window import Window
 from pyglet import clock
 from pyglet import image
 
+import events
 import colorsys
 from random import randint
 import random
@@ -50,6 +51,7 @@ WIND_SPEED = -30
 
 class Background:
     def __init__(self):
+        self.over = False
         self.color = (0.78, 0.78, 1.0)
         self.hsv_color = [240/360.0, 60/100.0, 0]
 
@@ -67,7 +69,12 @@ class Background:
         self.weather_time = 20
         self.counter = self.weather_time
 
+        events.AddListener(self)
+
     def update(self, tick):
+        if self.over:
+            return self.update_dead(tick)
+            
         global CURRENT_CLOUD_COVERAGE
 
         self.counter -= tick
@@ -108,6 +115,12 @@ class Background:
         for element in elements:
             if element:
                 element.draw()
+
+    def update_dead(self, tick):
+        return
+
+    def On_NarrativeOver(self):
+        self.over = True
 
 class Tree:
     def __init__(self):
@@ -218,8 +231,10 @@ class OrbitingObject:
         elif CURRENT_CLOUD_COVERAGE != 'overcast' and self.alpha < 1:
             self.alpha = min(self.alpha + 0.3 * tick, 1.0)
                 
+        degBefore = self.deg
         self.deg -= 10 * tick
         if self.deg < 0:
+            self.set()
             self.deg = 360 + self.deg
 
         self.rad = math.radians(self.deg)
@@ -247,12 +262,24 @@ class Moon(OrbitingObject):
         OrbitingObject.update(self, tick)
         self.image = self.phases[self.current_phase]
 
+    def set(self):
+        pass
+    def rise(self):
+        pass
+
 class Sun(OrbitingObject):
     def __init__(self):
         OrbitingObject.__init__(self)
         self.image = image.load(data_file('sun.png'))
 
         self.deg = 180
+
+    def set(self):
+        events.Fire('Sunset')
+        print 'sunset'
+    def rise(self):
+        events.Fire('Sunrise')
+        print 'sunrise'
 
 
 class Rain:
