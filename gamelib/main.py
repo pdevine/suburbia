@@ -7,7 +7,10 @@ package.
 '''
 
 import pyglet
+import events
 import sky
+import bubbles
+import narrative
 import sound
 import rabbyt
 
@@ -24,6 +27,10 @@ def main(sound_on=True):
 
     pyglet.clock.schedule(rabbyt.add_time)
     rabbyt.set_default_attribs()
+
+    bubbles.init()
+    bubbles.win = game_window
+    storyteller = narrative.StoryTeller()
 
     scene = sky.Background()
 
@@ -45,9 +52,13 @@ def main(sound_on=True):
         game_window.dispatch_events()
 
         scene.update(tick)
+        bubbles.bubbleMaker.update(tick)
         rabbyt.clear((scene.color))
 
+        events.ConsumeEventQueue()
+
         scene.draw()
+        bubbles.bubbleMaker.draw()
 
         if show_fps:
             fps_display.draw()

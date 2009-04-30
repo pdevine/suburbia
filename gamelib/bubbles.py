@@ -21,6 +21,11 @@ SCREEN_HEIGHT = 600
 
 win = None
 
+bubbleMaker = None
+
+def init():
+    global bubbleMaker
+    bubbleMaker = BubbleMaker()
 
 class ThoughtBubble(object):
     bubble_width = 640
@@ -187,13 +192,13 @@ class BubbleMaker(object):
     def On_NewThought(self, msg):
         bubble = ThoughtBubble(msg)
         for bub in self.tBubbles:
-            bub.die()
+            bub.dying = True
         self.tBubbles.append(bubble)
 
     def On_NewHint(self, msg):
         bubble = HintBubble(msg)
         for bub in self.hBubbles:
-            bub.die()
+            bub.dying = True
         self.hBubbles.append(bubble)
 
     def On_BubbleDeath(self, bub):
