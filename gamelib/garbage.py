@@ -9,6 +9,7 @@ from random import randint
 import math
 import window
 import euclid
+import events
 
 class GarbageCan:
     def __init__(self):
@@ -29,6 +30,7 @@ class GarbageCan:
         window.game_window.push_handlers(self.on_mouse_drag)
 
         self.sprite = Sprite(self.image_opened)
+        events.AddListener(self)
 
     def draw(self):
         if not self.can_active:
@@ -77,9 +79,11 @@ class GarbageCan:
         if self.lid_active:
             if self.can_rect.collide_point(x, y):
                 self.opened = False
+                events.Fire('LidClosed')
             else:
                 self.lid_rect.x = x
                 self.lid_rect.y = y
+                events.Fire('LidDropped')
 
             self.lid_active = False
             self.set_default_cursor()
@@ -90,6 +94,7 @@ class GarbageCan:
 
             self.set_default_cursor()
             self.can_active = False
+            events.Fire('CanDropped')
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.can_active:
@@ -104,6 +109,8 @@ class GarbageCan:
                     self.sprite.rotation = 90
                 else:
                     self.sprite.rotation = -90
+
+                events.Fire('CanTipped')
 
                 if not self.opened:
                     self.opened = True

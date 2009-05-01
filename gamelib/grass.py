@@ -10,6 +10,7 @@ from random import randint
 import random
 import euclid
 import math
+import events
 
 from util import data_file
 from util import Rect
@@ -126,6 +127,8 @@ class Lawn:
             blade.brown()
         self.lawn[31].rebuild()
 
+        events.AddListener(self)
+
     def update(self, tick):
         if self.mowing:
             self.mow_counter -= tick
@@ -190,6 +193,8 @@ class Lawn:
         if self.segment < 0:
             self.segment = len(self.lawn) - 1
             self.mowing = False
+            events.Fire('LawnMowed')
+            print "finished mowing"
 
 
 class Grass:

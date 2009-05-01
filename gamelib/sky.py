@@ -236,6 +236,8 @@ class OrbitingObject:
         if self.deg < 0:
             self.set()
             self.deg = 360 + self.deg
+        elif self.deg < 180 and self.deg + 10 * tick > 180:
+            self.rise()
 
         self.rad = math.radians(self.deg)
 
