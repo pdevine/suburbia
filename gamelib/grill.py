@@ -3,9 +3,12 @@ import rabbyt
 
 from pyglet import clock
 from pyglet import image
+from pyglet.gl import *
 
 import window
+import euclid
 
+from random import randint
 from util import data_file
 from util import Rect
 
@@ -51,11 +54,84 @@ class Spritzer(GrillObject):
     def __init__(self):
         self.image = image.load(data_file('spritzer.png'))
         self.rect = Rect(600, 50, self.image)
+        self.drop_range = (50, 100)
 
         self.active = False
+        self.build_drop()
+        self.drops = []
 
     def update(self, tick):
-        pass
+        for drop in self.drops:
+            drop.update(tick)
+            if drop.dead:
+                self.drops.remove(drop)
+
+    def spritz(self, pos):
+        start_pos = (pos[0] - self.rect.width/2,
+                     pos[1] + self.rect.height/2 - 8)
+        for count in range(*self.drop_range):
+            self.drops.append(WaterDrop(self.display_id, start_pos))
+
+    def draw(self):
+        GrillObject.draw(self)
+        for drop in self.drops:
+            drop.draw()
+
+    def build_drop(self):
+        self.display_id = glGenLists(1)
+        glNewList(self.display_id, GL_COMPILE)
+
+        glLineWidth(4)
+
+        glBegin(GL_LINES)
+        glVertex2i(0, 0)
+        glVertex2i(0, 4)
+        glEnd()
+
+        glColor4f(1, 1, 1, 1)
+
+        glEndList()
+
+class WaterDrop:
+    def __init__(self, display_id, pos):
+        self.display_id = display_id
+        self.lifetime_range = randint(2, 10) / 10.0
+        self.color = (0, 0, 0.95, 0.7)
+        self.vector = euclid.Vector2(0, 0)
+        self.dead = False
+
+        self.pos = euclid.Vector2(*pos)
+
+        self.vector.x = -randint(100, 200)
+        self.vector.y = randint(-10, 10)
+
+    def update(self, tick):
+        self.lifetime_range -= tick
+        if self.lifetime_range < 0:
+            self.dead = True
+            return
+
+        self.pos.x += self.vector.x * tick
+        self.pos.y += self.vector.y * tick
+
+    def draw(self):
+        glPushMatrix()
+        glTranslatef(self.pos.x, self.pos.y, 0)
+        glColor4f(*self.color)
+
+        glCallList(self.display_id)
+
+#        glLineWidth(4)
+#
+#        glBegin(GL_LINES)
+#        glVertex2i(0, 0)
+#        glVertex2i(0, 4)
+#        glEnd()
+#
+#        glColor4f(1, 1, 1, 1)
+
+        glPopMatrix()
+
 
 class Grill:
     def __init__(self):
@@ -67,7 +143,7 @@ class Grill:
         window.game_window.push_handlers(self.on_mouse_release)
 
     def update(self, tick):
-        pass
+        self.spritzer.update(tick)
 
     def draw(self):
         self.image.blit(120, 100)
@@ -78,6 +154,7 @@ class Grill:
     def on_mouse_press(self, x, y, button, modifiers):
         if self.spritzer.active:
             print "spritz"
+            self.spritzer.spritz((x, y))
             return
 
         self.beef.handler((x, y))
@@ -101,6 +178,8 @@ def main():
     while not win.has_exit:
         tick = clock.tick()
         win.dispatch_events()
+
+        grill.update(tick)
 
         rabbyt.clear((1, 1, 1))
 
