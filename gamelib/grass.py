@@ -89,6 +89,7 @@ class Lawn:
         self.house = image.load(data_file('house.png'))
         self.truck = image.load(data_file('truck.png'))
         self.dogpiss = image.load(data_file('dogpiss.png'))
+        self.grill = image.load(data_file('grill.png'))
 
         self.mower = Mower()
 
@@ -171,6 +172,8 @@ class Lawn:
         self.dogpiss.blit(300, 150)
 
         glColor4f(1.0, 1.0, 1.0, 1.0)
+
+        self.grill.blit(500, 270)
 
     def draw_field(self):
         glColor4f(0.2, self.green_value, 0.2, 1)

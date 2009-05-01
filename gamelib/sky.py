@@ -57,8 +57,6 @@ class Background:
 
         self.weather = 'cloudy'
 
-        self.tree = Tree()
-
         self.sun = Sun()
         self.moon = Moon()
         self.rain = Rain()
@@ -110,7 +108,7 @@ class Background:
 
     def draw(self):
         elements = [self.sun, self.moon, self.clouds, self.lawn,
-                    self.tree, self.rain, self.garbage_can]
+                    self.rain, self.garbage_can]
 
         for element in elements:
             if element:
@@ -121,13 +119,6 @@ class Background:
 
     def On_NarrativeOver(self):
         self.over = True
-
-class Tree:
-    def __init__(self):
-        self.image = image.load(data_file('bigtree.png'))
-
-    def draw(self):
-        self.image.blit(100, 200)
 
 class Clouds:
     def __init__(self, bg_color):
