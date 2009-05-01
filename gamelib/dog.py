@@ -10,6 +10,7 @@ import random
 import euclid
 import data
 import events
+import window
 
 from pyglet.gl import *
 from util import magicEventRegister
@@ -28,9 +29,8 @@ LAWN_WIDTH = 400
 LAWN_Y = 20
 LAWN_HEIGHT = 300
 
-win = None
-
 class Dog(pyglet.sprite.Sprite):
+    hintDone = False
     def __init__(self, color=(255,255,255)):
         img = data.pngs['dog.png']
         self.highlighted = False
@@ -50,9 +50,9 @@ class Dog(pyglet.sprite.Sprite):
         self.pooCountdown = 0
         self.activateCountdown = 0
 
-        win.push_handlers(self.on_mouse_press)
-        win.push_handlers(self.on_mouse_release)
-        win.push_handlers(self.on_mouse_motion)
+        window.game_window.push_handlers(self.on_mouse_press)
+        window.game_window.push_handlers(self.on_mouse_release)
+        window.game_window.push_handlers(self.on_mouse_motion)
         events.AddListener(self)
 
     def getxy(self):
@@ -97,21 +97,21 @@ class Dog(pyglet.sprite.Sprite):
         if self.runningAway:
             moveTowardsTarget(700,500)
             if self.distanceTo(700,500) < 5:
-                print 'reached resting place'
+                #print 'reached resting place'
                 self.active = False
 
         elif self.searching:
             moveTowardsTarget(*self.pooTarget)
 
             if self.distanceTo(*self.pooTarget) < 5:
-                print 'reached poo target'
+                #print 'reached poo target'
                 self.poo()
                 self.searching = False
 
         elif self.pooing:
             self.pooCountdown -= timeChange
             if self.pooCountdown <= 0:
-                print 'did my business'
+                #print 'did my business'
                 events.Fire('DogPoo', self.xy)
                 self.runaway()
                 self.pooing = False
@@ -130,7 +130,7 @@ class Dog(pyglet.sprite.Sprite):
         self.pooCountdown = self.pooDelay
 
     def activate(self):
-        print 'ACTIVATING'
+        #print 'ACTIVATING'
         events.Fire('DogActive', self)
         self.active = True
         self.searching = True
@@ -156,18 +156,21 @@ class Dog(pyglet.sprite.Sprite):
     def on_mouse_motion(self, x, y, dx, dy):
         if self.collides(x,y):
             self.highlighted = True
+            if not Dog.hintDone:
+                events.Fire('NewHint', 'I can yell at the dog by clicking on her')
+                Dog.hintDone = True
         else:
             self.highlighted = False
 
     def On_MowerRPM(self, rpms):
-        print 'dog got MowerRPM', rpms
+        #print 'dog got MowerRPM', rpms
         if self.active:
             return
         if rpms > mower.Mower.RPMGOAL*0.1 and not self.activateCountdown:
             self.activate()
 
     def On_MowerStart(self, mower):
-        print 'dog got MowerStart'
+        #print 'dog got MowerStart'
         if self.active:
             self.runaway()
             
@@ -178,7 +181,7 @@ class PooMaster(object):
         self.pooSprites = []
 
     def On_DogPoo(self, pos):
-        print 'putting poo at', pos
+        #print 'putting poo at', pos
         img = data.pngs['poo.png']
         s = pyglet.sprite.Sprite(img, *pos)
         self.pooSprites.append(s)
@@ -189,26 +192,28 @@ class PooMaster(object):
 
 
 def main():
-    global win
     clock.schedule(rabbyt.add_time)
 
-    win = Window(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
+    window.game_window = Window(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
     rabbyt.set_default_attribs()
-    mower.win = win
+
+    bgPat = pyglet.image.SolidColorImagePattern((200,200,200,255))
+    bg = pyglet.image.create(window.game_window.width, window.game_window.height, bgPat)
 
     dog = Dog()
     mowr = mower.Mower()
     guage = mower.Guage(mowr)
-    bubbles.win = win
+    bubbles.init()
     pooMaster = PooMaster()
 
     objs = [dog, mowr, guage]
-    magicEventRegister(win, events, objs)
+    magicEventRegister(window.game_window, events, objs)
 
-    while not win.has_exit:
+    while not window.game_window.has_exit:
         tick = clock.tick()
-        win.dispatch_events()
+        window.game_window.dispatch_events()
 
+        bubbles.bubbleMaker.update(tick)
         for obj in objs:
             obj.update(tick)
         
@@ -216,12 +221,14 @@ def main():
 
         rabbyt.clear((1, 1, 1))
 
+        bg.blit(0,0)
         mowr.draw()
         guage.draw()
         pooMaster.draw()
         dog.draw()
+        bubbles.bubbleMaker.draw()
 
-        win.flip()
+        window.game_window.flip()
 
 if __name__ == '__main__':
     main()
