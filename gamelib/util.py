@@ -18,6 +18,7 @@ def magicEventRegister(win, events, objects):
             if attr.startswith('on_'):
                 win.push_handlers(getattr(obj, attr))
 
+comment = '''
 def logicalToPerspective(x,y):
     vanishingLineX = 400.0
     vanishingLineY = 300.0
@@ -36,6 +37,14 @@ def logicalToPerspective(x,y):
     newY = y - (newDeltaY - oldDeltaY)
     newY = y
     return newX, newY
+    '''
+
+def logicalToPerspective(x,y):
+    bottomLine  = 60.0
+    topLine = 300.0
+    pct = (topLine-(y-bottomLine))/(topLine-bottomLine)
+    x = x - 150 * pct
+    return x,y
 
 class Rect(object):
     def __init__(self, *args):

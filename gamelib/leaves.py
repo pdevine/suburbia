@@ -3,35 +3,40 @@ import math
 import rabbyt
 import pyglet
 import pyglet.window
-from pyglet.window import Window
 from pyglet import clock
 from pyglet import image
 import random
 import euclid
 import data
 import events
+import bubbles
+import window
 
 from pyglet.gl import *
 from util import magicEventRegister
 from util import logicalToPerspective
+
+import sky
 
 rabbyt.data_director = os.path.dirname(__file__)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-EDGE = 300
+EDGE = 60
+LOGICAL_X_EDGE = 800
 
 win = None
 
 class Leaf(pyglet.sprite.Sprite):
+    hintDone = False
     def __init__(self, color=(255,255,255)):
         img = data.textures['grassblade.png']
         self.blowing = True
         self.highlighted = False
         self.sweptOffEdge = False
-        self.logicalX = 0
-        self.logicalY = random.randint(1,200)
+        self.logicalX = random.randint(20,60)
+        self.logicalY = random.randint(20,260)
         self.logicalZ = random.randint(100,150)
         super(Leaf,self).__init__(img)
         self.origColor = color
@@ -90,7 +95,7 @@ class Leaf(pyglet.sprite.Sprite):
         distanceX = abs(x-self.logicalX)
         distanceY = abs(y-self.logicalY)
         distanceZ = abs(z-self.logicalZ)
-        return all((distanceX < 50, distanceY < 50, distanceZ < 1))
+        return all((distanceX < 40, distanceY < 40, distanceZ < 1))
 
     def update(self, timeChange):
         if self.sweptOffEdge:
@@ -153,7 +158,7 @@ class Leaf(pyglet.sprite.Sprite):
 
         self.scale = (1.0 + (300.0-self.logicalY)/200.0)/2
         if self.clumpMates:
-            self.color = (255,0,0)
+            self.color = (255,240,240)
         else:
             self.color = self.origColor
         if self.highlighted:
@@ -170,14 +175,20 @@ class Leaf(pyglet.sprite.Sprite):
             self.die()
 
         #print self.logicalY
-        if self.logicalY > EDGE:
-            print "SWEPT OFF"
-            self.sweptOffEdge = True
+        if self.logicalY < EDGE:
+            self.startDying()
+
+        if self.logicalZ == 0 and self.logicalX > LOGICAL_X_EDGE:
+            self.startDying()
 
         self.clumpMates = [] #clear out the clumpmates in case we've moved away
 
         #print 'updated leaf to', self
         #print 'at', self.xy
+
+    def startDying(self):
+        events.Fire('LeafSweptOff')
+        self.sweptOffEdge = True
 
     def offEdgeUpdate(self, timechange):
         self.opacity -= timechange*4
@@ -195,7 +206,7 @@ class Leaf(pyglet.sprite.Sprite):
         if self.logicalZ > 0:
             # can only sweep ones on the ground
             return
-        self.velocityY += 3
+        self.velocityY -= 3
         self.velocityZ = random.randint(0,4)
 
     def On_Wind(self):
@@ -212,7 +223,7 @@ class Leaf(pyglet.sprite.Sprite):
 
     def on_mouse_scroll(self, x, y, scrollx, scrolly):
         if self.collides(x,y):
-            if scrolly > 0:
+            if scrolly < 0:
                 #print 'self collides.  self.x, self.y', self.x, self.y
                 #print 'info x, y, sx, sy', x, y, scrollx, scrolly
                 self.sweep()
@@ -224,13 +235,13 @@ class Leaf(pyglet.sprite.Sprite):
     def on_mouse_motion(self, x, y, dx, dy):
         if self.collides(x,y):
             self.highlighted = True
+            if not Leaf.hintDone:
+                events.Fire('NewHint', 'I can sweep these up by using the mouse wheel or the mouse buttons.')
+                Leaf.hintDone = True
         else:
             self.highlighted = False
         
 
-
-
-        
 class LeafGroup(list):
     def update(self, timechange):
         lastLeaf = None
@@ -256,10 +267,15 @@ class LeafGroup(list):
     def On_LeafDeath(self, leaf):
         self.remove(leaf)
 
+
 class LeafGenerator(object):
+    rate = (1,6)
     def __init__(self):
         self.countdown = random.randint(0, 1)
         self.brownness = 0
+        self.count = 0
+
+        events.AddListener(self)
 
     def update(self, timechange):
         self.countdown -= timechange
@@ -270,13 +286,20 @@ class LeafGenerator(object):
         #blue = 128*(math.cos(self.brownness)+1)
         #color = (red, green, blue)
         color = (255,255,255)
-        if self.countdown > 0:
+        if self.countdown > 0 or self.count >50:
             return
 
         #print 'birthing leaf'
-        self.countdown = random.randint(1, 6)
+        self.countdown = random.randint(*self.rate)
+        # TODO: this is debug
+        self.countdown = random.random()
         leaf = Leaf(color)
         events.Fire('LeafBirth', leaf)
+        self.count += 1
+
+    def On_LeafSweptOff(self):
+        self.count -= 1
+
 
 class Wind(object):
     def __init__(self):
@@ -291,16 +314,22 @@ class Wind(object):
         self.countdown = random.randint(3, 5)
         events.Fire('Wind')
 
+
 def main():
     global win
     clock.schedule(rabbyt.add_time)
 
-    win = Window(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
+    win = pyglet.window.Window(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
+    window.set_window(win)
     rabbyt.set_default_attribs()
+    bubbles.init()
+    bubbles.win = win
 
     wind = Wind()
     leafgen = LeafGenerator()
     leaves = LeafGroup()
+
+    bg = sky.Background()
 
     objs = [leafgen, leaves]
     magicEventRegister(win, events, objs)
@@ -309,6 +338,8 @@ def main():
         tick = clock.tick()
         win.dispatch_events()
 
+        bubbles.bubbleMaker.update(tick)
+        bg.update(tick)
         for obj in objs:
             obj.update(tick)
         wind.update(tick)
@@ -317,7 +348,9 @@ def main():
 
         rabbyt.clear((1, 1, 1))
 
+        bg.draw()
         leaves.draw()
+        bubbles.bubbleMaker.draw()
 
         win.flip()
 

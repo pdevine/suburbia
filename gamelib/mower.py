@@ -10,6 +10,7 @@ import random
 import euclid
 import data
 import events
+import window
 
 from pyglet.gl import *
 from util import magicEventRegister
@@ -24,8 +25,6 @@ SCREEN_HEIGHT = 600
 
 EDGE = 300
 
-win = None
-
 class RPMBubble(bubbles.ThoughtBubble):
     def __init__(self):
         super(RPMBubble, self).__init__('__')
@@ -33,6 +32,7 @@ class RPMBubble(bubbles.ThoughtBubble):
         self.renderWords( str(rpms) )
 
 class Mower(pyglet.sprite.Sprite):
+    hintDone = False
     DIFFICULTY_EASY = 2
     DIFFICULTY_HARD = 10
 
@@ -47,9 +47,9 @@ class Mower(pyglet.sprite.Sprite):
         self.pullcord = None
         self.rpms = 0
 
-        win.push_handlers(self.on_mouse_press)
-        win.push_handlers(self.on_mouse_release)
-        win.push_handlers(self.on_mouse_motion)
+        window.game_window.push_handlers(self.on_mouse_press)
+        window.game_window.push_handlers(self.on_mouse_release)
+        window.game_window.push_handlers(self.on_mouse_motion)
         events.AddListener(self)
 
     def getxy(self):
@@ -113,6 +113,9 @@ class Mower(pyglet.sprite.Sprite):
     def on_mouse_motion(self, x, y, dx, dy):
         if self.collides(x,y):
             self.highlighted = True
+            if not Mower.hintDone:
+                events.Fire('NewHint', 'I can start the lawnmower by clicking and dragging')
+                Mower.hintDone = True
         else:
             self.highlighted = False
         
@@ -132,8 +135,8 @@ class PullCord(object):
         self.hand = pyglet.sprite.Sprite(img, x, y)
         self.hand.image.anchor_x = self.hand.width
         self.hand.image.anchor_y = self.hand.height/2
-        #win.set_mouse_cursor(self.handle)
-        win.set_mouse_visible(False)
+        #window.game_window.set_mouse_cursor(self.handle)
+        window.game_window.set_mouse_visible(False)
 
         self.origin = x,y
         self.newPos = x,y
@@ -141,7 +144,7 @@ class PullCord(object):
         self.lastDelta = 0
         self.numCordParts = 0
 
-        win.push_handlers(self.on_mouse_drag)
+        window.game_window.push_handlers(self.on_mouse_drag)
 
     def update(self, timechange):
         self.powerAdded = 0
@@ -150,7 +153,7 @@ class PullCord(object):
         self.powerAdded = max(0, delta - self.lastDelta)
         self.lastDelta = delta
 
-        self.numCordParts = min(self.MAX_CORD_PARTS, int(delta/40))
+        self.numCordParts = min(self.MAX_CORD_PARTS, int(delta/30))
 
 
     def draw(self):
@@ -171,8 +174,7 @@ class PullCord(object):
             self.sprites[i].draw()
 
     def die(self):
-        #win.set_mouse_cursor(win.get_system_mouse_cursor(win.CURSOR_DEFAULT))
-        win.set_mouse_visible(True)
+        window.game_window.set_mouse_visible(True)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.newPos = x,y
@@ -212,23 +214,21 @@ class Guage(object):
 
 
 def main():
-    global win
     clock.schedule(rabbyt.add_time)
 
-    win = Window(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
+    window.game_window = Window(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
     rabbyt.set_default_attribs()
 
     mower = Mower()
-    bubbles.win = win
     bubble = RPMBubble()
     guage = Guage(mower)
 
     objs = [mower, guage, bubble]
-    magicEventRegister(win, events, objs)
+    magicEventRegister(window.game_window, events, objs)
 
-    while not win.has_exit:
+    while not window.game_window.has_exit:
         tick = clock.tick()
-        win.dispatch_events()
+        window.game_window.dispatch_events()
 
         for obj in objs:
             obj.update(tick)
@@ -241,7 +241,7 @@ def main():
         mower.draw()
         bubble.draw()
 
-        win.flip()
+        window.game_window.flip()
 
 if __name__ == '__main__':
     main()
