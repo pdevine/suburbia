@@ -11,6 +11,8 @@ import random
 import euclid
 import math
 import events
+import window
+import grill
 
 from util import data_file
 from util import Rect
@@ -89,7 +91,8 @@ class Lawn:
         self.house = image.load(data_file('house.png'))
         self.truck = image.load(data_file('truck.png'))
         self.dogpiss = image.load(data_file('dogpiss.png'))
-        self.grill = image.load(data_file('grill.png'))
+        self.grill = MiniGrill()
+        self.big_grill = grill.Grill()
 
         self.mower = Mower()
 
@@ -150,6 +153,9 @@ class Lawn:
             self.green_value += 0.005
             self.green_counter = self.green_time
 
+        if self.grill.active:
+            self.big_grill.update(tick)
+
     def draw(self):
         self.draw_field()
 
@@ -173,7 +179,10 @@ class Lawn:
 
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
-        self.grill.blit(500, 270)
+        self.grill.draw()
+
+        if self.grill.active:
+            self.big_grill.draw()
 
     def draw_field(self):
         glColor4f(0.2, self.green_value, 0.2, 1)
@@ -198,6 +207,22 @@ class Lawn:
             self.mowing = False
             events.Fire('LawnMowed')
             print "finished mowing"
+
+class MiniGrill:
+    def __init__(self):
+        self.image = image.load(data_file('grill.png'))
+        self.rect = Rect(500, 270, self.image)
+
+        window.game_window.push_handlers(self.on_mouse_press)
+
+        self.active = False
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if self.rect.collide_point(x, y):
+            self.active = True
+
+    def draw(self):
+        self.image.blit(*self.rect.bottomleft)
 
 
 class Grass:
