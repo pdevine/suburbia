@@ -204,7 +204,7 @@ class Leaf(pyglet.sprite.Sprite):
         #print 'at', self.xy
 
     def startDying(self):
-        events.Fire('LeafSweptOff')
+        events.Fire('LeafSweptOff', self)
         self.sweptOffEdge = True
         self.image = self.sweptOffImg
         self.rotation = random.choice((-1,1))*random.randint(80,110)

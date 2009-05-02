@@ -35,6 +35,13 @@ class GarbageCan:
         self.image_closed = image.load(data_file('garbagecan-closed.png'))
         self.image_lid = image.load(data_file('garbagecan-lid.png'))
 
+        self.image_opened.anchor_x = self.image_opened.width/2
+        self.image_opened.anchor_y = self.image_opened.height/2
+        self.image_closed.anchor_x = self.image_opened.width/2
+        self.image_closed.anchor_y = self.image_opened.height/2
+
+        self.candidateLeaves = {}
+
         self.opened = True
         self.lid_active = False
         self.can_active = False
@@ -46,8 +53,7 @@ class GarbageCan:
         self.can_rect.center = (80, 60)
 
         self.can_sprite = Sprite(self.image_opened)
-        self.can_sprite.set_position(100 - self.image_opened.width / 2,
-                                     100 - self.image_opened.height / 2)
+        self.can_sprite.set_position(self.can_rect.x, self.can_rect.y)
 
         self.lid_rect = Rect(20, 40, self.image_lid)
 
@@ -60,6 +66,7 @@ class GarbageCan:
 
     def update(self, timechange):
         pass
+
     def draw(self):
         if not self.can_active:
             if self.can_highlighted:
@@ -85,18 +92,17 @@ class GarbageCan:
         glColor4f(1, 1, 1, 1)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == 1:
-            if self.opened and self.lid_rect.collide_point(x, y):
-                self.set_lid_active()
-            elif self.can_rect.collide_point(x, y):
-                self.fallen = False
-                self.set_can_active()
-                self.can_sprite.rotation = 0
+        if self.opened and self.lid_rect.collide_point(x, y):
+            self.set_lid_active()
+        elif self.collides(x, y):
+            self.fallen = False
+            self.set_can_active()
+            self.can_sprite.rotation = 0
 
-                if self.opened:
-                    self.can_sprite.image = self.image_opened
-                else:
-                    self.can_sprite.image = self.image_closed
+            if self.opened:
+                self.can_sprite.image = self.image_opened
+            else:
+                self.can_sprite.image = self.image_closed
 
     def set_can_active(self):
         window.game_window.set_mouse_visible(False)
@@ -108,11 +114,18 @@ class GarbageCan:
         self.lid_active = True
         events.Fire('LidTaken')
 
+    def collides(self, x,y):
+        cs = self.can_sprite
+        return (x > cs.x - cs.image.width/2 
+            and x < cs.x + cs.image.width/2
+            and y > cs.y - cs.image.height/2
+            and y < cs.y + cs.image.height/2 )
+
     def on_mouse_release(self, x, y, button, modifiers):
         window.game_window.set_mouse_visible(True)
         #print "x=%d y=%d" % (x, y)
         if self.lid_active:
-            if self.can_rect.collide_point(x, y):
+            if self.collides(x, y):
                 self.can_sprite.image = self.image_closed
                 self.opened = False
                 events.Fire('LidClosed')
@@ -125,15 +138,13 @@ class GarbageCan:
 
         elif self.can_active:
             self.can_sprite.rotation = 0
-            self.can_rect.center = (x, y)
-            self.can_sprite.set_position(x-self.image_opened.width/2,
-                                         y-self.image_opened.height/2)
+            #self.can_sprite.set_position(x,y)
 
             self.can_active = False
             events.Fire('CanDropped')
 
     def on_mouse_motion(self, x, y, dx, dy):
-        if self.can_rect.collide_point(x, y):
+        if self.collides(x, y):
             self.can_highlighted = True
         else:
             self.can_highlighted = False
@@ -145,9 +156,11 @@ class GarbageCan:
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.can_active:
-            self.can_rect.x = x
-            self.can_rect.y = y
-            self.can_sprite.set_position(x, y)
+            self.can_sprite.x = x
+            self.can_sprite.y = y
+            #self.can_rect.centerx = x
+            #self.can_rect.centery = y
+            #self.can_sprite.set_position(self.can_rect.x, self.can_rect.y)
 
             dist = math.sqrt(abs(dx*dx + dy*dy))
             self.can_sprite.rotation = dx / 10.0 * 45
@@ -169,8 +182,18 @@ class GarbageCan:
                     self.lid_rect.x += dx * 5
                     self.lid_rect.y += dy * 5
 
+            for leaf in self.candidateLeaves:
+                if self.collides(leaf.x, leaf.y):
+                    leaf.die()
+
         elif self.lid_active:
             self.lid_rect.center = (x, y)
+
+    def On_LeafSweptOff(self, leaf):
+        self.candidateLeaves[leaf] = 1
+
+    def On_LeafDeath(self, leaf):
+        del self.candidateLeaves[leaf]
 
 
 def main():
