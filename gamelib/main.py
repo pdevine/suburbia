@@ -19,6 +19,7 @@ import mower
 import leaves
 import dog
 import glitches
+import data
 import title
 
 SCREEN_WIDTH = 800
@@ -54,6 +55,9 @@ def main(sound_on=True, show_fps=True):
 
     scene = sky.Background(mowr)
     game_title = title.Title()
+
+    #frontload a big png
+    blah_ = data.pngs['codesnip']
 
     if show_fps:
         fps_display = pyglet.clock.ClockDisplay()

@@ -12,6 +12,23 @@ import window
 import euclid
 import events
 
+
+import os.path
+import math
+import rabbyt
+import pyglet
+import pyglet.window
+from pyglet import clock
+from pyglet import image
+import random
+import euclid
+import data
+import events
+import leaves
+import window
+import narrative
+
+
 class GarbageCan:
     def __init__(self):
         self.image_opened = image.load(data_file('garbagecan-open.png'))
@@ -41,6 +58,8 @@ class GarbageCan:
 
         events.AddListener(self)
 
+    def update(self, timechange):
+        pass
     def draw(self):
         if not self.can_active:
             if self.can_highlighted:
@@ -153,4 +172,40 @@ class GarbageCan:
         elif self.lid_active:
             self.lid_rect.center = (x, y)
 
+
+def main():
+    global win
+    clock.schedule(rabbyt.add_time)
+
+    win = pyglet.window.Window(width=leaves.SCREEN_WIDTH, height=leaves.SCREEN_HEIGHT)
+    window.set_window(win)
+    rabbyt.set_default_attribs()
+
+    garbage = GarbageCan()
+
+    leafs = leaves.LeafGroup()
+    leafs += [leaves.Leaf(), leaves.Leaf(), leaves.Leaf() ]
+    for i in range(len(leafs)):
+        leafs[i].logicalX = 260 + i*80
+        leafs[i].logicalY = 100 + i*60
+        leafs[i].logicalZ = 10
+
+    while not win.has_exit:
+        tick = clock.tick()
+        win.dispatch_events()
+
+        leafs.update(tick)
+        garbage.update(tick)
+        
+        events.ConsumeEventQueue()
+
+        rabbyt.clear((1, 1, 1))
+
+        leafs.draw()
+        garbage.draw()
+
+        win.flip()
+
+if __name__ == '__main__':
+    main()
 

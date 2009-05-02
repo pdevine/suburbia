@@ -40,14 +40,15 @@ CLAIMS = [
 class Leaf(pyglet.sprite.Sprite):
     hintDone = False
     def __init__(self, color=(255,255,255)):
-        img = data.textures['grassblade.png']
+        self.normalImg = data.textures['grassblade.png']
+        self.sweptOffImg = data.textures['grassblade_swept.png']
         self.blowing = True
         self.highlighted = False
         self.sweptOffEdge = False
         self.logicalX = random.randint(20,60)
         self.logicalY = random.randint(80,260)
         self.logicalZ = random.randint(100,150)
-        super(Leaf,self).__init__(img)
+        super(Leaf,self).__init__(self.normalImg)
         self.origColor = color
         self.xy = logicalToPerspective(self.logicalX, self.logicalY)
         self.velocityX = 0.1
@@ -205,6 +206,8 @@ class Leaf(pyglet.sprite.Sprite):
     def startDying(self):
         events.Fire('LeafSweptOff')
         self.sweptOffEdge = True
+        self.image = self.sweptOffImg
+        self.rotation = random.choice((-1,1))*random.randint(80,110)
 
     def offEdgeUpdate(self, timechange):
         self.opacity -= timechange*4
@@ -385,6 +388,7 @@ def main():
 
     wind = Wind()
     leafgen = LeafGenerator()
+    leafgen.active = True
     leaves = LeafGroup()
 
     #bg = sky.Background(None)

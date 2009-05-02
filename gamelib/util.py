@@ -142,7 +142,7 @@ class Rect(object):
             (x, y) = args
 
         if x > self.x - self.width/2 and x < self.x + self.width/2 and \
-           y > self.y - self.height/2and y < self.y + self.height/2:
+           y > self.y - self.height/2 and y < self.y + self.height/2:
             return True
         else:
             return False
