@@ -14,7 +14,6 @@ import window
 import narrative
 
 from pyglet.gl import *
-from util import magicEventRegister
 from util import logicalToPerspective
 
 import bubbles
@@ -116,6 +115,7 @@ class Dog(pyglet.sprite.Sprite):
         if self.runningAway:
             moveTowardsTarget(*STARTPOS)
             if self.distanceTo(*STARTPOS) < 5:
+                self.runningAway = False
                 #print 'reached resting place'
                 self.searching = False
 
@@ -123,15 +123,15 @@ class Dog(pyglet.sprite.Sprite):
             moveTowardsTarget(*self.pooTarget)
 
             if self.distanceTo(*self.pooTarget) < 5:
-                print 'reached poo target'
                 self.poo()
                 self.searching = False
 
         elif self.pooing:
             self.pooCountdown -= timeChange
             if self.pooCountdown <= 0:
-                print 'did my business'
-                events.Fire('DogPoo', self.xy)
+                # TODO this is a hack
+                pos = self.x-12, self.y-30
+                events.Fire('DogPoo', pos)
                 self.runaway()
                 self.pooing = False
 
@@ -184,7 +184,7 @@ class Dog(pyglet.sprite.Sprite):
         #print 'dog got MowerRPM', rpms
         if self.searching:
             return
-        if rpms > mower.Mower.RPMGOAL*0.1 and not self.searchCountdown:
+        if rpms > mower.Mower.RPMGOAL*0.1 and not (self.searchCountdown or self.pooing or self.runningAway):
             self.search()
 
     def On_MowerStart(self, mower):
@@ -197,22 +197,67 @@ class Dog(pyglet.sprite.Sprite):
             self.active = True
 
             
+
+class PooSmearAnim(object):
+    def __init__(self, pos, poomaster):
+        img = data.pngs['poonugget_left.png']
+        self.left = pyglet.sprite.Sprite(img, *pos)
+        img = data.pngs['poonugget_mid.png']
+        self.mid = pyglet.sprite.Sprite(img, *pos)
+        img = data.pngs['poonugget_right.png']
+        self.right = pyglet.sprite.Sprite(img, *pos)
+        self.countdown = 0.5
+        self.poomaster = poomaster
+
+    def update(self, timechange):
+        self.countdown -= timechange
+        if self.countdown <= 0:
+            self.poomaster.deadAnims.append(self)
+        for s in [self.left, self.mid, self.right]:
+            s.opacity -= 10
+            s.scale -= 0.1
+
+        self.left.x -= 8
+        self.left.y -= 1
+        self.mid.x -= 4
+        self.mid.y -= 4
+        self.right.x -= 1
+        self.right.y -= 8
+
+    def draw(self):
+        for s in [self.left, self.mid, self.right]:
+            s.draw()
         
 class PooMaster(object):
     def __init__(self):
         events.AddListener(self)
         self.pooSprites = []
+        self.smearAnims = []
+        self.deadAnims = []
 
     def On_DogPoo(self, pos):
         #print 'putting poo at', pos
         img = data.pngs['dookie.png']
-        # TODO this is a hack
-        pos = pos[0]-12, pos[1]-30
         s = pyglet.sprite.Sprite(img, *pos)
         self.pooSprites.append(s)
 
+    def On_DogPooSmear(self, pos):
+        for p in self.pooSprites:
+            if (p.x, p.y) == pos:
+                self.pooSprites.remove(p)
+                self.smearAnims.append( PooSmearAnim(pos, self) )
+
+    def update(self, timechange):
+        for anim in self.smearAnims:
+            anim.update(timechange)
+        for anim in self.deadAnims:
+            self.smearAnims.remove(anim)
+        self.deadAnims = []
+
     def draw(self):
         for s in self.pooSprites:
+            s.draw()
+        for s in self.smearAnims:
             s.draw()
 
 

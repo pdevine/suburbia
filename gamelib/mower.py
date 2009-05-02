@@ -34,16 +34,18 @@ class RPMBubble(bubbles.ThoughtBubble):
         self.renderWords( str(rpms) )
 
 class Mower(pyglet.sprite.Sprite):
-    hintDone = False
+    hint1Done = False
+    hint2Done = False
     DIFFICULTY_EASY = 2
     DIFFICULTY_HARD = 10
 
     RPMGOAL = 1500 # how many rpms needed to start
     def __init__(self, color=(255,255,255)):
         self.rect = Rect(300, 260, 50, 10)
-        img = data.pngs['mower.png']
+        self.startableImg = data.pngs['mower.png']
+        self.unstartableImg = data.pngs['mower_inactive.png']
         self.highlighted = False
-        super(Mower,self).__init__(img)
+        super(Mower,self).__init__(self.startableImg)
         self.xy = 10, 260
 
         self.startable = True
@@ -76,7 +78,10 @@ class Mower(pyglet.sprite.Sprite):
         return distance < self.width*self.scale
 
     def update(self, timeChange):
-
+        if self.startable:
+            self.image = self.startableImg
+        else:
+            self.image = self.unstartableImg
         if self.highlighted:
             self.color = (255,20,25)
         else:
@@ -131,6 +136,11 @@ class Mower(pyglet.sprite.Sprite):
     def on_mouse_press(self, x, y, button, modifiers):
         if self.startable and self.collides(x,y):
             self.startPullCord(x, y, button)
+            if not Mower.hint2Done:
+                events.Fire('NewHint',
+                        'I need to jerk the cord *fast* to get this old'
+                        'junker to start up')
+                Mower.hint2Done = True
 
     def on_mouse_release(self, x, y, button, modifiers):
         self.stopPullCord()
@@ -138,11 +148,11 @@ class Mower(pyglet.sprite.Sprite):
     def on_mouse_motion(self, x, y, dx, dy):
         if self.collides(x,y):
             self.highlighted = True
-            if not Mower.hintDone:
+            if not Mower.hint1Done:
                 events.Fire('NewHint',
                             'Once a day, I can start the '
                             'lawnmower by clicking and dragging')
-                Mower.hintDone = True
+                Mower.hint1Done = True
         else:
             self.highlighted = False
 
@@ -177,8 +187,8 @@ class PullCord(object):
         img = data.pngs['pullcord_handle.png']
         #self.handle = pyglet.window.ImageMouseCursor(img)
         self.hand = pyglet.sprite.Sprite(img, x, y)
-        self.hand.image.anchor_x = self.hand.width
-        self.hand.image.anchor_y = self.hand.height/2
+        self.hand.image.anchor_x = self.hand.width/2
+        self.hand.image.anchor_y = 0
         #window.game_window.set_mouse_cursor(self.handle)
         window.game_window.set_mouse_visible(False)
 

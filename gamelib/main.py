@@ -71,6 +71,7 @@ def main(sound_on=True, show_fps=True):
         leafGroup.update(tick)
         wind.update(tick)
         dawg.update(tick)
+        pooMaster.update(tick)
         floaterGenerator.update(tick)
         codeGenerator.update(tick)
 

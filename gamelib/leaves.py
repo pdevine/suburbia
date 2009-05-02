@@ -260,7 +260,7 @@ class Leaf(pyglet.sprite.Sprite):
         if self.collides(x,y):
             self.highlighted = True
             if not Leaf.hintDone:
-                events.Fire('NewHint', 'I can sweep these up by using the mouse wheel or the mouse buttons.')
+                events.Fire('NewHint', 'I can sweep these downwards to the curb by using the mouse wheel (or the mouse button)')
                 Leaf.hintDone = True
         else:
             self.highlighted = False
