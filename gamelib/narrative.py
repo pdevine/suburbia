@@ -137,6 +137,6 @@ class StoryTeller(object):
             print 'new thought', thought
             events.Fire('NewThought', thought)
 
-    def On_DogPoo(self, *args):
-        if dayCounter > 6:
+    def On_Midday(self, *args):
+        if dayCounter == 7:
             events.Fire('HeartAttack')
