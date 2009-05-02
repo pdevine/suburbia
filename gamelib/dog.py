@@ -55,6 +55,11 @@ class Dog(pyglet.sprite.Sprite):
         window.game_window.push_handlers(self.on_mouse_motion)
         events.AddListener(self)
 
+    def draw(self):
+        # XXX - fix bug with the color becoming corrupt on some machines
+        pyglet.sprite.Sprite.draw(self)
+        glColor4f(1, 1, 1, 1)
+
     def getxy(self):
         return self.x, self.y
     def setxy(self, xy):
