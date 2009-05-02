@@ -49,6 +49,7 @@ def main(sound_on=True, show_fps=True):
     pooMaster = dog.PooMaster()
 
     floaterGenerator = glitches.FloaterGenerator()
+    codeGenerator = glitches.SourcecodeGenerator()
 
     scene = sky.Background(mowr)
 
@@ -69,6 +70,7 @@ def main(sound_on=True, show_fps=True):
         wind.update(tick)
         dawg.update(tick)
         floaterGenerator.update(tick)
+        codeGenerator.update(tick)
 
         bubbles.bubbleMaker.update(tick)
         mowr.update(tick)
@@ -85,6 +87,7 @@ def main(sound_on=True, show_fps=True):
         floaterGenerator.draw()
         bubbles.bubbleMaker.draw()
         guage.draw()
+        codeGenerator.draw()
 
         if show_fps:
             fps_display.draw()

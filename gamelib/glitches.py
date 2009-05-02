@@ -135,6 +135,69 @@ class FloaterGenerator(object):
         self.active = False
 
 
+class SourcecodeGenerator(object):
+    def __init__(self):
+        self.srcImg = data.pngs['codesnip.png']
+        self.countdown = 0
+        self.hitRequiredStage = False
+        self.active = False
+        self.bigChunk = None
+        self.x = 0
+        self.y = 0
+
+        self.regions = []
+
+        window.game_window.push_handlers(self.on_mouse_release)
+        events.AddListener(self)
+
+    def update(self, timechange):
+        if not (self.hitRequiredStage and self.active):
+            return
+
+        self.countdown = max(0, self.countdown - timechange)
+
+    def draw(self):
+        if not (self.hitRequiredStage and self.active):
+            return
+
+        if self.countdown <= 0:
+            self.regions = []
+            return
+
+        x = random.randint(0,500)
+        if self.countdown <= 0.02:
+            self.bigChunk.blit(x, self.y)
+            return
+
+        for i, r in enumerate(self.regions):
+            r.blit(x, self.y+i*5)
+
+            x = x + random.randint(-1,3)
+
+    def on_mouse_release(self, *args):
+        x = random.randint(0,400)
+        y = random.randint(10,600)
+        width = random.randint(300,400)
+        r1 = self.srcImg.get_region( x, y, width, 3 )
+        r2 = self.srcImg.get_region( x, y+5, width, 5 )
+        r3 = self.srcImg.get_region( x, y+7, width, 2 )
+
+        y = random.randint(10,600)
+        r4 = self.srcImg.get_region( x, y, width, 1 )
+        r5 = self.srcImg.get_region( x, y+5, width, 2 )
+
+        self.y = random.randint(0,600)
+
+        self.bigChunk = self.srcImg.get_region(x,y, width, 100)
+
+        self.regions += [r1, r2, r3, r4, r5]
+        self.regions.append(r2)
+        self.countdown = 0.8
+
+    def On_Sunset(self):
+        if narrative.dayCounter == 12:
+            self.hitRequiredStage = True
+            self.active = True
 
 
 def main():
@@ -154,6 +217,7 @@ def main():
     storyTeller = narrative.StoryTeller()
 
     fGen = FloaterGenerator()
+    sGen = SourcecodeGenerator()
 
     events.Fire('NewStage', narrative.terror)
 
@@ -166,6 +230,7 @@ def main():
         bubbles.bubbleMaker.update(tick)
         scene.update(tick)
         fGen.update(tick)
+        sGen.update(tick)
         
         events.ConsumeEventQueue()
 
@@ -175,6 +240,7 @@ def main():
         scene.draw()
         fGen.draw()
         bubbles.bubbleMaker.draw()
+        sGen.draw()
 
         win.flip()
 

@@ -30,7 +30,7 @@ LAWN_WIDTH = 400
 LAWN_Y = 170
 LAWN_HEIGHT = 120
 
-STARTPOS = (820,300)
+STARTPOS = (830,300)
 
 class Dog(pyglet.sprite.Sprite):
     hintDone = False
@@ -139,9 +139,10 @@ class Dog(pyglet.sprite.Sprite):
     def shoo(self, x, y, button):
         # give a little initial rpms so the visual cues come up
         events.Fire('Shoo', x, y, self)
-        self.shooPower += 10
-        if self.shooPower > 20:
-            self.runaway()
+        if self.searching:
+            self.shooPower += 10
+            if self.shooPower > 20:
+                self.runaway()
 
     def poo(self):
         self.searching = False
@@ -233,7 +234,6 @@ def main():
     events.Fire('NewStage', narrative.foreshadowing)
 
     objs = [dog, mowr, guage]
-    magicEventRegister(window.game_window, events, objs)
 
     while not window.game_window.has_exit:
         tick = clock.tick()

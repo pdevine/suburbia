@@ -22,6 +22,11 @@ SCREEN_HEIGHT = 600
 
 bubbleMaker = None
 
+DOGYELLS = [
+'Get off!',
+'Gah!  out!',
+'Take off!']
+
 def init():
     global bubbleMaker
     bubbleMaker = BubbleMaker()
@@ -282,7 +287,7 @@ class BubbleMaker(object):
 
     def On_Shoo(self, x, y, dog):
         print 'got shoo'
-        yellbub = YellBubble('Fuck off, dog!')
+        yellbub = YellBubble(random.choice(DOGYELLS))
         self.yellCounter[yellbub] = 1.0
 
     def On_BubbleDeath(self, bub):

@@ -153,10 +153,13 @@ class Mower(pyglet.sprite.Sprite):
         self.startable = False
 
     def On_LawnMowed(self):
+        if narrative.StoryTeller.phase == narrative.anguish:
+            events.Fire('NewThought', 'Green, tidy and still.  '
+                        'I just want it to stay like this forever.')
         if narrative.StoryTeller.phase == narrative.fin:
             events.Fire('NewThought', 'my perfect lawn.  '
-                        'complete and whole.  '
-                        'nobody better fucking touch it.')
+                        'complete and whole.  My island.'
+                        )
         else:
             events.Fire('NewThought', 'Even.  Uniform.  Mine.  Perfect.')
         
