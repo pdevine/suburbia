@@ -255,6 +255,8 @@ class OrbitingObject:
             self.deg = 360 + self.deg
         elif self.deg < 180 and self.deg + 10 * tick > 180:
             self.rise()
+        elif self.deg < 90 and self.deg + 10 * tick > 90:
+            self.halfway()
 
         self.rad = math.radians(self.deg)
 
@@ -281,6 +283,9 @@ class Moon(OrbitingObject):
         OrbitingObject.update(self, tick)
         self.image = self.phases[self.current_phase]
 
+    def halfway(self):
+        events.Fire('Midnight')
+        print 'midnight'
     def set(self):
         pass
     def rise(self):
@@ -293,6 +298,9 @@ class Sun(OrbitingObject):
 
         self.deg = 180
 
+    def halfway(self):
+        events.Fire('Midday')
+        print 'midday'
     def set(self):
         events.Fire('Sunset')
         print 'sunset'
