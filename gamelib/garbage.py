@@ -5,6 +5,7 @@ from util import data_file
 from util import Rect
 from pyglet.sprite import Sprite
 from random import randint
+from pyglet.gl import *
 
 import math
 import window
@@ -21,6 +22,8 @@ class GarbageCan:
         self.lid_active = False
         self.can_active = False
         self.fallen = False
+        self.can_highlighted = False
+        self.lid_highlighted = True
 
         self.can_rect = Rect(0, 0, self.image_closed)
         self.can_rect.center = (100, 100)
@@ -34,13 +37,33 @@ class GarbageCan:
         window.game_window.push_handlers(self.on_mouse_release)
         window.game_window.push_handlers(self.on_mouse_press)
         window.game_window.push_handlers(self.on_mouse_drag)
+        window.game_window.push_handlers(self.on_mouse_motion)
 
         events.AddListener(self)
 
     def draw(self):
+        if not self.can_active:
+            if self.can_highlighted:
+                self.can_sprite.color = (255, 20, 25)
+            else:
+                self.can_sprite.color = (255, 255, 255)
+        else:
+            self.can_sprite.color = (255, 255, 255)
+
         self.can_sprite.draw()
+
+        glColor4f(1, 1, 1, 1)
+
+        if not self.lid_active:
+            if self.lid_highlighted:
+                glColor4f(1, 0.1, 0.1, 1)
+            else:
+                glColor4f(1, 1, 1, 1)
+        
         if self.opened:
             self.image_lid.blit(*self.lid_rect.bottomleft)
+
+        glColor4f(1, 1, 1, 1)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == 1:
@@ -80,7 +103,6 @@ class GarbageCan:
                 events.Fire('LidDropped')
 
             self.lid_active = False
-            self.set_default_cursor()
 
         elif self.can_active:
             self.can_sprite.rotation = 0
@@ -88,9 +110,19 @@ class GarbageCan:
             self.can_sprite.set_position(x-self.image_opened.width/2,
                                          y-self.image_opened.height/2)
 
-            self.set_default_cursor()
             self.can_active = False
             events.Fire('CanDropped')
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self.can_rect.collide_point(x, y):
+            self.can_highlighted = True
+        else:
+            self.can_highlighted = False
+
+        if self.lid_rect.collide_point(x, y):
+            self.lid_highlighted = True
+        else:
+            self.lid_highlighted = False
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.can_active:
@@ -118,13 +150,7 @@ class GarbageCan:
                     self.lid_rect.x += dx * 5
                     self.lid_rect.y += dy * 5
 
-                self.set_default_cursor()
         elif self.lid_active:
             self.lid_rect.center = (x, y)
-
-    def set_default_cursor(self):
-        cursor = window.game_window.get_system_mouse_cursor(
-            window.game_window.CURSOR_DEFAULT)
-        window.game_window.set_mouse_cursor(cursor)
 
 
