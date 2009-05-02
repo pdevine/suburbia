@@ -27,11 +27,14 @@ COOKED_PHRASES = [
 
 class GrillObject:
     def __init__(self):
-        self.highlighted = True
-        self.active = False
-
         window.game_window.push_handlers(self.on_mouse_motion)
         window.game_window.push_handlers(self.on_mouse_drag)
+
+        events.AddListener(self)
+
+    def reset(self):
+        self.highlighted = False
+        self.active = False
 
     def draw(self):
         if self.highlighted:
@@ -64,13 +67,18 @@ class GrillObject:
         self.active = False
 
     def on_mouse_motion(self, x, y, dx, dy):
-        if self.rect.collide_point(x, y):
-            self.highlighted = True
-        else:
-            self.highlighted = False
+        if not self.active:
+            if self.rect.collide_point(x, y):
+                self.highlighted = True
+            else:
+                self.highlighted = False
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         pass
+
+    def On_Sunrise(self):
+        self.reset()
+
 
 class Beef(GrillObject):
     def __init__(self):
@@ -82,9 +90,8 @@ class Beef(GrillObject):
 
         self.reset()
 
-        events.AddListener(self)
-
     def reset(self):
+        GrillObject.reset(self)
         self.cooking_time = 15
         self.red = 1
         self.brown_time = 3
@@ -139,9 +146,6 @@ class Beef(GrillObject):
 
         glColor4f(1, 1, 1, 1)
 
-    def On_Sunrise(self):
-        self.reset()
-
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.active:
             self.rect.center = (x, y)
@@ -151,13 +155,18 @@ class Spritzer(GrillObject):
         GrillObject.__init__(self)
 
         self.image = image.load(data_file('spritzer.png'))
-        self.rect = Rect(600, 30, self.image)
+        self.rect = Rect(600, 20, self.image)
         self.drop_range = (50, 100)
 
         self.build_drop()
-        self.drops = []
 
+        self.reset()
         #events.AddListener(self)
+
+    def reset(self):
+        GrillObject.reset(self)
+        self.rect.bottomleft = (600, 20)
+        self.drops = []
 
     def set_active(self):
         GrillObject.set_active(self)

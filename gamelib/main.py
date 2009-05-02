@@ -20,6 +20,8 @@ import leaves
 import dog
 import glitches
 import title
+import grill
+import grass
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -55,6 +57,9 @@ def main(sound_on=True, show_fps=True):
     scene = sky.Background(mowr)
     game_title = title.Title()
 
+    mini_grill = grass.MiniGrill()
+    big_grill = grill.Grill()
+
     if show_fps:
         fps_display = pyglet.clock.ClockDisplay()
 
@@ -66,7 +71,12 @@ def main(sound_on=True, show_fps=True):
         tick = pyglet.clock.tick()
         game_window.dispatch_events()
 
-        scene.update(tick)
+        if big_grill.active:
+            big_grill.update(tick)
+            scene.color = (0.2, 0.7, 0.2)
+        else:
+            scene.update(tick)
+
         leafGenerator.update(tick)
         leafGroup.update(tick)
         wind.update(tick)
@@ -74,24 +84,34 @@ def main(sound_on=True, show_fps=True):
         pooMaster.update(tick)
         floaterGenerator.update(tick)
         codeGenerator.update(tick)
-
         bubbles.bubbleMaker.update(tick)
         mowr.update(tick)
+
         game_title.update(tick)
+
+
+        if mini_grill.active:
+            big_grill.active = True
+            mini_grill.active = False
 
         rabbyt.clear((scene.color))
 
         events.ConsumeEventQueue()
 
-        scene.draw()
-        mowr.draw()
-        leafGroup.draw()
-        pooMaster.draw()
-        dawg.draw()
-        floaterGenerator.draw()
-        bubbles.bubbleMaker.draw()
-        guage.draw()
-        codeGenerator.draw()
+        if not big_grill.active:
+            scene.draw()
+            mini_grill.draw()
+            mowr.draw()
+            leafGroup.draw()
+            pooMaster.draw()
+            dawg.draw()
+            floaterGenerator.draw()
+            bubbles.bubbleMaker.draw()
+            guage.draw()
+            codeGenerator.draw()
+        else:
+            big_grill.draw()
+            bubbles.bubbleMaker.draw()
 
         game_title.draw()
 
