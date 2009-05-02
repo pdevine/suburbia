@@ -139,7 +139,7 @@ class Mower(pyglet.sprite.Sprite):
             if not Mower.hint2Done:
                 events.Fire('NewHint',
                         'I need to jerk the cord *fast* to get this old'
-                        'junker to start up')
+                        ' junker to start up')
                 Mower.hint2Done = True
 
     def on_mouse_release(self, x, y, button, modifiers):
