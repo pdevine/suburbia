@@ -18,10 +18,8 @@ import window
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-def main(sound_on=True):
+def main(sound_on=True, show_fps=True):
     global game_window
-
-    show_fps = True
 
     game_window = pyglet.window.Window(width=800, height=600)
     window.set_window(game_window)
