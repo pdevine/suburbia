@@ -15,6 +15,7 @@ import math
 from grass import Lawn
 from grass import MiniGrill
 from grill import Grill
+from heartattack import HeartAttack
 
 from garbage import GarbageCan
 
@@ -66,6 +67,7 @@ class Background:
         self.lawn = Lawn(mower)
         self.mini_grill = MiniGrill()
         self.big_grill = Grill()
+        self.heart_attack = HeartAttack()
 
         self.clouds = Clouds(self.hsv_color)
         self.garbage_can = GarbageCan()
@@ -73,12 +75,14 @@ class Background:
         self.weather_time = 20
         self.counter = self.weather_time
 
+
         events.AddListener(self)
 
     def update(self, tick):
         if self.over:
             return self.update_dead(tick)
 
+        self.heart_attack.update(tick)
         # save the grill state in the big grill so it's easier to
         # turn off
         if self.mini_grill.active:
@@ -133,6 +137,8 @@ class Background:
         for element in elements:
             if element:
                 element.draw()
+
+        self.heart_attack.draw()
 
     def update_dead(self, tick):
         return
