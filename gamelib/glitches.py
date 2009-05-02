@@ -195,7 +195,7 @@ class SourcecodeGenerator(object):
         self.countdown = 0.8
 
     def On_Sunset(self):
-        if narrative.dayCounter == 11:
+        if narrative.dayCounter == 10:
             self.hitRequiredStage = True
             self.active = True
 
@@ -217,7 +217,11 @@ def main():
     storyTeller = narrative.StoryTeller()
 
     fGen = FloaterGenerator()
+    fGen.hitRequiredStage = True
+    fGen.active = True
     sGen = SourcecodeGenerator()
+    sGen.hitRequiredStage = True
+    sGen.active = True
 
     events.Fire('NewStage', narrative.terror)
 
