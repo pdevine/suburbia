@@ -19,6 +19,7 @@ import mower
 import leaves
 import dog
 import glitches
+import title
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -52,6 +53,7 @@ def main(sound_on=True, show_fps=True):
     codeGenerator = glitches.SourcecodeGenerator()
 
     scene = sky.Background(mowr)
+    game_title = title.Title()
 
     if show_fps:
         fps_display = pyglet.clock.ClockDisplay()
@@ -75,6 +77,7 @@ def main(sound_on=True, show_fps=True):
 
         bubbles.bubbleMaker.update(tick)
         mowr.update(tick)
+        game_title.update(tick)
 
         rabbyt.clear((scene.color))
 
@@ -89,6 +92,8 @@ def main(sound_on=True, show_fps=True):
         bubbles.bubbleMaker.draw()
         guage.draw()
         codeGenerator.draw()
+
+        game_title.draw()
 
         if show_fps:
             fps_display.draw()
