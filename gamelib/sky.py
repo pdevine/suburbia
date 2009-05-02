@@ -13,8 +13,6 @@ import euclid
 import math
 
 from grass import Lawn
-from grass import MiniGrill
-from grill import Grill
 from heartattack import HeartAttack
 
 from garbage import GarbageCan
@@ -65,8 +63,6 @@ class Background:
         self.moon = Moon()
         self.rain = Rain()
         self.lawn = Lawn(mower)
-        self.mini_grill = MiniGrill()
-        self.big_grill = Grill()
         self.heart_attack = HeartAttack()
 
         self.clouds = Clouds(self.hsv_color)
@@ -82,16 +78,7 @@ class Background:
             return self.update_dead(tick)
 
         self.heart_attack.update(tick)
-        # save the grill state in the big grill so it's easier to
-        # turn off
-        if self.mini_grill.active:
-            self.big_grill.active = True
-            self.mini_grill.active = False
 
-        if self.big_grill.active:
-            self.color = (0.78, 0.78, 1.0)
-            return self.big_grill.update(tick)
-            
         global CURRENT_CLOUD_COVERAGE
 
         self.counter -= tick
@@ -126,12 +113,8 @@ class Background:
         self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
     def draw(self):
-        if self.big_grill.active:
-            self.big_grill.draw()
-            return
-
         elements = [self.sun, self.moon, self.clouds, self.lawn,
-                    self.mini_grill, self.rain, self.garbage_can]
+                    self.rain, self.garbage_can]
 
         for element in elements:
             if element:
