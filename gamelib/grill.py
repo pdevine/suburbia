@@ -19,6 +19,12 @@ BURN_PHRASES = [
     'Man I suck.  Maybe I should have gotten a gass grill',
 ]
 
+COOKED_PHRASES = [
+    'Damn that steak looks good',
+    "I can't wait to sink my teeth into that piece of meat",
+    'The matrix tells me this steak is juicy and delicious',
+]
+
 class GrillObject:
     def __init__(self):
         self.highlighted = True
@@ -117,8 +123,7 @@ class Beef(GrillObject):
                 if not self.cooked:
                     self.cooked = True
                     events.Fire('BeefCooked')
-                    events.Fire('NewHint',
-                        'Damn that steak looks good.')
+                    events.Fire('NewHint', random.choice(COOKED_PHRASES))
                 elif self.cooking_time < -15 and not self.burnt:
                     events.Fire('BeefBurnt')
                     events.Fire('NewHint', random.choice(BURN_PHRASES))
@@ -335,6 +340,9 @@ class Grill:
                     self.flareup_counter = randint(*self.flareup_range) / 10.0
                     print "flareup"
                     events.Fire('FlareUp')
+
+        if self.beef.burnt:
+            self.active = False
 
         self.spritzer.update(tick)
         for fire in self.flareups:
