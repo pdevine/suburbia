@@ -134,7 +134,7 @@ class StoryTeller(object):
     def On_Midnight(self):
         if StoryTeller.phase != fin:
             thought = StoryTeller.phase.pop(random.randrange(0, len(StoryTeller.phase)))
-            print 'new thought', thought
+#            print 'new thought', thought
             events.Fire('NewThought', thought)
 
     def On_Midday(self, *args):

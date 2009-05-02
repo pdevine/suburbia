@@ -331,7 +331,7 @@ class LeafGenerator(object):
         self.count += 1
 
     def On_LeafSweptOff(self):
-        print 'count is now', self.count
+        #print 'count is now', self.count
         self.sweptOffCount += 1
         if self.count - self.sweptOffCount <= 1 and self.claimCountdown <= 0:
             events.Fire('NewHint', random.choice(CLAIMS))
@@ -344,14 +344,14 @@ class LeafGenerator(object):
 
     def On_NewStage(self, stage):
         if stage == narrative.foreshadowing:
-            print 'activating new stage foreshadowng'
+            #print 'activating new stage foreshadowng'
             self.active = True
         if stage == narrative.terror:
-            print 'activating new stage terror'
+            #print 'activating new stage terror'
             self.active = True
             self.maxCountdown = 3
         if stage == narrative.fin:
-            print 'activating new stage fin'
+            #print 'activating new stage fin'
             self.active = False
 
     def On_Sunrise(self):

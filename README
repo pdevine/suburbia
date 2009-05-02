@@ -11,6 +11,8 @@ DEPENDENCIES:
 You might need to install some of these things before running the game:
 
   Python:     http://www.python.org/
+  Pyglet:     http://www.pyglet.org/
+  Rabbyt:     http://matthewmarshall.org/projects/rabbyt/
 
 
 RUNNING THE GAME:
@@ -27,8 +29,8 @@ HOW TO PLAY THE GAME:
 
 Move the cursor around the screen with the mouse.
 
-Press the right mouse button to fire the ducks.
-
+Click on things with the left mouse button.  When things get weird, the
+game is over.
 
 
 LICENSE:

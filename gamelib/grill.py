@@ -54,12 +54,12 @@ class GrillObject:
 
     def set_active(self):
         #window.game_window.set_mouse_cursor(cursor)
-        print "set active"
+        #print "set active"
         window.game_window.set_mouse_visible(False)
         self.active = True
 
     def set_inactive(self, pos):
-        print "set inactive"
+        #print "set inactive"
         self.rect.x = pos[0]
         self.rect.y = pos[1]
         window.game_window.set_mouse_visible(True)
@@ -109,12 +109,12 @@ class Beef(GrillObject):
     def set_active(self):
         GrillObject.set_active(self)
         events.Fire('BeefTaken')
-        print "beef taken"
+        #print "beef taken"
 
     def set_inactive(self, pos):
         GrillObject.set_inactive(self, pos)
         events.Fire('BeefDropped')
-        print "beef dropped"
+        #print "beef dropped"
 
     def update(self, tick):
         if self.cooking:
@@ -170,12 +170,12 @@ class Spritzer(GrillObject):
     def set_active(self):
         GrillObject.set_active(self)
         events.Fire('SpritzerTaken')
-        print "spritzer taken"
+        #print "spritzer taken"
 
     def set_inactive(self, pos):
         GrillObject.set_inactive(self, pos)
         events.Fire('SpritzerDropped')
-        print "spritzer dropped"
+        #print "spritzer dropped"
 
     def update(self, tick):
         for drop in self.drops:
@@ -344,10 +344,10 @@ class Grill:
                         events.Fire('NewHint',
                             'I can put out flare ups with the spritzer')
                         self.flareup_hint_done = True
-                        print "flare ups hint"
+                        #print "flare ups hint"
                     self.flareups.append(FlareUp())
                     self.flareup_counter = randint(*self.flareup_range) / 10.0
-                    print "flareup"
+                    #print "flareup"
                     events.Fire('FlareUp')
 
         if self.beef.burnt:
@@ -379,7 +379,7 @@ class Grill:
             rect_y = y + self.spritzer.rect.height/2 - fire.rect.y 
 
             if rect_x < 100 and abs(rect_y) < 40:
-                print "hit fire"
+                #print "hit fire"
                 fire.lives -= 1
                 if fire.lives <= 0:
                     self.flareups.remove(fire)
@@ -393,7 +393,7 @@ class Grill:
             if self.table.rect.collide_point(x, y):
                 self.spritzer.set_inactive((x, y))
                 return
-            print "spritz"
+            #print "spritz"
             self.spritzer.spritz((x, y))
             events.Fire('Spritz')
 
@@ -415,7 +415,7 @@ class Grill:
             if self.rect.collide_point(self.beef.rect.center):
                 events.Fire('BeefCooking')
                 self.beef.cooking = True
-                print "cookin'!"
+                #print "cookin'!"
 
     def on_mouse_motion(self, x, y, dx, dy):
         if not self.beef_hint_done and self.active:

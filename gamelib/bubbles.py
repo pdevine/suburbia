@@ -30,7 +30,7 @@ DOGYELLS = [
 def init():
     global bubbleMaker
     bubbleMaker = BubbleMaker()
-    print 'just made a bubble maker'
+    #print 'just made a bubble maker'
 
 
 class Bubble(object):
@@ -286,7 +286,7 @@ class BubbleMaker(object):
         self.hBubbles.append(bubble)
 
     def On_Shoo(self, x, y, dog):
-        print 'got shoo'
+        #print 'got shoo'
         yellbub = YellBubble(random.choice(DOGYELLS))
         self.yellCounter[yellbub] = 1.0
 

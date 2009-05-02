@@ -41,7 +41,7 @@ class Floater(pyglet.sprite.Sprite):
         self.image.anchor_x = self.image.width/2
         self.image.anchor_y = self.image.height/2
 
-        print 'floater at', self.xy
+        #print 'floater at', self.xy
 
         window.game_window.push_handlers(self.on_mouse_motion)
         events.AddListener(self)
