@@ -152,7 +152,7 @@ class Spritzer(GrillObject):
         self.build_drop()
         self.drops = []
 
-        events.AddListener(self)
+        #events.AddListener(self)
 
     def set_active(self):
         GrillObject.set_active(self)
@@ -313,7 +313,7 @@ class Grill:
         window.game_window.push_handlers(self.on_mouse_release)
         window.game_window.push_handlers(self.on_mouse_motion)
 
-        events.AddListener(self)
+        #events.AddListener(self)
 
         self.active = False
         self.beef_hint_done = False
