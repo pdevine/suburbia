@@ -21,6 +21,8 @@ class GrillObject:
     def handler(self, pos):
         if self.rect.collide_point(*pos):
             self.set_active()
+            return True
+        return False
 
     def set_active(self):
         cursor = pyglet.window.ImageMouseCursor(
@@ -65,6 +67,8 @@ class Beef(GrillObject):
         if self.rect.collide_point(*pos):
             self.set_active()
             self.cooking = False
+            return True
+        return False
 
     def set_active(self):
         GrillObject.set_active(self)
@@ -344,8 +348,10 @@ class Grill:
         if self.exit.rect.collide_point(x, y):
             self.active = False
 
-        self.beef.handler((x, y))
-        self.spritzer.handler((x, y))
+        if self.spritzer.handler((x, y)):
+            return
+        if self.beef.handler((x, y)):
+            return
 
     def on_mouse_release(self, x, y, button, modifiers):
         if self.beef.active:
