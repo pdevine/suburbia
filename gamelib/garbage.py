@@ -193,7 +193,8 @@ class GarbageCan:
         self.candidateLeaves[leaf] = 1
 
     def On_LeafDeath(self, leaf):
-        del self.candidateLeaves[leaf]
+        if leaf in self.candidateLeaves:
+            del self.candidateLeaves[leaf]
 
 
 def main():
