@@ -73,6 +73,7 @@ class Lawn:
     def __init__(self, mower):
         self.street = image.load(data_file('street.png'))
         self.house = image.load(data_file('house.png'))
+        self.fence_left = image.load(data_file('fence-left.png'))
         #self.truck = image.load(data_file('truck.png'))
         self.dogpiss = image.load(data_file('dogpiss.png'))
 
@@ -138,7 +139,9 @@ class Lawn:
     def draw(self):
         self.draw_field()
 
+        self.fence_left.blit(0, 270)
         self.house.blit(170, 260)
+        self.fence_left.blit(485, 297)
 
         glPushMatrix()
         for grass in self.lawn:
@@ -211,7 +214,7 @@ class Lawn:
 class MiniGrill:
     def __init__(self):
         self.image = image.load(data_file('grill.png'))
-        self.rect = Rect(500, 270, self.image)
+        self.rect = Rect(500, 250, self.image)
 
         window.game_window.push_handlers(self.on_mouse_press)
         window.game_window.push_handlers(self.on_mouse_motion)

@@ -90,7 +90,7 @@ class Beef(GrillObject):
         self.brown_time = 3
         self.cooked = False
         self.burnt = False
-        self.rect.bottomleft = (520, 230)
+        self.rect.bottomleft = (580, 230)
 
     def handler(self, pos):
         if self.rect.collide_point(*pos):
@@ -151,7 +151,7 @@ class Spritzer(GrillObject):
         GrillObject.__init__(self)
 
         self.image = image.load(data_file('spritzer.png'))
-        self.rect = Rect(600, 50, self.image)
+        self.rect = Rect(600, 30, self.image)
         self.drop_range = (50, 100)
 
         self.build_drop()
