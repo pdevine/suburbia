@@ -8,47 +8,70 @@ from pyglet.gl import *
 import window
 import euclid
 import events
+import random
 
 from random import randint
 from util import data_file
 from util import Rect
 
+BURN_PHRASES = [
+    'I hope everyone likes their steak well done',
+    'Man I suck.  Maybe I should have gotten a gass grill',
+]
+
 class GrillObject:
+    def __init__(self):
+        self.highlighted = True
+        self.active = False
+
+        window.game_window.push_handlers(self.on_mouse_motion)
+        window.game_window.push_handlers(self.on_mouse_drag)
+
     def draw(self):
-        if not self.active:
-            self.image.blit(*self.rect.bottomleft)
+        if self.highlighted:
+            glColor4f(0.1, 0.1, 1, 1)
+        else:
+            glColor4f(1, 1, 1, 1)
+
+        self.image.blit(*self.rect.bottomleft)
+        glColor4f(1, 1, 1, 1)
 
     def handler(self, pos):
         if self.rect.collide_point(*pos):
             self.set_active()
+            self.highlighted = False
             return True
         return False
 
     def set_active(self):
-        cursor = pyglet.window.ImageMouseCursor(
-            self.image, self.image.width/2, self.image.height/2)
+        #cursor = pyglet.window.ImageMouseCursor(
+        #    self.image, self.image.width/2, self.image.height/2)
 
-        window.game_window.set_mouse_cursor(cursor)
+        #window.game_window.set_mouse_cursor(cursor)
+        window.game_window.set_mouse_visible(False)
         self.active = True
 
     def set_inactive(self, pos):
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-        self.set_default_cursor()
+        window.game_window.set_mouse_visible(True)
         self.active = False
 
-    def set_default_cursor(self):
-        cursor = window.game_window.get_system_mouse_cursor(
-            window.game_window.CURSOR_DEFAULT)
-        window.game_window.set_mouse_cursor(cursor)
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self.rect.collide_point(x, y):
+            self.highlighted = True
+        else:
+            self.highlighted = False
 
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        pass
 
 class Beef(GrillObject):
     def __init__(self):
+        GrillObject.__init__(self)
         self.image = image.load(data_file('beef.png'))
         self.rect = Rect(520, 230, self.image)
 
-        self.active = False
         self.cooking = False
 
         self.reset()
@@ -67,6 +90,7 @@ class Beef(GrillObject):
         if self.rect.collide_point(*pos):
             self.set_active()
             self.cooking = False
+            self.highlighted = False
             return True
         return False
 
@@ -97,29 +121,34 @@ class Beef(GrillObject):
                         'Damn that steak looks good.')
                 elif self.cooking_time < -15 and not self.burnt:
                     events.Fire('BeefBurnt')
-                    events.Fire('NewHint',
-                        'I hope everyone likes their steaks well done.')
+                    events.Fire('NewHint', random.choice(BURN_PHRASES))
                     self.burnt = True
-        else:
-            if self.burnt:
-                events.Fire('NewHint',
-                    "I guess I'll have to get a new steak.")
-                self.reset()
-
 
     def draw(self):
-        if not self.active:
+        if self.highlighted:
+            glColor4f(0.5, 0.1, 1, 1)
+        else:
             glColor4f(self.red, self.red, self.red, 1)
-            self.image.blit(*self.rect.bottomleft)
-            glColor4f(1, 1, 1, 1)
+
+        self.image.blit(*self.rect.bottomleft)
+
+        glColor4f(1, 1, 1, 1)
+
+    def On_Sunrise(self):
+        self.reset()
+
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        if self.active:
+            self.rect.center = (x, y)
 
 class Spritzer(GrillObject):
     def __init__(self):
+        GrillObject.__init__(self)
+
         self.image = image.load(data_file('spritzer.png'))
         self.rect = Rect(600, 50, self.image)
         self.drop_range = (50, 100)
 
-        self.active = False
         self.build_drop()
         self.drops = []
 
@@ -166,6 +195,13 @@ class Spritzer(GrillObject):
         glColor4f(1, 1, 1, 1)
 
         glEndList()
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self.active:
+            self.rect.center = (x, y)
+
+        GrillObject.on_mouse_motion(self, x, y, dx, dy)
+
 
 class WaterDrop:
     def __init__(self, display_id, pos):
@@ -333,6 +369,9 @@ class Grill:
                 break
 
     def on_mouse_press(self, x, y, button, modifiers):
+        if not self.active:
+            return
+
         if self.spritzer.active:
             if self.table.rect.collide_point(x, y):
                 self.spritzer.set_inactive((x, y))

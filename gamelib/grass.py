@@ -195,15 +195,31 @@ class MiniGrill:
         self.rect = Rect(500, 270, self.image)
 
         window.game_window.push_handlers(self.on_mouse_press)
+        window.game_window.push_handlers(self.on_mouse_motion)
+
+        self.highlighted = False
 
         self.active = False
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self.rect.collide_point(x, y):
+            self.highlighted = True
+        else:
+            self.highlighted = False
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.rect.collide_point(x, y):
             self.active = True
 
     def draw(self):
+        if self.highlighted:
+            glColor4f(0.5, 0.1, 1, 1)
+        else:
+            glColor4f(1, 1, 1, 1)
+
         self.image.blit(*self.rect.bottomleft)
+
+        glColor4f(1, 1, 1, 1)
 
 
 class Grass:
