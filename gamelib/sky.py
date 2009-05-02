@@ -15,6 +15,7 @@ import math
 from grass import Lawn
 from grass import MiniGrill
 from grill import Grill
+from heartattack import HeartAttack
 
 from garbage import GarbageCan
 
@@ -66,6 +67,7 @@ class Background:
         self.lawn = Lawn(mower)
         self.mini_grill = MiniGrill()
         self.big_grill = Grill()
+        self.heart_attack = HeartAttack()
 
         self.clouds = Clouds(self.hsv_color)
         self.garbage_can = GarbageCan()
@@ -79,6 +81,7 @@ class Background:
         if self.over:
             return self.update_dead(tick)
 
+        self.heart_attack.update(tick)
         # save the grill state in the big grill so it's easier to
         # turn off
         if self.mini_grill.active:
@@ -133,6 +136,8 @@ class Background:
         for element in elements:
             if element:
                 element.draw()
+
+        self.heart_attack.draw()
 
     def update_dead(self, tick):
         return
@@ -249,6 +254,8 @@ class OrbitingObject:
             self.deg = 360 + self.deg
         elif self.deg < 180 and self.deg + 10 * tick > 180:
             self.rise()
+        elif self.deg < 90 and self.deg + 10 * tick > 90:
+            self.halfway()
 
         self.rad = math.radians(self.deg)
 
@@ -275,6 +282,9 @@ class Moon(OrbitingObject):
         OrbitingObject.update(self, tick)
         self.image = self.phases[self.current_phase]
 
+    def halfway(self):
+        events.Fire('Midnight')
+        print 'midnight'
     def set(self):
         pass
     def rise(self):
@@ -287,6 +297,9 @@ class Sun(OrbitingObject):
 
         self.deg = 180
 
+    def halfway(self):
+        events.Fire('Midday')
+        print 'midday'
     def set(self):
         events.Fire('Sunset')
         print 'sunset'

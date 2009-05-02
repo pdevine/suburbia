@@ -73,7 +73,7 @@ class Lawn:
     def __init__(self, mower):
         self.street = image.load(data_file('street.png'))
         self.house = image.load(data_file('house.png'))
-        self.truck = image.load(data_file('truck.png'))
+        #self.truck = image.load(data_file('truck.png'))
         self.dogpiss = image.load(data_file('dogpiss.png'))
 
         self.mower = mower
@@ -150,7 +150,7 @@ class Lawn:
         #self.mower.draw()
 
         self.street.blit(0, 0)
-        self.truck.blit(700, 150)
+        #self.truck.blit(700, 150)
 
         glColor4f(1.0, 1.0, 1.0, 0.3)
         self.dogpiss.blit(300, 150)
