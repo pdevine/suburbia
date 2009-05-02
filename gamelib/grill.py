@@ -44,18 +44,22 @@ class GrillObject:
 class Beef(GrillObject):
     def __init__(self):
         self.image = image.load(data_file('beef.png'))
-        self.rect = Rect(520, 280, self.image)
+        self.rect = Rect(520, 230, self.image)
 
         self.active = False
-        self.cooked = False
         self.cooking = False
 
-        self.cooking_time = 15
-
-        self.red = 1
-        self.brown_time = 3
+        self.reset()
 
         events.AddListener(self)
+
+    def reset(self):
+        self.cooking_time = 15
+        self.red = 1
+        self.brown_time = 3
+        self.cooked = False
+        self.burnt = False
+        self.rect.bottomleft = (520, 230)
 
     def handler(self, pos):
         if self.rect.collide_point(*pos):
@@ -86,8 +90,17 @@ class Beef(GrillObject):
                     self.cooked = True
                     events.Fire('BeefCooked')
                     events.Fire('NewHint',
-                        'God damn that steak looks good.')
-                    print "beef cooked"
+                        'Damn that steak looks good.')
+                elif self.cooking_time < -15 and not self.burnt:
+                    events.Fire('BeefBurnt')
+                    events.Fire('NewHint',
+                        'I hope everyone likes their steaks well done.')
+                    self.burnt = True
+        else:
+            if self.burnt:
+                events.Fire('NewHint',
+                    "I guess I'll have to get a new steak.")
+                self.reset()
 
 
     def draw(self):
@@ -202,6 +215,7 @@ class RectObject:
 
 class Exit(RectObject):
     def __init__(self):
+        self.image = image.load(data_file('back.png'))
         self.rect = Rect(700, 500, 100, 100)
 
 class Table(RectObject):
@@ -266,8 +280,8 @@ class Grill:
         self.flareup_hint_done = False
 
     def update(self, tick):
+        self.beef.update(tick)
         if self.beef.cooking:
-            self.beef.update(tick)
             self.flareup_counter -= tick
             #print self.flareup_counter
             if self.flareup_counter <= 0:

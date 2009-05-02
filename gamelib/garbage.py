@@ -77,7 +77,7 @@ class GarbageCan:
         events.Fire('LidTaken')
 
     def on_mouse_release(self, x, y, button, modifiers):
-        print "x=%d y=%d" % (x, y)
+        #print "x=%d y=%d" % (x, y)
         if self.lid_active:
             if self.can_rect.collide_point(x, y):
                 self.opened = False

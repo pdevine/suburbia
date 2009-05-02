@@ -86,6 +86,7 @@ class Background:
             self.mini_grill.active = False
 
         if self.big_grill.active:
+            self.color = (0.78, 0.78, 1.0)
             return self.big_grill.update(tick)
             
         global CURRENT_CLOUD_COVERAGE
