@@ -330,7 +330,7 @@ class LeafGenerator(object):
         events.Fire('LeafBirth', leaf)
         self.count += 1
 
-    def On_LeafSweptOff(self):
+    def On_LeafSweptOff(self, leaf):
         print 'count is now', self.count
         self.sweptOffCount += 1
         if self.count - self.sweptOffCount <= 1 and self.claimCountdown <= 0:
