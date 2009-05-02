@@ -53,7 +53,7 @@ CLOUD_COVERAGE = {
 WIND_SPEED = -30
 
 class Background:
-    def __init__(self):
+    def __init__(self, mower):
         self.over = False
         self.color = (0.78, 0.78, 1.0)
         self.hsv_color = [240/360.0, 60/100.0, 0]
@@ -63,7 +63,7 @@ class Background:
         self.sun = Sun()
         self.moon = Moon()
         self.rain = Rain()
-        self.lawn = Lawn()
+        self.lawn = Lawn(mower)
         self.mini_grill = MiniGrill()
         self.big_grill = Grill()
 

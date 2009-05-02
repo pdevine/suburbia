@@ -11,10 +11,12 @@ import euclid
 import data
 import events
 import window
+import narrative
 
 from pyglet.gl import *
 from util import magicEventRegister
 from util import logicalToPerspective
+from util import Rect
 
 import bubbles
 
@@ -38,11 +40,13 @@ class Mower(pyglet.sprite.Sprite):
 
     RPMGOAL = 1500 # how many rpms needed to start
     def __init__(self, color=(255,255,255)):
-        img = data.pngs['lawnmower.png']
+        self.rect = Rect(300, 260, 50, 10)
+        img = data.pngs['mower.png']
         self.highlighted = False
         super(Mower,self).__init__(img)
-        self.xy = 720, 500
+        self.xy = 10, 260
 
+        self.startable = True
         self.difficulty = self.DIFFICULTY_EASY
         self.pullcord = None
         self.rpms = 0
@@ -55,12 +59,17 @@ class Mower(pyglet.sprite.Sprite):
     def getxy(self):
         return self.x, self.y
     def setxy(self, xy):
-        self.x = xy[0]
-        self.y = xy[1]
+        self.rect.x = xy[0]
+        self.rect.y = xy[1]
     xy = property(getxy, setxy)
 
     def __str__(self):
         return '<Mower %s %s %s>' % (self.x, self.y, id(self))
+
+    def resetLocation(self):
+        print 'resetting location'
+        self.rect.x = 10
+        self.rect.y = 260
 
     def collides(self,x,y):
         distance = math.sqrt((x-self.x)**2 + (y-self.y)**2)
@@ -84,14 +93,30 @@ class Mower(pyglet.sprite.Sprite):
             events.Fire('MowerRPM', self.rpms)
             if self.rpms >= self.RPMGOAL:
                 events.Fire('MowerStart', self)
+                self.startable = False
                 self.stopPullCord()
                 self.rpms = 0
 
+        self.x = self.rect.x
+        self.y = self.rect.y
 
     def draw(self):
         super(Mower, self).draw()
         if self.pullcord:
             self.pullcord.draw()
+
+    def draw_mow_rect(self):
+        glColor4f(0, 0, 1, .5)
+
+        glBegin(GL_POLYGON)
+        glVertex2d(*self.rect.bottomleft)
+        glVertex2d(*self.rect.topleft)
+        glVertex2d(*self.rect.topright)
+        glVertex2d(*self.rect.bottomright)
+        glEnd()
+
+        glColor4f(1, 1, 1, 1)
+
 
     def startPullCord(self, x, y, button):
         # give a little initial rpms so the visual cues come up
@@ -104,7 +129,7 @@ class Mower(pyglet.sprite.Sprite):
             self.pullcord = None
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if self.collides(x,y):
+        if self.startable and self.collides(x,y):
             self.startPullCord(x, y, button)
 
     def on_mouse_release(self, x, y, button, modifiers):
@@ -114,10 +139,26 @@ class Mower(pyglet.sprite.Sprite):
         if self.collides(x,y):
             self.highlighted = True
             if not Mower.hintDone:
-                events.Fire('NewHint', 'I can start the lawnmower by clicking and dragging')
+                events.Fire('NewHint',
+                            'Once a day, I can start the '
+                            'lawnmower by clicking and dragging')
                 Mower.hintDone = True
         else:
             self.highlighted = False
+
+    def On_Sunrise(self):
+        self.startable = True
+
+    def On_Sunset(self):
+        self.startable = False
+
+    def On_LawnMowed(self):
+        if narrative.StoryTeller.phase == narrative.fin:
+            events.Fire('NewThought', 'my perfect lawn.  '
+                        'complete and whole.  '
+                        'nobody better fucking touch it.')
+        else:
+            events.Fire('NewThought', 'Even.  Uniform.  Mine.  Perfect.')
         
 
 class PullCord(object):
@@ -160,7 +201,7 @@ class PullCord(object):
         dx = self.newPos[0] - self.origin[0]
         dy = self.newPos[1] - self.origin[1]
         self.hand.rotation = math.degrees(math.atan2(dx, -dy))
-        scale = 0.5 + 0.5*(-dx/600.0)
+        scale = 0.5 + 0.5*(dx/600.0)
         self.hand.scale = scale
         self.hand.set_position(*self.newPos)
         self.hand.draw()
@@ -182,7 +223,7 @@ class PullCord(object):
 
 class Guage(object):
     def __init__(self, mower):
-        self.x, self.y = 730, 520
+        self.x, self.y = 30, 320
         img = data.pngs['guage.png']
         self.guage = pyglet.sprite.Sprite(img, self.x, self.y)
         img = data.pngs['guage_needle.png']
@@ -192,7 +233,10 @@ class Guage(object):
         self.mower = mower
         self.pct = 0
 
+        events.AddListener(self)
+
     def update(self, timeChange):
+        print 'guage update'
         pass
 
     def draw(self):

@@ -63,36 +63,16 @@ class LawnSegment:
             blade.height = 1
             blade.width = 1
 
-class Mower:
-    def __init__(self):
-        self.rect = Rect(300, 260, 50, 10)
-        self.image = image.load(data_file('mower.png'))
-
-    def draw(self):
-        self.image.blit(self.rect.x, self.rect.y)
-        #self.draw_mow_rect()
-
-    def draw_mow_rect(self):
-        glColor4f(0, 0, 1, .5)
-
-        glBegin(GL_POLYGON)
-        glVertex2d(*self.rect.bottomleft)
-        glVertex2d(*self.rect.topleft)
-        glVertex2d(*self.rect.topright)
-        glVertex2d(*self.rect.bottomright)
-        glEnd()
-
-        glColor4f(1, 1, 1, 1)
-
+from mower import Mower
 
 class Lawn:
-    def __init__(self):
+    def __init__(self, mower):
         self.street = image.load(data_file('street.png'))
         self.house = image.load(data_file('house.png'))
         self.truck = image.load(data_file('truck.png'))
         self.dogpiss = image.load(data_file('dogpiss.png'))
 
-        self.mower = Mower()
+        self.mower = mower
 
         self.lawn = []
         self.current_segment = 0
@@ -123,7 +103,7 @@ class Lawn:
         self.mow_time = 0.2
         self.mow_counter = self.mow_time
         
-        self.mowing = True
+        self.mowing = False
 
         for blade in self.lawn[31].grass:
             blade.brown()
@@ -166,8 +146,7 @@ class Lawn:
         glPopMatrix()
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
-
-        self.mower.draw()
+        #self.mower.draw()
 
         self.street.blit(0, 0)
         self.truck.blit(700, 150)
@@ -205,6 +184,10 @@ class Lawn:
             self.mowing = False
             events.Fire('LawnMowed')
             print "finished mowing"
+            self.mower.resetLocation()
+
+    def On_MowerStart(self, mower):
+        self.mowing = True
 
 class MiniGrill:
     def __init__(self):

@@ -80,6 +80,7 @@ class ThoughtBubble(Bubble):
         self.startBubbleDrops()
 
         window.game_window.push_handlers(self.on_mouse_press)
+        window.game_window.push_handlers(self.on_mouse_scroll)
 
     def get_x(self):
         return self.bubble_left
@@ -140,6 +141,11 @@ class ThoughtBubble(Bubble):
     def on_mouse_press(self, x, y, button, modifiers):
         if not self.birthing:
             self.dying = True
+
+    def on_mouse_scroll(self, *args):
+        if not self.birthing:
+            self.dying = True
+        
         
             
 class HintBubble(ThoughtBubble):
@@ -175,6 +181,7 @@ class HintBubble(ThoughtBubble):
         self.startBubbleDrops()
 
         window.game_window.push_handlers(self.on_mouse_press)
+        window.game_window.push_handlers(self.on_mouse_scroll)
 
 
 # -----------------------------------------------------------------------------

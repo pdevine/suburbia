@@ -14,6 +14,9 @@ import narrative
 import sound
 import rabbyt
 import window
+import narrative
+import mower
+import leaves
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -27,11 +30,20 @@ def main(sound_on=True, show_fps=True):
     pyglet.clock.schedule(rabbyt.add_time)
     rabbyt.set_default_attribs()
 
+    storyteller = narrative.StoryTeller()
+
+    wind = leaves.Wind()
+    leafGenerator = leaves.LeafGenerator()
+    leafGroup = leaves.LeafGroup()
+
     bubbles.init()
     bubbles.win = game_window
     storyteller = narrative.StoryTeller()
 
-    scene = sky.Background()
+    mowr = mower.Mower()
+    guage = mower.Guage(mowr)
+
+    scene = sky.Background(mowr)
 
     if show_fps:
         fps_display = pyglet.clock.ClockDisplay()
@@ -45,13 +57,22 @@ def main(sound_on=True, show_fps=True):
         game_window.dispatch_events()
 
         scene.update(tick)
+        leafGenerator.update(tick)
+        leafGroup.update(tick)
+        wind.update(tick)
+
         bubbles.bubbleMaker.update(tick)
+        mowr.update(tick)
+
         rabbyt.clear((scene.color))
 
         events.ConsumeEventQueue()
 
         scene.draw()
+        leafGroup.draw()
+        mowr.draw()
         bubbles.bubbleMaker.draw()
+        guage.draw()
 
         if show_fps:
             fps_display.draw()

@@ -40,10 +40,10 @@ def logicalToPerspective(x,y):
     '''
 
 def logicalToPerspective(x,y):
-    bottomLine  = 60.0
+    bottomLine  = 80.0
     topLine = 300.0
     pct = (topLine-(y-bottomLine))/(topLine-bottomLine)
-    x = x - 150 * pct
+    x = max(-10,x - 150 * pct)
     return x,y
 
 class Rect(object):

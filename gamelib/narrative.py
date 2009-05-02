@@ -65,8 +65,8 @@ Which of my friends will be the first to die?
 
 It's probably too late to do something that matters
 '''
-pain = [phrase.strip() for phrase in phrases.split('\n') if phrase]
-pain_themes = ['anger', 'lust', 'lust', 'lust', 'violence']
+anguish = [phrase.strip() for phrase in phrases.split('\n') if phrase]
+anguish_themes = ['anger', 'lust', 'lust', 'lust', 'violence']
 
 phrases = '''
 I could fake my death and move to Thailand and nobody would find me
@@ -83,8 +83,8 @@ I should have had the means to buy this whole street by now.  Instead I've got h
 
 I wish I was drunk.  I should get a boat
 '''
-climax = [phrase.strip() for phrase in phrases.split('\n') if phrase]
-climax_themes = ['violence', 'lust', 'anger', 'violence']
+terror = [phrase.strip() for phrase in phrases.split('\n') if phrase]
+terror_themes = ['violence', 'lust', 'anger', 'violence']
 
 phrases = '''
 I'm bored
@@ -99,28 +99,37 @@ I tried.  I tried really hard
 '''
 fin = [phrase.strip() for phrase in phrases.split('\n') if phrase]
 
-gamePhases = [beginning, pain, climax, fin]
 
 class StoryTeller(object):
+    phase = None
+    
     def __init__(self):
         events.AddListener(self)
         self.dayCounter = 0
-        self.phaseIter = iter(gamePhases)
-        self.phase = self.phaseIter.next()
+        StoryTeller.phase = beginning
+
+        self.stages = { 1: beginning,
+                        3: foreshadowing,
+                        5: anguish,
+                        7: terror,
+                        9: fin,
+                      }
 
     def On_Sunset(self):
         self.dayCounter += 1
-        if self.phase == fin and self.phase:
+        if StoryTeller.phase == fin and StoryTeller.phase:
             print 'new thought fin'
-            events.Fire('NewThought', self.phase.pop(0))
-            if len(self.phase) == 0:
+            events.Fire('NewThought', StoryTeller.phase.pop(0))
+            if len(StoryTeller.phase) == 0:
                 events.Fire('NarrativeOver')
                 
-        elif self.phase != fin:
-            if self.dayCounter % 2 == 0:
-                print 'new thought B'
-                events.Fire('NewThought',
-                            self.phase.pop(random.randint(0, len(self.phase))))
-            if self.dayCounter % 4 == 0:
-                self.phase = self.phaseIter.next()
+        elif StoryTeller.phase != fin:
+            thought = StoryTeller.phase.pop(random.randrange(0, len(StoryTeller.phase)))
+            print 'new thought', thought
+            events.Fire('NewThought', thought)
         
+        if self.dayCounter in self.stages:
+            print 'new stage', self.dayCounter
+            StoryTeller.phase = self.stages[self.dayCounter]
+            events.Fire('NewStage', StoryTeller.phase)
+

@@ -11,10 +11,12 @@ import data
 import events
 import bubbles
 import window
+import narrative
 
 from pyglet.gl import *
 from util import magicEventRegister
 from util import logicalToPerspective
+from util import Rect
 
 import sky
 
@@ -26,7 +28,14 @@ SCREEN_HEIGHT = 600
 EDGE = 60
 LOGICAL_X_EDGE = 800
 
-win = None
+DEBUG = True
+
+CLAIMS = [
+'Looking nice, rake king',
+"It's my lawn now, leaves!",
+'Eat gutter water, leaves.',
+'Get your deciduous garbage out of here, tree.'
+]
 
 class Leaf(pyglet.sprite.Sprite):
     hintDone = False
@@ -36,7 +45,7 @@ class Leaf(pyglet.sprite.Sprite):
         self.highlighted = False
         self.sweptOffEdge = False
         self.logicalX = random.randint(20,60)
-        self.logicalY = random.randint(20,260)
+        self.logicalY = random.randint(80,260)
         self.logicalZ = random.randint(100,150)
         super(Leaf,self).__init__(img)
         self.origColor = color
@@ -44,6 +53,7 @@ class Leaf(pyglet.sprite.Sprite):
         self.velocityX = 0.1
         self.velocityY = 0
         self.velocityZ = 0
+        self.lifetime = 30
 
         self.image.anchor_x = self.image.width/2
         self.image.anchor_y = 7
@@ -57,9 +67,9 @@ class Leaf(pyglet.sprite.Sprite):
 
         #print 'created leaf at', self.logicalX, self.logicalY
         #print 'at', self.xy
-        win.push_handlers(self.on_mouse_scroll)
-        win.push_handlers(self.on_mouse_press)
-        win.push_handlers(self.on_mouse_motion)
+        window.game_window.push_handlers(self.on_mouse_scroll)
+        window.game_window.push_handlers(self.on_mouse_press)
+        window.game_window.push_handlers(self.on_mouse_motion)
         events.AddListener(self)
 
     def getxy(self):
@@ -155,6 +165,12 @@ class Leaf(pyglet.sprite.Sprite):
             delta = newY-self.logicalY
             for mate in self.clumpMates:
                 mate.pullY( delta )
+        if newX == self.logicalX and newY == self.logicalY:
+            #leaves that don't move for 30 seconds should die
+            self.lifetime -= timeChange
+            if self.lifetime <= 0:
+                self.die()
+                return
 
         self.scale = (1.0 + (300.0-self.logicalY)/200.0)/2
         if self.clumpMates:
@@ -210,9 +226,17 @@ class Leaf(pyglet.sprite.Sprite):
         self.velocityZ = random.randint(0,4)
 
     def On_Wind(self):
-        dur = random.random()*2 #between 0 and 2 seconds
         self.blowing = True
-        self.windEffects = {'duration': dur,
+        if self.x < 10:
+            self.windEffects = {'duration': 0.5,
+                            'offset': random.randint(3,5),
+                            'offsetZ': random.randint(0,3),
+                            'flutter': (0,1),
+                            'countdown': 0.5,
+                           }
+        else:
+            dur = random.random()*2 #between 0 and 2 seconds
+            self.windEffects = {'duration': dur,
                             'offset': random.randint(0,5),
                             'offsetZ': random.randint(0,3),
                             'flutter': (0,1),
@@ -243,6 +267,10 @@ class Leaf(pyglet.sprite.Sprite):
         
 
 class LeafGroup(list):
+    def __init__(self, *args):
+        super(LeafGroup, self).__init__(*args)
+        events.AddListener(self)
+
     def update(self, timechange):
         lastLeaf = None
         for leaf in sorted(self): #go through them in sorted order
@@ -269,36 +297,59 @@ class LeafGroup(list):
 
 
 class LeafGenerator(object):
-    rate = (1,6)
+    maxCountdown = 4
     def __init__(self):
+        self.active = False
+        self.active = True
         self.countdown = random.randint(0, 1)
-        self.brownness = 0
         self.count = 0
+        self.sweptOffCount = 0
+        self.claimCountdown = 0
 
         events.AddListener(self)
 
     def update(self, timechange):
+        if not self.active:
+            return
+
+
         self.countdown -= timechange
-        self.brownness += 0.1*timechange
+        self.claimCountdown -= timechange
         #red = 255
         #green = 255
-        ##green = 128+(math.sin(self.brownness)+1)*128
-        #blue = 128*(math.cos(self.brownness)+1)
         #color = (red, green, blue)
         color = (255,255,255)
-        if self.countdown > 0 or self.count >50:
+        if self.countdown > 0 or self.count > 25:
             return
 
         #print 'birthing leaf'
-        self.countdown = random.randint(*self.rate)
-        # TODO: this is debug
-        self.countdown = random.random()
+        self.countdown = random.random()*self.maxCountdown
         leaf = Leaf(color)
         events.Fire('LeafBirth', leaf)
         self.count += 1
 
     def On_LeafSweptOff(self):
+        print 'count is now', self.count
+        self.sweptOffCount += 1
+        if self.count - self.sweptOffCount <= 1 and self.claimCountdown <= 0:
+            events.Fire('NewHint', random.choice(CLAIMS))
+            self.claimCountdown = 5
+
+    def On_LeafDeath(self, leaf):
         self.count -= 1
+        if leaf.sweptOffEdge:
+            self.sweptOffCount -= 1
+
+    def On_NewStage(self, stage):
+        if stage == narrative.foreshadowing:
+            print 'activating new stage foreshadowng'
+            self.active = True
+        if stage == narrative.terror:
+            print 'activating new stage terror'
+            self.maxCountdown = 3
+        if stage == narrative.fin:
+            print 'activating new stage fin'
+            self.active = False
 
 
 class Wind(object):
@@ -325,11 +376,13 @@ def main():
     bubbles.init()
     bubbles.win = win
 
+    storyTeller = narrative.StoryTeller()
+
     wind = Wind()
     leafgen = LeafGenerator()
     leaves = LeafGroup()
 
-    bg = sky.Background()
+    #bg = sky.Background(None)
 
     objs = [leafgen, leaves]
     magicEventRegister(win, events, objs)
@@ -339,7 +392,7 @@ def main():
         win.dispatch_events()
 
         bubbles.bubbleMaker.update(tick)
-        bg.update(tick)
+        #bg.update(tick)
         for obj in objs:
             obj.update(tick)
         wind.update(tick)
@@ -348,7 +401,7 @@ def main():
 
         rabbyt.clear((1, 1, 1))
 
-        bg.draw()
+        #bg.draw()
         leaves.draw()
         bubbles.bubbleMaker.draw()
 
