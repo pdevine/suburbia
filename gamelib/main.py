@@ -59,7 +59,7 @@ def main(sound_on=True, show_fps=True):
     game_title = title.Title()
 
     #frontload a big png
-    blah_ = data.pngs['codesnip']
+    blah_ = data.pngs['codesnip.png']
     mini_grill = grass.MiniGrill()
     big_grill = grill.Grill()
 

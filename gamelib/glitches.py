@@ -147,7 +147,6 @@ class SourcecodeGenerator(object):
 
         self.regions = []
 
-        window.game_window.push_handlers(self.on_mouse_release)
         events.AddListener(self)
 
     def update(self, timechange):
@@ -198,6 +197,7 @@ class SourcecodeGenerator(object):
         if narrative.dayCounter == 10:
             self.hitRequiredStage = True
             self.active = True
+            window.game_window.push_handlers(self.on_mouse_release)
 
 
 def main():
