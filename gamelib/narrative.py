@@ -100,12 +100,12 @@ I tried.  I tried really hard
 fin = [phrase.strip() for phrase in phrases.split('\n') if phrase]
 
 
+dayCounter = 0
 class StoryTeller(object):
     phase = None
     
     def __init__(self):
         events.AddListener(self)
-        self.dayCounter = 0
         StoryTeller.phase = beginning
 
         self.stages = { 1: beginning,
@@ -116,7 +116,8 @@ class StoryTeller(object):
                       }
 
     def On_Sunset(self):
-        self.dayCounter += 1
+        global dayCounter
+        dayCounter += 1
         if StoryTeller.phase == fin and StoryTeller.phase:
             print 'new thought fin'
             events.Fire('NewThought', StoryTeller.phase.pop(0))
@@ -128,8 +129,8 @@ class StoryTeller(object):
             print 'new thought', thought
             events.Fire('NewThought', thought)
         
-        if self.dayCounter in self.stages:
-            print 'new stage', self.dayCounter
-            StoryTeller.phase = self.stages[self.dayCounter]
+        if dayCounter in self.stages:
+            print 'new stage', dayCounter
+            StoryTeller.phase = self.stages[dayCounter]
             events.Fire('NewStage', StoryTeller.phase)
 

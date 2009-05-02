@@ -236,7 +236,6 @@ class Guage(object):
         events.AddListener(self)
 
     def update(self, timeChange):
-        print 'guage update'
         pass
 
     def draw(self):

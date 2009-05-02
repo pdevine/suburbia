@@ -300,7 +300,6 @@ class LeafGenerator(object):
     maxCountdown = 4
     def __init__(self):
         self.active = False
-        self.active = True
         self.countdown = random.randint(0, 1)
         self.count = 0
         self.sweptOffCount = 0
@@ -346,10 +345,16 @@ class LeafGenerator(object):
             self.active = True
         if stage == narrative.terror:
             print 'activating new stage terror'
+            self.active = True
             self.maxCountdown = 3
         if stage == narrative.fin:
             print 'activating new stage fin'
             self.active = False
+
+    def On_Sunrise(self):
+        if narrative.dayCounter % 3 == 0:
+            self.active = False
+
 
 
 class Wind(object):

@@ -17,6 +17,8 @@ import window
 import narrative
 import mower
 import leaves
+import dog
+import glitches
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -43,6 +45,11 @@ def main(sound_on=True, show_fps=True):
     mowr = mower.Mower()
     guage = mower.Guage(mowr)
 
+    dawg = dog.Dog()
+    pooMaster = dog.PooMaster()
+
+    floaterGenerator = glitches.FloaterGenerator()
+
     scene = sky.Background(mowr)
 
     if show_fps:
@@ -60,6 +67,8 @@ def main(sound_on=True, show_fps=True):
         leafGenerator.update(tick)
         leafGroup.update(tick)
         wind.update(tick)
+        dawg.update(tick)
+        floaterGenerator.update(tick)
 
         bubbles.bubbleMaker.update(tick)
         mowr.update(tick)
@@ -69,8 +78,11 @@ def main(sound_on=True, show_fps=True):
         events.ConsumeEventQueue()
 
         scene.draw()
-        leafGroup.draw()
         mowr.draw()
+        leafGroup.draw()
+        pooMaster.draw()
+        dawg.draw()
+        floaterGenerator.draw()
         bubbles.bubbleMaker.draw()
         guage.draw()
 

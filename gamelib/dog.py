@@ -11,6 +11,7 @@ import euclid
 import data
 import events
 import window
+import narrative
 
 from pyglet.gl import *
 from util import magicEventRegister
@@ -26,8 +27,10 @@ SCREEN_HEIGHT = 600
 
 LAWN_X = 40
 LAWN_WIDTH = 400
-LAWN_Y = 20
-LAWN_HEIGHT = 300
+LAWN_Y = 170
+LAWN_HEIGHT = 120
+
+STARTPOS = (820,300)
 
 class Dog(pyglet.sprite.Sprite):
     hintDone = False
@@ -37,18 +40,19 @@ class Dog(pyglet.sprite.Sprite):
         super(Dog, self).__init__(img)
         self.image.anchor_x = self.width/2
         self.image.anchor_y = self.height/2
-        self.xy = 620, 300
+        self.xy = STARTPOS
 
         self.active = False
-        self.runningAway = False
+        self.active = True #DEBUG
         self.searching = False
+        self.runningAway = False
         self.pooing = False
         self.pooDelay = 3 #seconds it takes to drop a dookie
-        self.activateDelay = 3 #seconds to rest before i can activate again
+        self.searchDelay = 3 #seconds to rest before i can search again
         self.shooPower = 0
         self.pooPower = 0
         self.pooCountdown = 0
-        self.activateCountdown = 0
+        self.searchCountdown = 0
 
         window.game_window.push_handlers(self.on_mouse_press)
         window.game_window.push_handlers(self.on_mouse_release)
@@ -56,6 +60,8 @@ class Dog(pyglet.sprite.Sprite):
         events.AddListener(self)
 
     def draw(self):
+        if not self.active:
+            return
         # XXX - fix bug with the color becoming corrupt on some machines
         pyglet.sprite.Sprite.draw(self)
         glColor4f(1, 1, 1, 1)
@@ -77,16 +83,17 @@ class Dog(pyglet.sprite.Sprite):
         return self.distanceTo(x,y) < self.width*0.5*self.scale
 
     def update(self, timeChange):
+        if not self.active:
+            return
+
         if self.highlighted:
             self.color = (255,20,25)
         else:
             self.color = (255,255,255)
 
-        if not self.active:
-            if self.activateCountdown > 0:
-                self.activateCountdown = max(self.activateCountdown-timeChange,
-                                             0)
-            return
+        if self.searchCountdown > 0:
+            self.searchCountdown = max(self.searchCountdown-timeChange,
+                                       0)
 
         def moveTowardsTarget(x,y):
             # TODO: smarter move algorithm needed
@@ -96,27 +103,34 @@ class Dog(pyglet.sprite.Sprite):
             self.velocityX = 4*cmp(dx,0)
             self.velocityY = 4*cmp(dy,0)
 
+            if abs(self.velocityX) > abs(dx):
+                self.velocityX = 1 * cmp(self.velocityX,0)
+
+            if abs(self.velocityY) > abs(dy):
+                self.velocityY = 1 * cmp(self.velocityY,0)
+                
+
             self.x += self.velocityX
             self.y += self.velocityY
 
         if self.runningAway:
-            moveTowardsTarget(700,500)
-            if self.distanceTo(700,500) < 5:
+            moveTowardsTarget(*STARTPOS)
+            if self.distanceTo(*STARTPOS) < 5:
                 #print 'reached resting place'
-                self.active = False
+                self.searching = False
 
         elif self.searching:
             moveTowardsTarget(*self.pooTarget)
 
             if self.distanceTo(*self.pooTarget) < 5:
-                #print 'reached poo target'
+                print 'reached poo target'
                 self.poo()
                 self.searching = False
 
         elif self.pooing:
             self.pooCountdown -= timeChange
             if self.pooCountdown <= 0:
-                #print 'did my business'
+                print 'did my business'
                 events.Fire('DogPoo', self.xy)
                 self.runaway()
                 self.pooing = False
@@ -134,10 +148,8 @@ class Dog(pyglet.sprite.Sprite):
         self.pooing = True
         self.pooCountdown = self.pooDelay
 
-    def activate(self):
-        #print 'ACTIVATING'
+    def search(self):
         events.Fire('DogActive', self)
-        self.active = True
         self.searching = True
         self.runningAway = False
         self.pooing = False
@@ -149,7 +161,7 @@ class Dog(pyglet.sprite.Sprite):
         self.searching = False
         self.runningAway = True
         self.shooPower = 0
-        self.activateCountdown = self.activateDelay
+        self.searchCountdown = self.searchDelay
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.collides(x,y):
@@ -169,15 +181,20 @@ class Dog(pyglet.sprite.Sprite):
 
     def On_MowerRPM(self, rpms):
         #print 'dog got MowerRPM', rpms
-        if self.active:
+        if self.searching:
             return
-        if rpms > mower.Mower.RPMGOAL*0.1 and not self.activateCountdown:
-            self.activate()
+        if rpms > mower.Mower.RPMGOAL*0.1 and not self.searchCountdown:
+            self.search()
 
     def On_MowerStart(self, mower):
         #print 'dog got MowerStart'
-        if self.active:
+        if self.searching:
             self.runaway()
+
+    def On_NewStage(self, stage):
+        if stage == narrative.foreshadowing:
+            self.active = True
+
             
         
 class PooMaster(object):
@@ -187,7 +204,9 @@ class PooMaster(object):
 
     def On_DogPoo(self, pos):
         #print 'putting poo at', pos
-        img = data.pngs['poo.png']
+        img = data.pngs['dookie.png']
+        # TODO this is a hack
+        pos = pos[0]-12, pos[1]-30
         s = pyglet.sprite.Sprite(img, *pos)
         self.pooSprites.append(s)
 
@@ -210,6 +229,8 @@ def main():
     guage = mower.Guage(mowr)
     bubbles.init()
     pooMaster = PooMaster()
+
+    events.Fire('NewStage', narrative.foreshadowing)
 
     objs = [dog, mowr, guage]
     magicEventRegister(window.game_window, events, objs)
