@@ -119,18 +119,15 @@ class StoryTeller(object):
         global dayCounter
         dayCounter += 1
         if StoryTeller.phase == fin and StoryTeller.phase:
-            print 'new thought fin'
             events.Fire('NewThought', StoryTeller.phase.pop(0))
             if len(StoryTeller.phase) == 0:
                 events.Fire('NarrativeOver')
                 
         elif StoryTeller.phase != fin:
             thought = StoryTeller.phase.pop(random.randrange(0, len(StoryTeller.phase)))
-            print 'new thought', thought
             events.Fire('NewThought', thought)
         
         if dayCounter in self.stages:
-            print 'new stage', dayCounter
             StoryTeller.phase = self.stages[dayCounter]
             events.Fire('NewStage', StoryTeller.phase)
 
@@ -139,3 +136,7 @@ class StoryTeller(object):
             thought = StoryTeller.phase.pop(random.randrange(0, len(StoryTeller.phase)))
             print 'new thought', thought
             events.Fire('NewThought', thought)
+
+    def On_DogPoo(self, *args):
+        if dayCounter > 6:
+            events.Fire('HeartAttack')
