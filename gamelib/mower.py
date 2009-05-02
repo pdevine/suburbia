@@ -69,7 +69,7 @@ class Mower(pyglet.sprite.Sprite):
         return '<Mower %s %s %s>' % (self.x, self.y, id(self))
 
     def resetLocation(self):
-        print 'resetting location'
+#        print 'resetting location'
         self.rect.x = 10
         self.rect.y = 260
 

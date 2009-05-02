@@ -91,11 +91,11 @@ class Background:
             else:
                 self.rain.active = False
 
-            print "It's now %s" % CURRENT_CLOUD_COVERAGE
-            if self.rain.active:
-                print "It's raining"
-            else:
-                print "It's not raining"
+#            print "It's now %s" % CURRENT_CLOUD_COVERAGE
+#            if self.rain.active:
+#                print "It's raining"
+#            else:
+#                print "It's not raining"
 
             self.counter = self.weather_time
 
@@ -267,7 +267,7 @@ class Moon(OrbitingObject):
 
     def halfway(self):
         events.Fire('Midnight')
-        print 'midnight'
+#        print 'midnight'
     def set(self):
         pass
     def rise(self):
@@ -282,13 +282,13 @@ class Sun(OrbitingObject):
 
     def halfway(self):
         events.Fire('Midday')
-        print 'midday'
+#        print 'midday'
     def set(self):
         events.Fire('Sunset')
-        print 'sunset'
+#        print 'sunset'
     def rise(self):
         events.Fire('Sunrise')
-        print 'sunrise'
+#        print 'sunrise'
 
 
 class Rain:

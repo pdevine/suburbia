@@ -18,7 +18,7 @@ class Title:
                 self.alpha -= tick
                 if self.alpha < 0:
                     self.active = False
-                    print "title off"
+                    #print "title off"
 
     def draw(self):
         if self.active:

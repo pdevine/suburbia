@@ -93,8 +93,8 @@ class GutterWater(rabbyt.sprites.Sprite):
     def on_mouse_scroll(self, x, y, scrollx, scrolly):
         if self.collides(x,y):
             if scrolly > 0:
-                print 'self collides.  self.x, self.y', self.x, self.y
-                print 'info x, y, sx, sy', x, y, scrollx, scrolly
+                #print 'self collides.  self.x, self.y', self.x, self.y
+                #print 'info x, y, sx, sy', x, y, scrollx, scrolly
                 self.logicalZ += 5
                 def popNeighbor(n):
                     if n and n.logicalZ < self.logicalZ:
