@@ -26,13 +26,13 @@ class GarbageCan:
         self.lid_highlighted = True
 
         self.can_rect = Rect(0, 0, self.image_closed)
-        self.can_rect.center = (100, 100)
+        self.can_rect.center = (80, 60)
 
         self.can_sprite = Sprite(self.image_opened)
         self.can_sprite.set_position(100 - self.image_opened.width / 2,
                                      100 - self.image_opened.height / 2)
 
-        self.lid_rect = Rect(200, 200, self.image_lid)
+        self.lid_rect = Rect(20, 40, self.image_lid)
 
         window.game_window.push_handlers(self.on_mouse_release)
         window.game_window.push_handlers(self.on_mouse_press)
