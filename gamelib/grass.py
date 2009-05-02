@@ -63,6 +63,10 @@ class LawnSegment:
             blade.height = 1
             blade.width = 1
 
+    def pooSmear(self):
+        for blade in self.grass:
+            blade.brown()
+
 from mower import Mower
 
 class Lawn:
@@ -75,6 +79,7 @@ class Lawn:
         self.mower = mower
 
         self.lawn = []
+        self.unsmearedPoos = []
         self.current_segment = 0
 
         for y in range(130, 260, 10):
@@ -104,10 +109,6 @@ class Lawn:
         self.mow_counter = self.mow_time
         
         self.mowing = False
-
-        for blade in self.lawn[31].grass:
-            blade.brown()
-        self.lawn[31].rebuild()
 
         events.AddListener(self)
 
@@ -173,21 +174,39 @@ class Lawn:
 
         glColor4f(1, 1, 1, 1)
 
+        
+
     def mow(self):
+        def distanceTo(x1, y1, x, y):
+            return math.sqrt((x-x1)**2 + (y-y1)**2)
+
         #if self.mower.rect.x != self.lawn[self.segment].rect.x:
-        self.mower.rect.center = self.lawn[self.segment].rect.center
+        segment = self.lawn[self.segment]
+        segment_center =  segment.rect.center
+        reachablePoos = [pooPos for pooPos in self.unsmearedPoos
+                         if distanceTo(pooPos[0], pooPos[1], *segment_center) < 30]
+
+        for pooPos in reachablePoos:
+            self.unsmearedPoos.remove(pooPos)
+            events.Fire('DogPooSmear', pooPos)
+            segment.pooSmear()
+
+        self.mower.rect.center = segment_center
         self.lawn[self.segment].mow()
         self.lawn[self.segment].rebuild()
         self.segment -= 1
         if self.segment < 0:
+            self.unsmearedPoos = []
             self.segment = len(self.lawn) - 1
             self.mowing = False
             events.Fire('LawnMowed')
-            print "finished mowing"
             self.mower.resetLocation()
 
     def On_MowerStart(self, mower):
         self.mowing = True
+
+    def On_DogPoo(self, pos):
+        self.unsmearedPoos.append(pos)
 
 class MiniGrill:
     def __init__(self):

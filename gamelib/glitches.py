@@ -195,7 +195,7 @@ class SourcecodeGenerator(object):
         self.countdown = 0.8
 
     def On_Sunset(self):
-        if narrative.dayCounter == 12:
+        if narrative.dayCounter == 11:
             self.hitRequiredStage = True
             self.active = True
 

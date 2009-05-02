@@ -109,10 +109,10 @@ class StoryTeller(object):
         StoryTeller.phase = beginning
 
         self.stages = { 1: beginning,
-                        3: foreshadowing,
-                        5: anguish,
-                        7: terror,
-                        9: fin,
+                        2: foreshadowing,
+                        4: anguish,
+                        6: terror,
+                        8: fin,
                       }
 
     def On_Sunset(self):
@@ -134,3 +134,8 @@ class StoryTeller(object):
             StoryTeller.phase = self.stages[dayCounter]
             events.Fire('NewStage', StoryTeller.phase)
 
+    def On_Midnight(self):
+        if StoryTeller.phase != fin:
+            thought = StoryTeller.phase.pop(random.randrange(0, len(StoryTeller.phase)))
+            print 'new thought', thought
+            events.Fire('NewThought', thought)
