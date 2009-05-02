@@ -50,7 +50,7 @@ class GarbageCan:
         self.lid_highlighted = True
 
         self.can_rect = Rect(0, 0, self.image_closed)
-        self.can_rect.center = (80, 60)
+        self.can_rect.center = (80, 90)
 
         self.can_sprite = Sprite(self.image_opened)
         self.can_sprite.set_position(self.can_rect.x, self.can_rect.y)
