@@ -53,14 +53,13 @@ class GrillObject:
         return False
 
     def set_active(self):
-        #cursor = pyglet.window.ImageMouseCursor(
-        #    self.image, self.image.width/2, self.image.height/2)
-
         #window.game_window.set_mouse_cursor(cursor)
+        print "set active"
         window.game_window.set_mouse_visible(False)
         self.active = True
 
     def set_inactive(self, pos):
+        print "set inactive"
         self.rect.x = pos[0]
         self.rect.y = pos[1]
         window.game_window.set_mouse_visible(True)
@@ -274,7 +273,8 @@ class Exit(RectObject):
 
 class Table(RectObject):
     def __init__(self):
-        self.rect = Rect(600, 0, 200, 150)
+        self.image = image.load(data_file('table-corner.png'))
+        self.rect = Rect(570, -20, 200, 150)
 
 class FlareUp:
     def __init__(self):
