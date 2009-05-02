@@ -65,6 +65,7 @@ class GarbageCan:
 
         window.game_window.set_mouse_cursor(cursor)
         self.can_active = True
+        events.Fire('CanTaken')
 
     def set_lid_active(self):
         cursor = pyglet.window.ImageMouseCursor(
@@ -73,6 +74,7 @@ class GarbageCan:
             self.image_lid.height/2)
         window.game_window.set_mouse_cursor(cursor)
         self.lid_active = True
+        events.Fire('LidTaken')
 
     def on_mouse_release(self, x, y, button, modifiers):
         print "x=%d y=%d" % (x, y)

@@ -91,8 +91,6 @@ class Lawn:
         self.house = image.load(data_file('house.png'))
         self.truck = image.load(data_file('truck.png'))
         self.dogpiss = image.load(data_file('dogpiss.png'))
-        self.grill = MiniGrill()
-        self.big_grill = grill.Grill()
 
         self.mower = Mower()
 
@@ -153,8 +151,8 @@ class Lawn:
             self.green_value += 0.005
             self.green_counter = self.green_time
 
-        if self.grill.active:
-            self.big_grill.update(tick)
+        #if self.grill.active:
+        #    self.big_grill.update(tick)
 
     def draw(self):
         self.draw_field()
@@ -179,10 +177,10 @@ class Lawn:
 
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
-        self.grill.draw()
+        #self.grill.draw()
 
-        if self.grill.active:
-            self.big_grill.draw()
+        #if self.grill.active:
+        #    self.big_grill.draw()
 
     def draw_field(self):
         glColor4f(0.2, self.green_value, 0.2, 1)

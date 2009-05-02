@@ -13,6 +13,9 @@ import euclid
 import math
 
 from grass import Lawn
+from grass import MiniGrill
+from grill import Grill
+
 from garbage import GarbageCan
 
 from util import data_file
@@ -61,6 +64,9 @@ class Background:
         self.moon = Moon()
         self.rain = Rain()
         self.lawn = Lawn()
+        self.mini_grill = MiniGrill()
+        self.big_grill = Grill()
+
         self.clouds = Clouds(self.hsv_color)
         self.garbage_can = GarbageCan()
 
@@ -72,6 +78,15 @@ class Background:
     def update(self, tick):
         if self.over:
             return self.update_dead(tick)
+
+        # save the grill state in the big grill so it's easier to
+        # turn off
+        if self.mini_grill.active:
+            self.big_grill.active = True
+            self.mini_grill.active = False
+
+        if self.big_grill.active:
+            return self.big_grill.update(tick)
             
         global CURRENT_CLOUD_COVERAGE
 
@@ -107,8 +122,12 @@ class Background:
         self.color = colorsys.hsv_to_rgb(*self.hsv_color)
 
     def draw(self):
+        if self.big_grill.active:
+            self.big_grill.draw()
+            return
+
         elements = [self.sun, self.moon, self.clouds, self.lawn,
-                    self.rain, self.garbage_can]
+                    self.mini_grill, self.rain, self.garbage_can]
 
         for element in elements:
             if element:
