@@ -75,7 +75,6 @@ class Background:
         self.weather_time = 20
         self.counter = self.weather_time
 
-
         events.AddListener(self)
 
     def update(self, tick):
